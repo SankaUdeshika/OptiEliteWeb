@@ -63,18 +63,18 @@
 
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="username">Username</label>
                     <input
-                      id="email"
-                      type="email"
+                      id="username"
+                      type="username"
                       class="form-control"
-                      name="email"
+                      name="username"
                       tabindex="1"
                       required
                       autofocus
                     />
                     <div class="invalid-feedback">
-                      Please fill in your email
+                      Please fill in your username
                     </div>
                   </div>
 
@@ -164,6 +164,7 @@
     <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
     <script src="assets/modules/moment.min.js"></script>
     <script src="assets/js/OptiElite.js"></script>
+    <script src="assets/js/mainscript.js"></script>
 
     <!-- JS Libraies -->
 
@@ -172,12 +173,12 @@
     <!-- Template JS File -->
     <script src="assets/js/scripts.js"></script>
     <script src="assets/js/custom.js"></script>
-    <script>
+    <!-- <script>
       async function Login() {
         const result = await fetch("login", {
           method: "POST",
           body: JSON.stringify({
-            email: "sanka@gmail.com",
+            username: "sanka@gmail.com",
             password: "12345",
           }),
           headers: {
@@ -192,6 +193,6 @@
           }
         }
       }
-    </script>
+    </script> -->
   </body>
 </html>

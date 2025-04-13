@@ -18,10 +18,9 @@ app.use("/assets", express.static(__dirname + "/assets"));
 
 // Controller Routes
 app.use("/api/users", userRoutes);
+app.use("/user",userRoutes);
 
 app.get("/", (req, res) => {
-  console.log(req.session);
-
   if (req.session.email) {
     res.sendFile(__dirname + "/public/index.html");
   } else {
@@ -33,20 +32,6 @@ app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/public/auth-login.html");
 });
 
-app.post("/login", (req, res) => {
-  const email = "sanka@gmail.com";
-  const password = "12345";
-
-  const data = req.body;
-  console.log(data);
-
-  if (email == data.email && password == data.password) {
-    req.session.email = data.email;
-    res.send("success");
-  } else {
-    res.send("Invalid");
-  }
-});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

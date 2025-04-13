@@ -9,4 +9,7 @@ router.get("/testing", (req, res) => {
   res.redirect("login");
 });
 
+
+router.post("/login", login);
+
 module.exports = router;
