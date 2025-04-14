@@ -20,8 +20,8 @@ async function Login() {
         "Content-type": "application/json",
       },
     });
-
     if (result.ok) {
+      console.log("resoponded Recived");
       const response = await result.text();
       if (response == "success") {
         window.location = "/";

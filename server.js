@@ -21,7 +21,7 @@ app.use("/api/users", userRoutes);
 app.use("/user",userRoutes);
 
 app.get("/", (req, res) => {
-  if (req.session.email) {
+  if (req.session.username) {
     res.sendFile(__dirname + "/public/index.html");
   } else {
     res.redirect("/login");

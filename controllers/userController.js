@@ -16,26 +16,33 @@ const getAllUsers = (req, res) => {
 };
 
 const login = (req, res) => {
-  console.log("loginProcess");
-
   const data = req.body;
   let username = data.username;
   let password = data.password;
 
-  db.query("SELECT * FROM `users`", (err, result) => {
-    if (err) {
-      console.error("Error fetching Users" + err);
-      return res.status(500).json({error:"DB Error"});
-    }
-    console.log(result);
-  });
+  db.query(
+    "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?",
+    [username, password],
+    (err, result) => {
+      if (err) {
+        console.error("Error fetching users: " + err);
+        return res.status(500).json({ error: "DB Error" });
+      }
 
-  //   if (email == data.email && password == data.password) {
-  //     req.session.email = data.email;
-  //     res.send("success");
-  //   } else {
-  //     res.send("Invalid");
-  //   }
+      if (
+        result[0].username == data.username &&
+        result[0].password == data.password
+      ) {
+        req.session.username = data.username + "_" + result[0].id;
+
+        console.log("success " + req.session.username);
+        res.send("success");
+      } else {
+        console.log("invalid");
+        res.send("Invalid");
+      }
+    }
+  );
 };
 
 module.exports = { login, getAllUsers };
