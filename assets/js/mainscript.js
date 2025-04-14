@@ -21,10 +21,12 @@ async function Login() {
       },
     });
     if (result.ok) {
-      console.log("resoponded Recived");
       const response = await result.text();
       if (response == "success") {
         window.location = "/";
+      } else if (response == "Invalid") {
+        document.getElementById("errormessage").innerHTML =
+          "Invalid User Details, Please Try again later";
       }
     }
   }

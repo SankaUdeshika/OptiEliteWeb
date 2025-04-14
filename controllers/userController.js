@@ -19,22 +19,18 @@ const login = (req, res) => {
   const data = req.body;
   let username = data.username;
   let password = data.password;
-
+  let statusID = 1;
   db.query(
-    "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?",
-    [username, password],
+    "SELECT * FROM `users` WHERE `username` = ? AND `password` = ? AND `user_status_status_id` = ? ",
+    [username, password, statusID],
     (err, result) => {
       if (err) {
         console.error("Error fetching users: " + err);
         return res.status(500).json({ error: "DB Error" });
       }
 
-      if (
-        result[0].username == data.username &&
-        result[0].password == data.password
-      ) {
+      if (result.length > 0) {
         req.session.username = data.username + "_" + result[0].id;
-
         console.log("success " + req.session.username);
         res.send("success");
       } else {
