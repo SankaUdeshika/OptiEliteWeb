@@ -31,3 +31,22 @@ async function Login() {
     }
   }
 }
+
+// fetch Branch Details
+async function fetchBranchStatus() {
+  const result = await fetch("brnch/fetch", {
+    method: "POST",
+    body: JSON.stringify({
+      start_month: new Date().getMonth(),
+      start_date: new Date().getDate(),
+    }),
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+
+  if (result.ok) {
+    const response = await result.text();
+    console.log(response);
+  }
+}

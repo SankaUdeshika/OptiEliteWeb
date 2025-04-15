@@ -3,11 +3,7 @@ const router = express.Router();
 const { getAllUsers, login } = require("../controllers/userController");
 
 router.get("/", getAllUsers);
-router.get("/testing", (req, res) => {
-  console.log(req.body);
-  //   res.send("working testing");
-  res.redirect("login");
-});
+
 
 
 router.post("/login", login);

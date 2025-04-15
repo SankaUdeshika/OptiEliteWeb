@@ -48,28 +48,28 @@
       gtag("config", "UA-94034622-3");
     </script>
 
-    <script>
+    <!-- <script>
       function fetchUsers() {
         fetch("/api/users")
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            // const ul = document.getElementById("userList");
-            // ul.innerHTML = "";
-            // data.forEach((user) => {
-            // const li = document.createElement("li");
-            // li.textContent = `${user.id}: ${user.name}`; // customize this
-            // ul.appendChild(li);
-            // });
+            const ul = document.getElementById("userList");
+            ul.innerHTML = "";
+            data.forEach((user) => {
+              const li = document.createElement("li");
+              li.textContent = `${user.id}: ${user.name}`; // customize this
+              ul.appendChild(li);
+            });
           })
           .catch((err) => console.error("Error fetching users:", err));
-      }
+      } -->
     </script>
 
     <!-- /END GA -->
   </head>
 
-  <body>
+  <body onload="fetchBranchStatus()">
     <div id="app">
       <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
@@ -1480,6 +1480,8 @@
 
     <!-- Page Specific JS File -->
     <script src="assets/js/page/index.js"></script>
+    <script src="assets/js/mainscript.js"></script>
+
 
     <!-- Template JS File -->
     <script src="assets/js/scripts.js"></script>

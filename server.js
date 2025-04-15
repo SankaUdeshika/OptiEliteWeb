@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 
 const userRoutes = require("./routes/userRoutes");
+const branchRoutes = require("./routes/branchRoutes");
 
 // Middleware
 app.use(cors());
@@ -18,9 +19,11 @@ app.use("/assets", express.static(__dirname + "/assets"));
 
 // Controller Routes
 app.use("/api/users", userRoutes);
-app.use("/user",userRoutes);
+app.use("/user", userRoutes);
+app.use("/brnch", branchRoutes);
 
 app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html"); // tempory thing, must remove this
   if (req.session.username) {
     res.sendFile(__dirname + "/public/index.html");
   } else {
@@ -31,7 +34,6 @@ app.get("/", (req, res) => {
 app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/public/auth-login.html");
 });
-
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
