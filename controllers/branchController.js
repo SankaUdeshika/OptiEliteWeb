@@ -71,7 +71,7 @@ const fetchBranchDetails = async (req, res) => {
                 total_profit: actual_total_profit,
                 astimate_total_profit: estimate_branch_totalPrice,
               };
-              //   console.log(location_data);
+              console.log(location_data);
               resolve(location_data);
             }
           );
