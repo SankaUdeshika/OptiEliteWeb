@@ -35,6 +35,11 @@ app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/public/auth-login.html");
 });
 
+app.get("/bills", (req, res) => {
+  console.log("done")
+  res.sendFile(__dirname + "/public/forms-validation.html");
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

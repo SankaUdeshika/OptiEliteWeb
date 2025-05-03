@@ -840,7 +840,7 @@ select.form-control:not([size]):not([multiple]) {
       height: 50px;
       align-items: center; }
     .card .card-stats .card-stats-item {
-      width: calc(100% / 3);
+      width: calc(100% / 2);
       text-align: center;
       padding: 5px 20px; }
       .card .card-stats .card-stats-item .card-stats-item-label {

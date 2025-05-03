@@ -56,7 +56,7 @@ async function fetchBranchStatus() {
     for (let i = 0; i < branchcount; i++) {
       console.log(response.locations[i].location_name);
 
-        container.innerHTML += `
+      container.innerHTML += `
         <div class="row" >
                 <div class="col-lg-4 col-md-4 col-sm-12">
                   <div class="card card-statistic-2">
@@ -103,13 +103,10 @@ async function fetchBranchStatus() {
                           <div class="card-stats-item-count">${response.locations[i].order_count} </div>
                           <div class="card-stats-item-label">Orders</div>
                         </div>
+                       
                         <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].this_month}</div>
-                          <div class="card-stats-item-label">Month</div>
-                        </div>
-                        <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].location_name}</div>
-                          <div class="card-stats-item-label">Location</div>
+                          <div class="card-stats-item-count">${response.locations[i].total_cash_collected}</div>
+                          <div class="card-stats-item-label">Cash Collected</div>
                         </div>
                       </div>
                     </div>
@@ -118,46 +115,21 @@ async function fetchBranchStatus() {
                     </div>
                     <div class="card-wrap">
                       <div class="card-header">
-                        <h4>Total Advance Payments</h4>
+                        <h4>Total Sales</h4>
                       </div>
-                      <div class="card-body"> ${response.locations[i].total_advance_payments}</div>
+                      <div class="card-body"> ${response.locations[i].astimate_total_profit}</div>
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                  <div class="card card-statistic-2">
-                    <div class="card-chart">
-                      <canvas id="balance-chart"  height="80"></canvas>
-                    </div>
-                    <div class="card-icon shadow-primary bg-primary">
-                      <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Estimate Total Profit</h4>
-                      </div>
-                      <div class="card-body">RS.${response.locations[i].astimate_total_profit}</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                  <div class="card card-statistic-2">
-                    <div class="card-chart">
-                      <canvas id="sales-chart" height="80"></canvas>
-                    </div>
-                    <div class="card-icon shadow-primary bg-primary">
-                      <i class="fas fa-shopping-bag"></i>
-                    </div>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Actual Profit</h4>
-                      </div>
-                      <div class="card-body">Rs.${response.locations[i].total_profit}</div>
-                    </div>
-                  </div>
-                </div>
+                
+                
               </div>
         `;
     }
   }
+}
+
+// open Bills
+async function goBills() {
+  window.location = "/bills";
 }
