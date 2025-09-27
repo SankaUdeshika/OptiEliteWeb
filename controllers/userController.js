@@ -1,5 +1,6 @@
 const { error } = require("console");
 const db = require("../db/db");
+const UserDb = require("../db/user_db");
 const path = require("path");
 
 const getAllUsers = (req, res) => {
@@ -15,13 +16,17 @@ const getAllUsers = (req, res) => {
   // });$
 };
 
+
+// Login with optielite User Database
 const login = (req, res) => {
   const data = req.body;
   let username = data.username;
   let password = data.password;
+
   let statusID = 1;
-  db.query(
-    "SELECT * FROM `users` WHERE `username` = ? AND `password` = ? AND `user_status_status_id` = ? ",
+  
+  UserDb.query(
+    "SELECT * FROM `users` WHERE `user-name` = ? AND `password` = ? AND `user_status_status_id` = ? ",
     [username, password, statusID],
     (err, result) => {
       if (err) {
