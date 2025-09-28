@@ -37,12 +37,10 @@ async function fetchBranchStatus() {
   const result = await fetch("brnch/fetch", {
     method: "POST",
     body: JSON.stringify({
-      start_month: new Date().getMonth(),
-      start_date: new Date().getDate(),
+      date: "2025-09-25", // <-- test date you showed in HeidiSQL
+      // or new Date().toISOString().slice(0,10) for today
     }),
-    headers: {
-      "Content-type": "application/json",
-    },
+    headers: { "Content-type": "application/json" },
   });
 
   if (result.ok) {
@@ -58,12 +56,12 @@ async function fetchBranchStatus() {
 
       container.innerHTML += `
         <div class="row" >
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                  <div class="card card-statistic-2">
-                    <div class="card-stats">
+                <div class="col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="card card-statistic-2  border border-1 border-dark rounded mb-3">
+                    <div class="card-stats ">
                       <div class="card-stats-title">
                         <b style="color :purple">${response.locations[i].location_name}</b> Order Statistics -
-                        <div class="dropdown d-inline">
+                        <div class="dropdown d-inline" >
                           <a
                             class="font-weight-600 dropdown-toggle"
                             data-toggle="dropdown"
@@ -130,6 +128,6 @@ async function fetchBranchStatus() {
 }
 
 // open Bills
-async function goBills() {
-  window.location = "/bills";
+async function UpdateBills() {
+  window.location = "/update_bills";
 }

@@ -3,8 +3,13 @@ const db = require("../db/db");
 const path = require("path");
 
 const fetchBranchDetails = async (req, res) => {
-  const bodydata = req.body;
-  const todayDate = "2025-05-03";
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const todayDate = `${year}-${month}-${day}`;
+
+
   // new Date().toISOString().split('T')[0];
 
   if (!req.session.username) {
@@ -14,10 +19,6 @@ const fetchBranchDetails = async (req, res) => {
   const username = req.session.username;
   const userIdParts = username.split("_");
   const userId = userIdParts[1];
-
-  const date = new Date();
-  const today = date.getDate();
-  const thisMonth = date.getMonth() + 1;
 
   try {
     // Step 1: Get branch users and location info
@@ -40,9 +41,12 @@ const fetchBranchDetails = async (req, res) => {
     const location_details = await Promise.all(
       branchResults.map((branch) => {
         return new Promise((resolve, reject) => {
+          console.log(branch.location_id);
+          9;
+
           db.query(
-            "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile`  WHERE `customer`.`location_id` = ?  ",
-            [branch.location_id],
+            "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile`  WHERE `customer`.`location_id` = ? AND `invoice`.`date` = ?",
+            [branch.location_id, todayDate],
             (err2, result2) => {
               if (err2) return reject(err2);
 
@@ -66,8 +70,7 @@ const fetchBranchDetails = async (req, res) => {
                 if (result2[x].payment_status_id == "2") {
                   actual_total_profit +=
                     result2[x].total_price + total_branch_advance_payments;
-                    Cash_collected +=
-                    result2[x].total_price ;
+                  Cash_collected += result2[x].total_price;
                 }
               }
 
@@ -75,8 +78,8 @@ const fetchBranchDetails = async (req, res) => {
                 location_id: branch.location_id,
                 location_name: branch.location_name,
                 branch_name: branch.branch_name,
-                today: today,
-                this_month: thisMonth,
+                today: todayDate,
+                this_month: month,
                 order_count: branch_OrderCount,
                 total_advance_payments: total_branch_advance_payments,
                 total_profit: actual_total_profit,
@@ -98,5 +101,7 @@ const fetchBranchDetails = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
 
 module.exports = { fetchBranchDetails };
