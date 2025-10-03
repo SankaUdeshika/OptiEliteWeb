@@ -6,3 +6,27 @@
  */
 
 /*# sourceMappingURL=custom.css.map */
+
+
+.glassEffectt {
+  background: rgba(243, 0, 0, 0.177); /* transparent white layer */
+  border-radius: 15px;                  /* rounded edges */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* soft shadow */
+  backdrop-filter: blur(10px);          /* frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);  /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* subtle border */
+  padding: 20px;                        /* inner spacing */
+}
+  
+/* Make input blend with glass effect */
+#startDate {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+#startDate::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+
