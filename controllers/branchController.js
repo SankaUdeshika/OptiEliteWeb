@@ -39,9 +39,7 @@ const fetchBranchDetails = async (req, res) => {
     // Step 2: Loop through each branch + query invoice stuff
     const location_details = await Promise.all(
       branchResults.map((branch) => {
-        return new Promise((resolve, reject) => {
-          console.log(branch.location_id);
-          9;
+        return new Promise((resolve, reject) => { 
 
           db.query(
             "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile`  WHERE `customer`.`location_id` = ? AND `invoice`.`date` = ?",

@@ -8,11 +8,19 @@ const port = 3000;
 
 const userRoutes = require("./routes/userRoutes");
 const branchRoutes = require("./routes/branchRoutes");
+const billRoutes = require("./routes/billRoutes");
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(session({ secret: "keyboard cat", cookie: { maxAge: 60000 }, resave:false,saveUninitialized:false }));
+app.use(
+  session({
+    secret: "keyboard cat",
+    cookie: { maxAge: 3600000 }, // 1 hour
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // app.use(express.static("public")); // serve frontend files
 app.use("/assets", express.static(__dirname + "/assets"));
@@ -21,6 +29,7 @@ app.use("/assets", express.static(__dirname + "/assets"));
 app.use("/api/users", userRoutes);
 app.use("/user", userRoutes);
 app.use("/brnch", branchRoutes);
+app.use("/api/bill", billRoutes);
 
 app.get("/", (req, res) => {
   if (req.session.username) {
@@ -31,12 +40,22 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  // go Login
   res.sendFile(__dirname + "/public/auth-login.html");
 });
 
 app.get("/update_bills", (req, res) => {
-  console.log("done")
-  res.sendFile(__dirname + "/public/updateBills.html");
+  console.log("done");
+  res.sendFile(__dirname + "/public/components-table.html");
+});
+
+app.get("/manage_bills", (req, res) => {
+  // go Manage Bills
+  // if (req.session.username) {
+  res.sendFile(__dirname + "/public/bills/manageBills.html");
+  // } else {
+  //   res.redirect("/login");
+  // }
 });
 
 app.listen(port, () => {

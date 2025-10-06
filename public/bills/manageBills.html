@@ -6,7 +6,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
       name="viewport"
     />
-    <title>Blank Page &mdash; Stisla</title>
+    <title>Manage Bills &mdash; OptiElite</title>
 
     <!-- General CSS Files -->
     <link
@@ -16,9 +16,23 @@
     <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css" />
 
     <!-- CSS Libraries -->
+    <link rel="stylesheet" href="assets/modules/jqvmap/dist/jqvmap.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/modules/summernote/summernote-bs4.css"
+    />
+    <link
+      rel="stylesheet"
+      href="assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css"
+    />
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/custom.css" />
     <link rel="stylesheet" href="assets/css/components.css" />
     <!-- Start GA -->
     <script
@@ -34,10 +48,29 @@
 
       gtag("config", "UA-94034622-3");
     </script>
+
+    <!-- <script>
+      function fetchUsers() {
+        fetch("/api/users")
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            const ul = document.getElementById("userList");
+            ul.innerHTML = "";
+            data.forEach((user) => {
+              const li = document.createElement("li");
+              li.textContent = `${user.id}: ${user.name}`; // customize this
+              ul.appendChild(li);
+            });
+          })
+          .catch((err) => console.error("Error fetching users:", err));
+      } -->
+    </script>
+
     <!-- /END GA -->
   </head>
 
-  <body>
+  <body onload="loadBills();">
     <div id="app">
       <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
@@ -73,7 +106,9 @@
               <div class="search-result">
                 <div class="search-header">Histories</div>
                 <div class="search-item">
-                  <a href="#">How to hack NASA using CSS</a>
+                  <a href="#" onclick="fetchUsers();"
+                    >How to hack NASA using CSS</a
+                  >
                   <a href="#" class="search-close"
                     ><i class="fas fa-times"></i
                   ></a>
@@ -85,7 +120,7 @@
                   ></a>
                 </div>
                 <div class="search-item">
-                  <a href="#">#Stisla</a>
+                  <a href="#">#OptiElite</a>
                   <a href="#" class="search-close"
                     ><i class="fas fa-times"></i
                   ></a>
@@ -130,7 +165,7 @@
                     <div class="search-icon bg-danger text-white mr-3">
                       <i class="fas fa-code"></i>
                     </div>
-                    Stisla Admin Template
+                    OptiElite Admin Template
                   </a>
                 </div>
                 <div class="search-item">
@@ -306,7 +341,7 @@
                       <i class="fas fa-bell"></i>
                     </div>
                     <div class="dropdown-item-desc">
-                      Welcome to Stisla template!
+                      Welcome to OptiElite template!
                       <div class="time">Yesterday</div>
                     </div>
                   </a>
@@ -383,12 +418,11 @@
               <li class="menu-header">Actions</li>
               <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"
-                  ><i class="fas fa-columns"></i>
-                  <span>Invoice / Bills</span></a
+                  ><i class="fas fa-columns"></i> <span>Invoice / Bills</span></a
                 >
                 <ul class="dropdown-menu">
                   <li>
-                    <a class="nav-link" onclick="UpdateBills();"
+                    <a class="nav-link"  onclick="UpdateBills();"
                       >Update Bills</a
                     >
                   </li>
@@ -770,164 +804,184 @@
         </div>
 
         <!-- Main Content -->
-        <div class="main-content">
-          <section class="section">
-            <div class="section-header">
-              <h1>Update Bills</h1>
-            </div>
-
+        <div class="main-content"  >
+          <section class="section" >
             <div class="col-12">
-              <div class="row">
-                <div class="col-12">
-                  <!-- search Bar -->
-                  <div class="row">
-                    <div class="col-12 mb-3 ">
-                      <input type="text" class="form-control" placeholder="Invoice Number" />
-                    </div>
-                  </div>
-                  <!-- Invoice Table -->
-                  <table
-                    class="table table-bordered"
-                    style="background-color: rgb(212, 214, 215)"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">Invoice ID</th>
-                        <th scope="col">Customer Name</th>
-                        <th scope="col">Customer Mobile</th>
-                        <th scope="col">date</th>
-                        <th scope="col">Lens Stock</th>
-                        <th scope="col">Frame Stock ID</th>
-
-                        <th scope="col">Total Price</th>
-
-                      </tr>
-                    </thead>
-                    <tbody>
-                     
-                      <tr>
-                        <th scope="row">1</th>
-                        <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="Thornton"></td>
-                        <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="Thornton"></td>
-                        <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="Thornton"></td>
-                        <td style="margin-top: 10px;" > <table
-                          class="table table-bordered"
-                          style="background-color: rgb(212, 214, 215); "
-                        >
-                          <thead>
-                            <tr>
-                              <th scope="col">Lens id</th>
-                              <th scope="col">Lens brand</th>
-                              <th scope="col">Lens Code</th>
-                             
-      
-                            </tr>
-                          </thead>
-                          <tbody>
-                           
-                            <tr>
-                              <th scope="row">1</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">2</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">3</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">4</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            
-                          </tbody>
-                        </table></td>
-                        <td><table
-                          class="table table-bordered"
-                          style="background-color: rgb(212, 214, 215)"
-                        >
-                          <thead>
-                            <tr>
-                              <th scope="col">Stock id</th>
-                              <th scope="col">Location</th>
-                              <th scope="col">Seling price</th>
-                              <th scope="col">Cost</th>
-                              <th scope="col">Color</th>
-                              <th scope="col">Frame Size</th>
-                           
-      
-                            </tr>
-                          </thead>
-                          <tbody>
-                           
-                            <tr>
-                              <th scope="row">1</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">2</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">3</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            <tr>
-                              <th scope="row">4</th>
-                              <td><input type="text"   style="background-color: rgb(212, 214, 215); border-radius: 0; border: none; width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                              <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                             
-                            </tr>
-                            
-                          </tbody>
-                        </table></td>
-                        <td><input type="text"  style="background-color: rgb(212, 214, 215); border-radius: 0; border: none;  width: 100%;"  value="none"></td>
-                      </tr>
-                      
-                    </tbody>
-
-                  </table>
-                </div>
+                <div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>Sortable Table</h4>
+        <div class="card-header-action">
+          <form>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder=" Invoice Number" />
+              <div class="input-group-btn">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
               </div>
             </div>
+          </form>
 
-            <div class="section-body"></div>
+
+          <form>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Customer Mobile" />
+              <div class="input-group-btn">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped" id="sortable-table">
+            <thead>
+              <tr>
+                <th class="text-center"><i class="fas fa-th"></i></th>
+                <th>Invoice Id</th>
+                <th>Payment Progress</th>
+                <th>Members</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="sortable-table-body">
+              <!-- Row 1 -->
+              <!-- <tr>
+                <td>
+                  <div class="sort-handler">
+                    <i class="fas fa-th"></i>
+                  </div>
+                </td>
+                <td>Create a mobile app</td>
+                <td class="align-middle">
+                  <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </td>
+                <td>
+                  <img alt="image" src="assets/img/avatar/avatar-5.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Wildan Ahdian" />
+
+                    <span>sanka Udeshika</span>
+                </td>
+                <td>2018-01-20</td>
+                <td><div class="badge badge-success">Completed</div></td>
+                <td><a href="#" class="btn btn-secondary">Detail</a></td>
+              </tr> -->
+
+              <!-- Row 2 -->
+              <!-- <tr>
+                <td>
+                  <div class="sort-handler">
+                    <i class="fas fa-th"></i>
+                  </div>
+                </td>
+                <td>Redesign homepage</td>
+                <td class="align-middle">
+                  <div class="progress" data-height="4" data-toggle="tooltip" title="0%">
+                    <div class="progress-bar" data-width="0"></div>
+                  </div>
+                </td>
+                <td>
+                  <img alt="image" src="assets/img/avatar/avatar-1.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Nur Alpiana" />
+                  <img alt="image" src="assets/img/avatar/avatar-3.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Hariono Yusup" />
+                  <img alt="image" src="assets/img/avatar/avatar-4.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Bagus Dwi Cahya" />
+                </td>
+                <td>2018-04-10</td>
+                <td><div class="badge badge-info">Todo</div></td>
+                <td><a href="#" class="btn btn-secondary">Detail</a></td>
+              </tr> -->
+
+              <!-- Row 3 -->
+              <!-- <tr>
+                <td>
+                  <div class="sort-handler">
+                    <i class="fas fa-th"></i>
+                  </div>
+                </td>
+                <td>Backup database</td>
+                <td class="align-middle">
+                  <div class="progress" data-height="4" data-toggle="tooltip" title="70%">
+                    <div class="progress-bar bg-warning" data-width="70"></div>
+                  </div>
+                </td>
+                <td>
+                  <img alt="image" src="assets/img/avatar/avatar-1.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Rizal Fakhri" />
+                  <img alt="image" src="assets/img/avatar/avatar-2.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Hasan Basri" />
+                </td>
+                <td>2018-01-29</td>
+                <td><div class="badge badge-warning">In Progress</div></td>
+                <td><a href="#" class="btn btn-secondary">Detail</a></td>
+              </tr> -->
+
+              <!-- Row 4 -->
+              <!-- <tr>
+                <td>
+                  <div class="sort-handler">
+                    <i class="fas fa-th"></i>
+                  </div>
+                </td>
+                <td>Input data</td>
+                <td class="align-middle">
+                  <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
+                    <div class="progress-bar bg-success" data-width="100"></div>
+                  </div>
+                </td>
+                <td>
+                  <img alt="image" src="assets/img/avatar/avatar-2.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Rizal Fakhri" />
+                  <img alt="image" src="assets/img/avatar/avatar-5.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Isnap Kiswandi" />
+                  <img alt="image" src="assets/img/avatar/avatar-4.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Yudi Nawawi" />
+                  <img alt="image" src="assets/img/avatar/avatar-1.png"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="Khaerul Anwar" />
+                </td>
+                <td>2018-01-16</td>
+                <td><div class="badge badge-success">Completed</div></td>
+                <td><a href="#" class="btn btn-secondary">Detail</a></td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div> 
+      </div> 
+    </div> 
+  </div> 
+</div> 
+
+            </div>
+
+           
           </section>
         </div>
-
         <footer class="main-footer">
           <div class="footer-left">
             Copyright &copy; 2018
             <div class="bullet"></div>
-            Design By <a href="https://nauval.in/">Sanka Udeshika</a>
+            Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
           </div>
           <div class="footer-right"></div>
         </footer>
@@ -941,11 +995,19 @@
     <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
     <script src="assets/modules/moment.min.js"></script>
-    <script src="assets/js/stisla.js"></script>
+    <script src="assets/js/OptiElite.js"></script>
 
     <!-- JS Libraies -->
+    <script src="assets/modules/jquery.sparkline.min.js"></script>
+    <script src="assets/modules/chart.min.js"></script>
+    <script src="assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
+    <script src="assets/modules/summernote/summernote-bs4.js"></script>
+    <script src="assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
 
     <!-- Page Specific JS File -->
+    <script src="assets/js/page/index.js"></script>
+    <script src="assets/js/mainscript.js"></script>
+
 
     <!-- Template JS File -->
     <script src="assets/js/scripts.js"></script>

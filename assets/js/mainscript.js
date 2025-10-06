@@ -128,7 +128,6 @@ async function fetchBranchStatus() {
 }
 
 async function ChangeMonthForBranchStatus() {
-
   let dateInput = document.getElementById("startDate").value;
 
   const result = await fetch("brnch/fetchMonth", {
@@ -149,7 +148,7 @@ async function ChangeMonthForBranchStatus() {
     container.innerHTML = "";
     for (let i = 0; i < branchcount; i++) {
       console.log(response.locations[i].location_name);
-      
+
       container.innerHTML += `
         <div class="row" >
                 <div class="col-lg-12 col-md-12 col-sm-12 ">
@@ -223,7 +222,96 @@ async function ChangeMonthForBranchStatus() {
   }
 }
 
-// open Bills
+async function loadBills() {
+  console.log("Load Bills");
+
+  const result = await fetch("api/bill/bills", {
+    method: "GET",
+    headers: { "Content-type": "application/json" },
+  });
+
+  if (result.ok) {
+    const response = await result.json();
+
+    const tableBody = document.getElementById("sortable-table-body");
+
+    response.forEach((bill) => {
+      const {
+        invoice_id: invoiceId,
+        name: customerName,
+        total_price: totalAmount,
+        payment_amount: payAmount,
+        date,
+        payment_status_id: status,
+        invoice_location: billLocation,
+      } = bill;
+
+      const payingPercentage = (payAmount / totalAmount) * 100;
+      var Percentage = Math.round(payingPercentage * 100) / 100;
+
+      console.log("the percentage is" + Percentage);
+
+      let bgColor, color, avatar;
+
+      // Define thresholds and related properties
+      if (Percentage <= 100 && Percentage >= 75) {
+        bgColor = "bg-success";
+        color = "success";
+        avatar = "assets/img/avatar/avatar-2.png";
+      } else if (Percentage < 75 && Percentage >= 35) {
+        bgColor = "bg-warning";
+        color = "warning";
+        avatar = "assets/img/avatar/avatar-4.png";
+      } else if ( Percentage < 35 ) {
+        bgColor = "bg-danger";
+        color = "danger";
+        avatar = "assets/img/avatar/avatar-5.png";
+      }
+       else {
+        bgColor = "bg-secondary";
+        color = "secondary";
+        avatar = "assets/img/avatar/avatar-1.png";
+      }
+
+      const rowHtml = `
+              <tr>
+                <td>
+                  <div class="sort-handler">
+                    <i class="fas fa-th"></i>
+                  </div>
+                </td>
+                <td>${invoiceId}</td>
+                <td class="align-middle">
+                  <div class="progress" data-height="4" data-toggle="tooltip" title="${payingPercentage}%">
+                    <div class="progress-bar  ${bgColor}" role="progressbar" style="width: ${payingPercentage}%" aria-valuenow="${payingPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </td>
+                <td>
+                  <img alt="image" src="${avatar}"
+                    class="rounded-circle" width="35"
+                    data-toggle="tooltip" title="${customerName}" />
+                    <span>${customerName}</span>
+                </td>
+                <td>${date}</td>
+                <td><div class="badge badge-${color}">${
+        status == 1 ? "Pending" : "Complete"
+      }</div></td>
+                <td><a href="#" class="btn btn-secondary" onclick>Detail</a></td>
+              </tr>
+              `;
+
+      tableBody.insertAdjacentHTML("beforeend", rowHtml);
+    });
+  } else {
+    console.log("Error fetching bills");
+  }
+}
+
+// Page Redirects
 async function UpdateBills() {
   window.location = "/update_bills";
+}
+
+function GoBillManagement() {
+  window.location = "/manage_bills";
 }
