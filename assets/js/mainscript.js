@@ -297,7 +297,7 @@ async function loadBills() {
                 <td><div class="badge badge-${color}">${
         status == 1 ? "Pending" : "Complete"
       }</div></td>
-                <td><a href="#" class="btn btn-secondary" onclick="ViewBill()" >Detail</a></td>
+                <td><a href="#" class="btn btn-secondary" onclick="ViewBill(${invoiceId})" >Detail</a></td>
               </tr>
               `;
 
@@ -317,6 +317,6 @@ function GoBillManagement() {
   window.location = "/manage_bills";
 }
 
-function ViewBill() {
-  window.location = "/api/bill/bills/View";
+function ViewBill(invoiceId) {
+  window.location = "/api/bill/bills/View/"+invoiceId;
 }

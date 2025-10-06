@@ -27,7 +27,8 @@ const fetchAllBills = async (req, res) => {
 };
 
 const ViewBill = (req, res) => {
-  console.log("View Bill");
+  const invoice_id = req.params.id;
+  console.log("View Bill"+invoice_id);
   res.sendFile(path.join(__dirname, "../public/bills/viewBill.html"));
 }
 

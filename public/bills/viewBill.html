@@ -11,30 +11,31 @@
     <!-- General CSS Files -->
     <link
       rel="stylesheet"
-      href="assets/modules/bootstrap/css/bootstrap.min.css"
+      href="/assets/modules/bootstrap/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css" />
 
     <!-- CSS Libraries -->
-    <link rel="stylesheet" href="assets/modules/jqvmap/dist/jqvmap.min.css" />
+    <link rel="stylesheet" href="/assets/modules/jqvmap/dist/jqvmap.min.css" />
     <link
       rel="stylesheet"
-      href="assets/modules/summernote/summernote-bs4.css"
+      href="/assets/modules/summernote/summernote-bs4.css"
     />
     <link
       rel="stylesheet"
-      href="assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css"
+      href="/assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css"
     />
     <link
       rel="stylesheet"
-      href="assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css"
+      href="/assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css"
     />
 
     <!-- Template CSS -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/custom.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <!-- Start GA -->
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/custom.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+
+    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"
@@ -45,50 +46,33 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "UA-94034622-3");
     </script>
-
-    <!-- <script>
-      function fetchUsers() {
-        fetch("/api/users")
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            const ul = document.getElementById("userList");
-            ul.innerHTML = "";
-            data.forEach((user) => {
-              const li = document.createElement("li");
-              li.textContent = `${user.id}: ${user.name}`; // customize this
-              ul.appendChild(li);
-            });
-          })
-          .catch((err) => console.error("Error fetching users:", err));
-      } -->
-    </script>
-
-    <!-- /END GA -->
   </head>
 
-  <body onload="loadBills();">
+  <body onload="loadInvoice()">
     <div id="app">
       <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
+
+        <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg main-navbar">
+          <!-- Search Bar -->
           <form class="form-inline mr-auto">
             <ul class="navbar-nav mr-3">
               <li>
-                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"
-                  ><i class="fas fa-bars"></i
-                ></a>
+                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg">
+                  <i class="fas fa-bars"></i>
+                </a>
               </li>
               <li>
                 <a
                   href="#"
                   data-toggle="search"
                   class="nav-link nav-link-lg d-sm-none"
-                  ><i class="fas fa-search"></i
-                ></a>
+                >
+                  <i class="fas fa-search"></i>
+                </a>
               </li>
             </ul>
             <div class="search-element">
@@ -106,251 +90,19 @@
               <div class="search-result">
                 <div class="search-header">Histories</div>
                 <div class="search-item">
-                  <a href="#" onclick="fetchUsers();"
-                    >How to hack NASA using CSS</a
-                  >
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-item">
-                  <a href="#">Kodinger.com</a>
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-item">
-                  <a href="#">#OptiElite</a>
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-header">Result</div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-3-50.png"
-                      alt="product"
-                    />
-                    oPhone S9 Limited Edition
+                  <a href="#" onclick="fetchUsers();">
+                    How to hack NASA using CSS
                   </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-2-50.png"
-                      alt="product"
-                    />
-                    Drone X2 New Gen-7
-                  </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-1-50.png"
-                      alt="product"
-                    />
-                    Headphone Blitz
-                  </a>
-                </div>
-                <div class="search-header">Projects</div>
-                <div class="search-item">
-                  <a href="#">
-                    <div class="search-icon bg-danger text-white mr-3">
-                      <i class="fas fa-code"></i>
-                    </div>
-                    OptiElite Admin Template
-                  </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <div class="search-icon bg-primary text-white mr-3">
-                      <i class="fas fa-laptop"></i>
-                    </div>
-                    Create a new Homepage Design
+                  <a href="#" class="search-close">
+                    <i class="fas fa-times"></i>
                   </a>
                 </div>
               </div>
             </div>
           </form>
+
+          <!-- Right Nav -->
           <ul class="navbar-nav navbar-right">
-            <li class="dropdown dropdown-list-toggle">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link nav-link-lg message-toggle beep"
-                ><i class="far fa-envelope"></i
-              ></a>
-              <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                <div class="dropdown-header">
-                  Messages
-                  <div class="float-right">
-                    <a href="#">Mark All As Read</a>
-                  </div>
-                </div>
-                <div class="dropdown-list-content dropdown-list-message">
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-1.png"
-                        class="rounded-circle"
-                      />
-                      <div class="is-online"></div>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Kusnaedi</b>
-                      <p>Hello, Bro!</p>
-                      <div class="time">10 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-2.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Dedik Sugiharto</b>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit
-                      </p>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-3.png"
-                        class="rounded-circle"
-                      />
-                      <div class="is-online"></div>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Agung Ardiansyah</b>
-                      <p>
-                        Sunt in culpa qui officia deserunt mollit anim id est
-                        laborum.
-                      </p>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-4.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Ardian Rahardiansyah</b>
-                      <p>
-                        Duis aute irure dolor in reprehenderit in voluptate
-                        velit ess
-                      </p>
-                      <div class="time">16 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-5.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Alfa Zulkarnain</b>
-                      <p>
-                        Exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo
-                      </p>
-                      <div class="time">Yesterday</div>
-                    </div>
-                  </a>
-                </div>
-                <div class="dropdown-footer text-center">
-                  <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="dropdown dropdown-list-toggle">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link notification-toggle nav-link-lg beep"
-                ><i class="far fa-bell"></i
-              ></a>
-              <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                <div class="dropdown-header">
-                  Notifications
-                  <div class="float-right">
-                    <a href="#">Mark All As Read</a>
-                  </div>
-                </div>
-                <div class="dropdown-list-content dropdown-list-icons">
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-icon bg-primary text-white">
-                      <i class="fas fa-code"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Template update is available now!
-                      <div class="time text-primary">2 Min Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-info text-white">
-                      <i class="far fa-user"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                      <div class="time">10 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-success text-white">
-                      <i class="fas fa-check"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to
-                      <b>Done</b>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-danger text-white">
-                      <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Low disk space. Let's clean it!
-                      <div class="time">17 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-info text-white">
-                      <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Welcome to OptiElite template!
-                      <div class="time">Yesterday</div>
-                    </div>
-                  </a>
-                </div>
-                <div class="dropdown-footer text-center">
-                  <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                </div>
-              </div>
-            </li>
             <li class="dropdown">
               <a
                 href="#"
@@ -362,10 +114,8 @@
                   src="assets/img/avatar/avatar-1.png"
                   class="rounded-circle mr-1"
                 />
-                <div class="d-sm-none d-lg-inline-block">
-                  Hi, Ujang Maman
-                </div></a
-              >
+                <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div>
+              </a>
               <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title">Logged in 5 min ago</div>
                 <a href="features-profile.html" class="dropdown-item has-icon">
@@ -388,13 +138,12 @@
             </li>
           </ul>
         </nav>
+
+        <!-- SIDEBAR -->
         <div class="main-sidebar sidebar-style-2">
           <aside id="sidebar-wrapper">
             <div class="sidebar-brand">
               <a href="index.html">OptiElite</a>
-            </div>
-            <div class="sidebar-brand sidebar-brand-sm">
-              <a href="index.html">St</a>
             </div>
             <ul class="sidebar-menu">
               <li class="menu-header">Dashboard</li>
@@ -418,11 +167,12 @@
               <li class="menu-header">Actions</li>
               <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"
-                  ><i class="fas fa-columns"></i> <span>Invoice / Bills</span></a
+                  ><i class="fas fa-columns"></i>
+                  <span>Invoice / Bills</span></a
                 >
                 <ul class="dropdown-menu">
                   <li>
-                    <a class="nav-link"  onclick="UpdateBills();"
+                    <a class="nav-link" onclick="UpdateBills();"
                       >Update Bills</a
                     >
                   </li>
@@ -791,26 +541,236 @@
                 >
               </li>
             </ul>
-
-            <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-              <a
-                href="https://getOptiElite.com/docs"
-                class="btn btn-primary btn-lg btn-block btn-icon-split"
-              >
-                <i class="fas fa-rocket"></i> Documentation
-              </a>
-            </div>
           </aside>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content"  >
-          <section class="section" >
-            <div class="col-12">
-           
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+          <section class="section">
+            <div class="col-12 bg-white badge-soft">
+              <div class="row">
+                <div class="container py-5">
+                  <div class="container py-5">
+                    <!-- Header -->
+                    <div class="p-4 border-bottom">
+                      <div
+                        class="d-flex justify-content-between align-items-center flex-wrap gap-3"
+                      >
+                        <div class="d-flex align-items-center gap-3">
+                          <div
+                            class="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle"
+                            style="width: 56px; height: 56px"
+                          >
+                            <span class="fw-bold text-primary">IN</span>
+                          </div>
+                          <div>
+                            <h4 class="mb-0">Your Company (Pvt) Ltd</h4>
+                            <div class="text-muted small">
+                              www.example.com • +94 77 123 4567
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-end">
+                          <span class="badge text-bg-primary">INVOICE</span>
+                          <div class="small text-muted mt-1">
+                            Issued: 2025-10-06
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Bill To & Meta -->
+                    <div class="p-4">
+                      <div class="row g-4">
+                        <div class="col-md-6">
+                          <h6 class="text-uppercase text-muted mb-2">
+                            Bill To
+                          </h6>
+                          <div class="border rounded-3 p-3">
+                            <div class="fw-semibold">
+                              Eagle Vision Opticians
+                            </div>
+                            <div>No. 25, Galle Road, Colombo 03</div>
+                            <div class="text-muted">
+                              accounts@eaglevision.lk • +94 11 234 5678
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="row g-3">
+                            <div class="col-sm-6">
+                              <div class="text-muted small">Invoice #</div>
+                              <div class="fw-semibold">INV-2025-0001</div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="text-muted small">Currency</div>
+                              <div class="fw-semibold">
+                                LKR — Sri Lankan Rupee
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="text-muted small">Issue Date</div>
+                              <div class="fw-semibold">2025-10-06</div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="text-muted small">Due Date</div>
+                              <div class="fw-semibold">2025-10-13</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="px-4 pb-2">
+                      <div class="table-responsive">
+                        <table class="table table-bordered align-middle mb-0">
+                          <thead class="table-light">
+                            <tr>
+                              <th style="width: 50%">Description</th>
+                              <th class="text-end" style="width: 10%">Qty</th>
+                              <th class="text-end" style="width: 20%">
+                                Unit Price
+                              </th>
+                              <th class="text-end" style="width: 20%">
+                                Line Total
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Comprehensive Eye Exam</td>
+                              <td class="text-end">1</td>
+                              <td class="text-end">LKR 3,500.00</td>
+                              <td class="text-end">LKR 3,500.00</td>
+                            </tr>
+                            <tr>
+                              <td>Prescription Lenses (pair)</td>
+                              <td class="text-end">1</td>
+                              <td class="text-end">LKR 12,500.00</td>
+                              <td class="text-end">LKR 12,500.00</td>
+                            </tr>
+                            <tr>
+                              <td>Frame — Classic Black</td>
+                              <td class="text-end">1</td>
+                              <td class="text-end">LKR 9,800.00</td>
+                              <td class="text-end">LKR 9,800.00</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>  
+
+                    <div class="px-4 pb-4">
+                      <div class="row g-4 justify-content-end">
+                        <div class="col-md-6 col-lg-5">
+                          <div class="border rounded-3 p-3">
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Subtotal</span>
+                              <span>LKR 25,800.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Discount</span>
+                              <span>- LKR 1,000.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Tax (15%)</span>
+                              <span>LKR 3,720.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Shipping</span>
+                              <span>LKR 0.00</span>
+                            </div>
+                            <hr class="my-2" />
+                            <div
+                              class="d-flex justify-content-between py-1 fs-5"
+                            >
+                              <span class="fw-bold">Grand Total</span>
+                              <span class="fw-bold">LKR 28,520.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Amount Paid</span>
+                              <span>LKR 5,000.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                              <span class="fw-semibold">Balance Due</span>
+                              <span>LKR 23,520.00</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Notes & Payment Details -->
+                    <div class="px-4 pb-4">
+                      <div class="row g-4">
+                        <div class="col-md-7">
+                          <h6 class="text-uppercase text-muted mb-2">Notes</h6>
+                          <div class="border rounded-3 p-3">
+                            Thank you for your business! Payment is due within 7
+                            days. Late fees may apply.
+                          </div>
+                        </div>
+                        <div class="col-md-5">
+                          <h6 class="text-uppercase text-muted mb-2">
+                            Payment Details
+                          </h6>
+                          <div class="border rounded-3 p-3">
+                            <div class="row g-2 small">
+                              <div class="col-12">
+                                <span class="text-muted">Bank</span
+                                ><br />Commercial Bank of Ceylon
+                              </div>
+                              <div class="col-7">
+                                <span class="text-muted">Account Name</span
+                                ><br />Your Company (Pvt) Ltd
+                              </div>
+                              <div class="col-5">
+                                <span class="text-muted">Account No.</span
+                                ><br />1234567890
+                              </div>
+                              <div class="col-6">
+                                <span class="text-muted">Branch</span
+                                ><br />Colombo Main
+                              </div>
+                              <div class="col-6">
+                                <span class="text-muted">SWIFT</span
+                                ><br />CCCCLKLX
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-4 pb-4 border-top">
+                      <div class="row align-items-center g-3">
+                        <div
+                          class="col-md-8 order-2 order-md-1 small text-muted"
+                        >
+                          Address: 120/5, Marine Drive, Colombo 06 • VAT Reg:
+                          123456789-7000<br />
+                          Email: accounts@example.com
+                        </div>
+                        <div class="col-md-4 order-1 order-md-2 text-md-end">
+                          <div
+                            class="d-inline-flex align-items-center gap-2 border rounded-3 p-2"
+                          >
+                            <i class="bi bi-qr-code fs-3"></i>
+                            <div class="small text-muted">Scan to Pay</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         </div>
+
+        <!-- FOOTER -->
         <footer class="main-footer">
           <div class="footer-left">
             Copyright &copy; 2018
@@ -823,28 +783,27 @@
     </div>
 
     <!-- General JS Scripts -->
-    <script src="assets/modules/jquery.min.js"></script>
-    <script src="assets/modules/popper.js"></script>
-    <script src="assets/modules/tooltip.js"></script>
-    <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
-    <script src="assets/modules/moment.min.js"></script>
-    <script src="assets/js/OptiElite.js"></script>
+    <script src="/assets/modules/jquery.min.js"></script>
+    <script src="/assets/modules/popper.js"></script>
+    <script src="/assets/modules/tooltip.js"></script>
+    <script src="/assets/modules/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="/assets/modules/moment.min.js"></script>
+    <script src="/assets/js/OptiElite.js"></script>
 
-    <!-- JS Libraies -->
-    <script src="assets/modules/jquery.sparkline.min.js"></script>
-    <script src="assets/modules/chart.min.js"></script>
-    <script src="assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
-    <script src="assets/modules/summernote/summernote-bs4.js"></script>
-    <script src="assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
+    <!-- JS Libraries -->
+    <script src="/assets/modules/jquery.sparkline.min.js"></script>
+    <script src="/assets/modules/chart.min.js"></script>
+    <script src="/assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
+    <script src="/assets/modules/summernote/summernote-bs4.js"></script>
+    <script src="/assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
 
     <!-- Page Specific JS File -->
-    <script src="assets/js/page/index.js"></script>
-    <script src="assets/js/mainscript.js"></script>
-
+    <script src="/assets/js/page/index.js"></script>
+    <script src="/assets/js/mainscript.js"></script>
 
     <!-- Template JS File -->
-    <script src="assets/js/scripts.js"></script>
-    <script src="assets/js/custom.js"></script>
+    <script src="/assets/js/scripts.js"></script>
+    <script src="/assets/js/custom.js"></script>
   </body>
 </html>
