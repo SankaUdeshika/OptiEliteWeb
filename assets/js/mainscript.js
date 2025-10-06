@@ -240,13 +240,14 @@ async function loadBills() {
         invoice_id: invoiceId,
         name: customerName,
         total_price: totalAmount,
+        subtotal: subTotal,
         payment_amount: payAmount,
         date,
         payment_status_id: status,
         invoice_location: billLocation,
       } = bill;
 
-      const payingPercentage = (payAmount / totalAmount) * 100;
+      const payingPercentage = (payAmount / subTotal) * 100;
       var Percentage = Math.round(payingPercentage * 100) / 100;
 
       console.log("the percentage is" + Percentage);
@@ -296,7 +297,7 @@ async function loadBills() {
                 <td><div class="badge badge-${color}">${
         status == 1 ? "Pending" : "Complete"
       }</div></td>
-                <td><a href="#" class="btn btn-secondary" onclick>Detail</a></td>
+                <td><a href="#" class="btn btn-secondary" onclick="ViewBill()" >Detail</a></td>
               </tr>
               `;
 
@@ -314,4 +315,8 @@ async function UpdateBills() {
 
 function GoBillManagement() {
   window.location = "/manage_bills";
+}
+
+function ViewBill() {
+  window.location = "/api/bill/bills/View";
 }
