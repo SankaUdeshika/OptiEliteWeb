@@ -8,14 +8,16 @@ const fetchAllBills = async (req, res) => {
   console.log("Fetch All Bills");
 
   const results = await new Promise((resolve, reject) => {
-    db.query("SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` ORDER BY `invoice`.`date` DESC", (err, result) => {
-      if (err) {
-        console.error("Error fetching bills:", err);
-        return reject(err);
+    db.query(
+      "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` ORDER BY `invoice`.`date` DESC",
+      (err, result) => {
+        if (err) {
+          console.error("Error fetching bills:", err);
+          return reject(err);
+        }
+        resolve(result);
       }
-
-      resolve(result);
-    });
+    );
   });
 
   if (results.length === 0) {
@@ -28,8 +30,65 @@ const fetchAllBills = async (req, res) => {
 
 const ViewBill = (req, res) => {
   const invoice_id = req.params.id;
-  console.log("View Bill"+invoice_id);
+  console.log("View Bill" + invoice_id);
   res.sendFile(path.join(__dirname, "../public/bills/viewBill.html"));
-}
+};
 
-module.exports = { fetchAllBills , ViewBill };
+const LoadBill = async (req, res) => {
+  const invoice_id = req.body.invoiceId;
+  console.log("Invoice ID: " + invoice_id);
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM `invoice` "
+      +"INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` "
+      +"LEFT JOIN `prescription_details` ON `prescription_details`.`job_no` = `invoice`.`prescription_details_job_no` "
+      +"INNER JOIN `payment_method` ON `payment_method`.`Payment_id` = `invoice`.`payment_method_Payment_id` "
+      +"INNER JOIN `jobtype` ON `jobtype`.`job_id` = `invoice`.`JobType_job_id` "
+      +"LEFT JOIN `lens_stock` ON `lens_stock`.`lens_id` = `invoice`.`lens_stock_lens_id` "
+      +"iNNER JOIN `payment_status` ON `payment_status`.`id` = `invoice`.`payment_status_id` "
+      +"INNER JOIN `location` ON `location`.`id` = `invoice`.`invoice_location` "
+      +" WHERE `invoice_id` = ?",
+      [invoice_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading bill:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+
+  if (result.length === 0) {
+    return res.json("No Result");
+  } else {
+    console.log(result);
+    res.json(result);
+  }
+};
+
+const LoadBillItems = async (req, res) => {
+  const invoice_id = req.body.invoiceId;
+  console.log("Invoice ID: " + invoice_id);
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM `invoice_item` WHERE `invoice_invoice_id` = ?",
+      [invoice_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading bill items:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+  if (result.length === 0) {
+    return res.json("No Result");
+  } else {
+    console.log(result);
+    res.json(result);
+  } 
+};
+
+module.exports = { fetchAllBills, ViewBill, LoadBill };

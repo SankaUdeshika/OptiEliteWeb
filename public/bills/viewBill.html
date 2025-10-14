@@ -572,8 +572,8 @@
                         </div>
                         <div class="text-end">
                           <span class="badge text-bg-primary">INVOICE</span>
-                          <div class="small text-muted mt-1">
-                            Issued: 2025-10-06
+                          <div class="small text-muted mt-1" id="invoiced_number">
+                            Issued: -
                           </div>
                         </div>
                       </div>
@@ -587,12 +587,12 @@
                             Bill To
                           </h6>
                           <div class="border rounded-3 p-3">
-                            <div class="fw-semibold">
-                              Eagle Vision Opticians
+                            <div class="fw-semibold" id="customer_Name">
+                              _______________
                             </div>
-                            <div>No. 25, Galle Road, Colombo 03</div>
+                            <div id="customer_address">__________</div>
                             <div class="text-muted">
-                              accounts@eaglevision.lk • +94 11 234 5678
+                              <span id="customer_email">accounts@eaglevision.lk</span> • <span id="customer-mobile">_______________</span>
                             </div>
                           </div>
                         </div>
@@ -600,21 +600,21 @@
                           <div class="row g-3">
                             <div class="col-sm-6">
                               <div class="text-muted small">Invoice #</div>
-                              <div class="fw-semibold">INV-2025-0001</div>
+                              <div class="fw-semibold" id="invoice_id">_______________</div>
                             </div>
                             <div class="col-sm-6">
-                              <div class="text-muted small">Currency</div>
-                              <div class="fw-semibold">
-                                LKR — Sri Lankan Rupee
+                              <div class="text-muted small">Prescription</div>
+                              <div class="fw-semibold" id="prescription_details">
+                                ___________________
                               </div>
                             </div>
                             <div class="col-sm-6">
-                              <div class="text-muted small">Issue Date</div>
-                              <div class="fw-semibold">2025-10-06</div>
+                              <div class="text-muted small">Invoice Status</div>
+                              <div class="fw-semibold" id="invoice_status" >loading</div>
                             </div>
                             <div class="col-sm-6">
-                              <div class="text-muted small">Due Date</div>
-                              <div class="fw-semibold">2025-10-13</div>
+                              <div class="text-muted small">Location</div>
+                              <div class="fw-semibold" id="invoice_location">2025-10-13</div>
                             </div>
                           </div>
                         </div>

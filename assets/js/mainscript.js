@@ -263,12 +263,11 @@ async function loadBills() {
         bgColor = "bg-warning";
         color = "warning";
         avatar = "assets/img/avatar/avatar-4.png";
-      } else if ( Percentage < 35 ) {
+      } else if (Percentage < 35) {
         bgColor = "bg-danger";
         color = "danger";
         avatar = "assets/img/avatar/avatar-5.png";
-      }
-       else {
+      } else {
         bgColor = "bg-secondary";
         color = "secondary";
         avatar = "assets/img/avatar/avatar-1.png";
@@ -318,5 +317,108 @@ function GoBillManagement() {
 }
 
 function ViewBill(invoiceId) {
-  window.location = "/api/bill/bills/View/"+invoiceId;
+  window.location = "/api/bill/bills/View/" + invoiceId;
+}
+
+// Load Functions
+async function loadInvoice() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  const result = await fetch("/api/bill/bills/loadData", {
+    method: "POST",
+    body: JSON.stringify({ invoiceId }),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (result.ok) {
+    const response = await result.json();
+
+    //invoice
+    const invoice_id = response[0].invoice_id;
+    const date = response[0].date;
+    const subtotal = response[0].subtotal;
+    const total_price = response[0].total_price;
+    const advance_payment = response[0].advance_payment;
+    const payment_amount = response[0].payment_amount;
+    const payment_method_Payment_id = response[0].payment_method_Payment_id;
+    const prescription_details_job_no = response[0].prescription_details_job_no;
+    const customer_mobile = response[0].mobile;
+    const lenstotal = response[0].lenstotal;
+    const JobType_job_id = response[0].JobType_job_id;
+    const description = response[0].description;
+    const payment_status_id = response[0].payment_status_id;
+    const payment_status = response[0].status_name;
+    const job_warrenty_warrenty_id = response[0].job_warrenty_warrenty_id;
+    const delivery_date = response[0].delivery_date;
+    const delivery_time = response[0].delivery_time;
+    const lens_stock_lens_id = response[0].lens_stock_lens_id;
+    const lens_Qty = response[0].lens_Qty;
+    const bags = response[0].bag;
+    const box = response[0].box;
+    const clothing = response[0].clothing;
+    const invoice_location = response[0].location_name;
+    const isAccessories = response[0].isAccessories;
+
+    // customer
+    const customer_name = response[0].name;
+    const customer_email = response[0].email;
+    const customer_address = response[0].address_line1;
+    const address_line2 = response[0].address_line2;
+
+    const mobile2 = response[0].mobile2;
+    const telephone_land = response[0].telephone_land;
+    const nic = response[0].nic;
+    const birthday = response[0].birthday;
+
+    const customer_filenumber = response[0].filenumber;
+    const register_date = response[0].register_date;
+    const location_id = response[0].location_id;
+
+    const notes = response[0].notes;
+    // const added_by = response[0].added_by;
+
+    //inner html
+    document.getElementById("invoiced_number").innerHTML = "Issued : " + date;
+    document.getElementById("customer_Name").innerHTML = customer_name;
+    document.getElementById("customer_address").innerHTML = customer_address;
+    document.getElementById("customer-mobile").innerHTML = customer_mobile;
+    document.getElementById("customer_email").innerHTML = customer_email;
+    document.getElementById("invoice_id").innerHTML = invoice_id;
+
+    prescription_details_job_no == "" || prescription_details_job_no == null
+      ? (document.getElementById("prescription_details").innerHTML =
+          "No Prescription")
+      : (document.getElementById("prescription_details").innerHTML =
+          prescription_details_job_no);
+    document.getElementById("invoice_status").innerHTML = payment_status;
+    payment_status_id == 1
+      ? (document.getElementById("invoice_status").className =
+          "fw-semibold badge bg-warning")
+      : (document.getElementById("invoice_status").className =
+          "fw-semibold badge bg-success");
+    document.getElementById("invoice_location").innerHTML = invoice_location;
+
+    console.log(response);
+  } else {
+    console.log("Error fetching invoice details");
+  }
+}
+
+async function loadProductStock() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  const result = await fetch("/api/bill/bills/loadStock", {
+    method: "POST",
+    body: JSON.stringify({ invoiceId }),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (result.ok) {
+    const response = await result.json();
+    console.log(response);
+  } else {
+    console.log("Error fetching invoice details");
+  }
+
 }
