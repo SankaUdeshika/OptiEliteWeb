@@ -338,7 +338,8 @@ async function loadInvoice() {
     const invoice_id = response[0].invoice_id;
     const date = response[0].date;
     const subtotal = response[0].subtotal;
-    const total_price = response[0].total_price;
+    const total_due = response[0].total_price;
+    const discount = response[0].discount;
     const advance_payment = response[0].advance_payment;
     const payment_amount = response[0].payment_amount;
     const payment_method_Payment_id = response[0].payment_method_Payment_id;
@@ -385,6 +386,11 @@ async function loadInvoice() {
     document.getElementById("customer-mobile").innerHTML = customer_mobile;
     document.getElementById("customer_email").innerHTML = customer_email;
     document.getElementById("invoice_id").innerHTML = invoice_id;
+    document.getElementById("subtotoal").innerHTML = "LKR " + subtotal;
+    document.getElementById("discount").innerHTML = "LKR " + discount;
+    document.getElementById("advance").innerHTML = "LKR " + advance_payment;
+    document.getElementById("payamount").innerHTML = "LKR " + payment_amount;
+    document.getElementById("due").innerHTML = "LKR " + total_due;
 
     prescription_details_job_no == "" || prescription_details_job_no == null
       ? (document.getElementById("prescription_details").innerHTML =
@@ -400,6 +406,7 @@ async function loadInvoice() {
     document.getElementById("invoice_location").innerHTML = invoice_location;
 
     console.log(response);
+    loadProductStock();
   } else {
     console.log("Error fetching invoice details");
   }
@@ -409,7 +416,7 @@ async function loadProductStock() {
   const currentURL = window.location.pathname;
   const invoiceId = currentURL.split("/").pop();
 
-  const result = await fetch("/api/bill/bills/loadStock", {
+  const result = await fetch("/api/bill/bills/loadProductStock", {
     method: "POST",
     body: JSON.stringify({ invoiceId }),
     headers: { "Content-Type": "application/json" },
@@ -417,8 +424,41 @@ async function loadProductStock() {
   if (result.ok) {
     const response = await result.json();
     console.log(response);
+    const tableBody = document.getElementById("product-table-body");
+
+    response.forEach((item, index) => {
+      const {
+        stock_id,
+        product_name,
+        sub_category,
+        brand_name,
+        qty,
+        saling_price,
+        product_id,
+      } = item;
+      const rowHtml = `
+              <tr>
+                <td>${stock_id}</td>
+                <td><b>#${product_id} ${product_name + " "}</b> ${
+        brand_name + " " + sub_category
+      }</td>
+                <td class="text-center">${qty}</td>
+                <td>LKR ${saling_price}</td>
+              </tr>
+              `;
+      tableBody.insertAdjacentHTML("beforeend", rowHtml);
+    });
+
+    loadLensStock();
   } else {
     console.log("Error fetching invoice details");
   }
+}
 
+async function loadLensStock() {
+  await fetch("/api/bill/bills/loadLensStock",{
+    method: "POST",
+    body: JSON.stringify({}),
+    headers: { "Content-Type": "application/json" },
+  });
 }

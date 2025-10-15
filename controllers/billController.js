@@ -39,15 +39,15 @@ const LoadBill = async (req, res) => {
   console.log("Invoice ID: " + invoice_id);
   const result = await new Promise((resolve, reject) => {
     db.query(
-      "SELECT * FROM `invoice` "
-      +"INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` "
-      +"LEFT JOIN `prescription_details` ON `prescription_details`.`job_no` = `invoice`.`prescription_details_job_no` "
-      +"INNER JOIN `payment_method` ON `payment_method`.`Payment_id` = `invoice`.`payment_method_Payment_id` "
-      +"INNER JOIN `jobtype` ON `jobtype`.`job_id` = `invoice`.`JobType_job_id` "
-      +"LEFT JOIN `lens_stock` ON `lens_stock`.`lens_id` = `invoice`.`lens_stock_lens_id` "
-      +"iNNER JOIN `payment_status` ON `payment_status`.`id` = `invoice`.`payment_status_id` "
-      +"INNER JOIN `location` ON `location`.`id` = `invoice`.`invoice_location` "
-      +" WHERE `invoice_id` = ?",
+      "SELECT * FROM `invoice` " +
+        "INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` " +
+        "LEFT JOIN `prescription_details` ON `prescription_details`.`job_no` = `invoice`.`prescription_details_job_no` " +
+        "INNER JOIN `payment_method` ON `payment_method`.`Payment_id` = `invoice`.`payment_method_Payment_id` " +
+        "INNER JOIN `jobtype` ON `jobtype`.`job_id` = `invoice`.`JobType_job_id` " +
+        "LEFT JOIN `lens_stock` ON `lens_stock`.`lens_id` = `invoice`.`lens_stock_lens_id` " +
+        "iNNER JOIN `payment_status` ON `payment_status`.`id` = `invoice`.`payment_status_id` " +
+        "INNER JOIN `location` ON `location`.`id` = `invoice`.`invoice_location` " +
+        " WHERE `invoice_id` = ?",
       [invoice_id],
       (err, result) => {
         if (err) {
@@ -62,17 +62,31 @@ const LoadBill = async (req, res) => {
   if (result.length === 0) {
     return res.json("No Result");
   } else {
-    console.log(result);
+    // console.log(result);
     res.json(result);
   }
 };
 
-const LoadBillItems = async (req, res) => {
+const loadStockItems = async (req, res) => {
   const invoice_id = req.body.invoiceId;
-  console.log("Invoice ID: " + invoice_id);
+
   const result = await new Promise((resolve, reject) => {
     db.query(
-      "SELECT * FROM `invoice_item` WHERE `invoice_invoice_id` = ?",
+      "SELECT  " +
+        " `invoice_item`.`invoice_id`" +
+        ",`product_id`" +
+        ",`product_name`" +
+        ",`sub_category`" +
+        ",`brand_name`" +
+        ",`stock_id`" +
+        ",`invoice_item`.`qty`" +
+        ",`stock`.`saling_price`" +
+        "FROM `invoice_item`" +
+        " INNER JOIN `stock` ON `stock`.`id` = `invoice_item`.`stock_id`" +
+        " INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid`" +
+        " INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`" +
+        " INNER JOIN `brand` ON `brand`.`id` = `product`.`brand_id`" +
+        " WHERE `invoice_id` = ?",
       [invoice_id],
       (err, result) => {
         if (err) {
@@ -88,7 +102,10 @@ const LoadBillItems = async (req, res) => {
   } else {
     console.log(result);
     res.json(result);
-  } 
+  }
 };
 
-module.exports = { fetchAllBills, ViewBill, LoadBill };
+
+
+
+module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems };
