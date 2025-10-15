@@ -412,6 +412,11 @@ async function loadInvoice() {
   }
 }
 
+
+
+// Save Product Price and Lens price
+let productPrice = 0;
+let lensPrice = 0;
 async function loadProductStock() {
   const currentURL = window.location.pathname;
   const invoiceId = currentURL.split("/").pop();
@@ -436,6 +441,8 @@ async function loadProductStock() {
         saling_price,
         product_id,
       } = item;
+      productPrice += saling_price * qty;
+      console.log("the product price is " + productPrice);
       const rowHtml = `
               <tr>
                 <td>${stock_id}</td>
@@ -448,17 +455,44 @@ async function loadProductStock() {
               `;
       tableBody.insertAdjacentHTML("beforeend", rowHtml);
     });
-
-    loadLensStock();
+    loadLensStock(invoiceId);
   } else {
     console.log("Error fetching invoice details");
   }
 }
 
-async function loadLensStock() {
-  await fetch("/api/bill/bills/loadLensStock",{
+async function loadLensStock(invoiceId) {
+  const result = await fetch("/api/bill/bills/loadLensStock", {
     method: "POST",
-    body: JSON.stringify({}),
+    body: JSON.stringify({ invoiceId }),
     headers: { "Content-Type": "application/json" },
   });
+  if (result.ok) {
+    const response = await result.json();
+    console.log(response);
+    const tableBody = document.getElementById("product-table-body");
+    if (response == "No Result") {
+      const rowHtml = `
+              <tr>
+                <td class= "text-center" colspan = 4>No Lens Details</td>
+              </tr>
+              `;
+      tableBody.insertAdjacentHTML("beforeend", rowHtml);
+    } else {
+      response.forEach((item, index) => {
+        const { lens_id, lens_code, lens_Qty, lens_price } = item;
+        lensPrice += lens_price * lens_Qty;
+        console.log("the lens price is " + lensPrice);
+        const rowHtml = `
+              <tr>
+                <td>${lens_id}</td>
+                <td><b>#${lens_code} </b></td>
+                <td class="text-center">${lens_Qty}</td>
+                <td>LKR ${lens_price * lens_Qty}</td>
+              </tr>
+              `;
+        tableBody.insertAdjacentHTML("beforeend", rowHtml);
+      });
+    }
+  }
 }

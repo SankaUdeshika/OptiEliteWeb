@@ -105,7 +105,29 @@ const loadStockItems = async (req, res) => {
   }
 };
 
+const loadLensStock = async (req, res) => {
+   const invoice_id = req.body.invoiceId;
+  
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM `lens_stock` INNER JOIN `invoice` ON `invoice`.`lens_stock_lens_id` = `lens_stock`.`lens_id` WHERE `invoice`.`invoice_id` = ?",
+      [invoice_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading lens stock:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
 
+  if (result.length === 0) {
+    return res.json("No Result");
+  } else {
+    console.log(result);
+    res.json(result);
+  }
+};
 
-
-module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems };
+module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems ,loadLensStock };
