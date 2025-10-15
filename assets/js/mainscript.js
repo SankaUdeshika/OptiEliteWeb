@@ -456,6 +456,7 @@ async function loadProductStock() {
       tableBody.insertAdjacentHTML("beforeend", rowHtml);
     });
     loadLensStock(invoiceId);
+    loadPaymentHistory();
   } else {
     console.log("Error fetching invoice details");
   }
@@ -494,5 +495,44 @@ async function loadLensStock(invoiceId) {
         tableBody.insertAdjacentHTML("beforeend", rowHtml);
       });
     }
+  }
+}
+
+async function loadPaymentHistory() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  const result = await fetch("/api/bill/bills/loadPaymentHistory", {
+    method: "POST",
+    body: JSON.stringify({ invoiceId }),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (result.ok) {
+    const response = await result.json();
+    console.log(response);
+
+    response.forEach((item, index) => {
+      const { payment_id, date, amount, paid_amount, payment_method,payment_name  } = item;
+      const fullDate = new Date(date);
+      const finaldate =fullDate.toDateString();
+      // formatDate.split('00:')[0];
+      // formatDate = formatDate.getFullYear() + '-' + String(formatDate.getMonth() + 1).padStart(2, '0') + '-' + String(formatDate.getDate()).padStart(2, '0');
+      // let year = formatDate.getFullYear();
+      //
+      // let day = String(formatDate.getDate()).padStart(2, '0');
+      // let month = String(formatDate.getMonth() + 1).padStart(2, '0');
+      const historyTab = document.getElementById("paymentHistory");
+      const dataHTML = `
+              <span class="d-flex justify-content-between">
+                <span>${finaldate}  - Paid (${payment_name}) </span>
+                <span>LKR ${paid_amount}</span>
+              </span>
+              <hr />
+              `;
+      historyTab.insertAdjacentHTML("beforeend", dataHTML);
+    });
+
+  }else{  
+    console.log("Error fetching payment history");
   }
 }

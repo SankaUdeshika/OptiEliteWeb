@@ -100,7 +100,7 @@ const loadStockItems = async (req, res) => {
   if (result.length === 0) {
     return res.json("No Result");
   } else {
-    console.log(result);
+    // console.log(result);
     res.json(result);
   }
 };
@@ -125,9 +125,35 @@ const loadLensStock = async (req, res) => {
   if (result.length === 0) {
     return res.json("No Result");
   } else {
+    // console.log(result);
+    res.json(result);
+  }
+};
+
+const loadPaymentHistory = async (req, res) => {
+  const invoice_id = req.body.invoiceId;
+  console.log("Invoice ID: " + invoice_id);
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM `advance_payment_history` INNER JOIN `payment_method` ON `payment_method`.`Payment_id` = `payment_method` WHERE `invoice_invoice_id` = ?",
+      [invoice_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading bill:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  }); 
+  if (result.length === 0) {
+    console.log("No Result");
+    return res.json("No Result");
+  } else {
     console.log(result);
     res.json(result);
   }
 };
 
-module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems ,loadLensStock };
+
+module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems ,loadLensStock,loadPaymentHistory };
