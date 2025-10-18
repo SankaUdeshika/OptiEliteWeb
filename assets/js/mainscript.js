@@ -47,7 +47,7 @@ async function fetchBranchStatus() {
     const response = await result.json();
 
     let branchcount = response.locations.length;
-    console.log(response.locations);
+
 
     const container = document.getElementById("render-target");
 
@@ -142,7 +142,7 @@ async function ChangeMonthForBranchStatus() {
     const response = await result.json();
 
     let branchcount = response.locations.length;
-    console.log(response.locations);
+
 
     const container = document.getElementById("render-target");
     container.innerHTML = "";
@@ -223,7 +223,7 @@ async function ChangeMonthForBranchStatus() {
 }
 
 async function loadBills() {
-  console.log("Load Bills");
+
 
   const result = await fetch("api/bill/bills", {
     method: "GET",
@@ -250,7 +250,6 @@ async function loadBills() {
       const payingPercentage = (payAmount / subTotal) * 100;
       var Percentage = Math.round(payingPercentage * 100) / 100;
 
-      console.log("the percentage is" + Percentage);
 
       let bgColor, color, avatar;
 
@@ -318,6 +317,13 @@ function GoBillManagement() {
 
 function ViewBill(invoiceId) {
   window.location = "/api/bill/bills/View/" + invoiceId;
+}
+
+function fetchInvoiceDetails() {
+  loadInvoice();
+  loadProductStock();
+  loadLensStock(invoiceId);
+  loadPaymentHistory();
 }
 
 // Load Functions
@@ -405,14 +411,11 @@ async function loadInvoice() {
           "fw-semibold badge bg-success");
     document.getElementById("invoice_location").innerHTML = invoice_location;
 
-    console.log(response);
-    loadProductStock();
+
   } else {
     console.log("Error fetching invoice details");
   }
 }
-
-
 
 // Save Product Price and Lens price
 let productPrice = 0;
@@ -428,7 +431,7 @@ async function loadProductStock() {
   });
   if (result.ok) {
     const response = await result.json();
-    console.log(response);
+
     const tableBody = document.getElementById("product-table-body");
 
     response.forEach((item, index) => {
@@ -442,7 +445,7 @@ async function loadProductStock() {
         product_id,
       } = item;
       productPrice += saling_price * qty;
-      console.log("the product price is " + productPrice);
+
       const rowHtml = `
               <tr>
                 <td>${stock_id}</td>
@@ -455,8 +458,6 @@ async function loadProductStock() {
               `;
       tableBody.insertAdjacentHTML("beforeend", rowHtml);
     });
-    loadLensStock(invoiceId);
-    loadPaymentHistory();
   } else {
     console.log("Error fetching invoice details");
   }
@@ -470,7 +471,7 @@ async function loadLensStock(invoiceId) {
   });
   if (result.ok) {
     const response = await result.json();
-    console.log(response);
+
     const tableBody = document.getElementById("product-table-body");
     if (response == "No Result") {
       const rowHtml = `
@@ -483,7 +484,7 @@ async function loadLensStock(invoiceId) {
       response.forEach((item, index) => {
         const { lens_id, lens_code, lens_Qty, lens_price } = item;
         lensPrice += lens_price * lens_Qty;
-        console.log("the lens price is " + lensPrice);
+
         const rowHtml = `
               <tr>
                 <td>${lens_id}</td>
@@ -509,12 +510,19 @@ async function loadPaymentHistory() {
   });
   if (result.ok) {
     const response = await result.json();
-    console.log(response);
+
 
     response.forEach((item, index) => {
-      const { payment_id, date, amount, paid_amount, payment_method,payment_name  } = item;
+      const {
+        payment_id,
+        date,
+        amount,
+        paid_amount,
+        payment_method,
+        payment_name,
+      } = item;
       const fullDate = new Date(date);
-      const finaldate =fullDate.toDateString();
+      const finaldate = fullDate.toDateString();
       // formatDate.split('00:')[0];
       // formatDate = formatDate.getFullYear() + '-' + String(formatDate.getMonth() + 1).padStart(2, '0') + '-' + String(formatDate.getDate()).padStart(2, '0');
       // let year = formatDate.getFullYear();
@@ -531,8 +539,7 @@ async function loadPaymentHistory() {
               `;
       historyTab.insertAdjacentHTML("beforeend", dataHTML);
     });
-
-  }else{  
+  } else {
     console.log("Error fetching payment history");
   }
 }
