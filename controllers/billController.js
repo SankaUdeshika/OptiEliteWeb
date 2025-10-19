@@ -3,6 +3,7 @@ const db = require("../db/db");
 const path = require("path");
 const { rejects } = require("assert");
 const { json } = require("stream/consumers");
+const session = require("express-session");
 
 const fetchAllBills = async (req, res) => {
   console.log("Fetch All Bills");
@@ -31,7 +32,12 @@ const fetchAllBills = async (req, res) => {
 const ViewBill = (req, res) => {
   const invoice_id = req.params.id;
   console.log("View Bill" + invoice_id);
-  res.sendFile(path.join(__dirname, "../public/bills/viewBill.html"));
+
+  if (req.session.username) {
+    res.sendFile(path.join(__dirname, "../public/bills/viewBill.html"));
+  } else {
+    res.redirect("/login");
+  }
 };
 
 const LoadBill = async (req, res) => {
@@ -106,8 +112,8 @@ const loadStockItems = async (req, res) => {
 };
 
 const loadLensStock = async (req, res) => {
-   const invoice_id = req.body.invoiceId;
-  
+  const invoice_id = req.body.invoiceId;
+
   const result = await new Promise((resolve, reject) => {
     db.query(
       "SELECT * FROM `lens_stock` INNER JOIN `invoice` ON `invoice`.`lens_stock_lens_id` = `lens_stock`.`lens_id` WHERE `invoice`.`invoice_id` = ?",
@@ -145,15 +151,50 @@ const loadPaymentHistory = async (req, res) => {
         resolve(result);
       }
     );
-  }); 
+  });
   if (result.length === 0) {
     console.log("No Result");
     return res.json("No Result");
+  } else {
+    // console.log(result);
+    res.json(result);
+  }
+};
+
+const fetchBillActions = async (req, res) => {
+  const User = req.session.username;
+  console.log("User: " + User);
+  const userId = User.split("_")[1];
+
+  // Implementation for fetching bill actions goes here
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM `users` INNER JOIN `user_type` ON `users`.`user_type_id` = `user_type`.`id` WHERE `users`.`id` = ?",
+      [userId],
+      (err, result) => {
+        if (err) {
+          console.error("Error fetching bill actions:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+
+  if (result.length === 0) {
+    console.log("No Result");
   } else {
     console.log(result);
     res.json(result);
   }
 };
 
-
-module.exports = { fetchAllBills, ViewBill, LoadBill, loadStockItems ,loadLensStock,loadPaymentHistory };
+module.exports = {
+  fetchAllBills,
+  ViewBill,
+  LoadBill,
+  loadStockItems,
+  loadLensStock,
+  loadPaymentHistory,
+  fetchBillActions,
+};

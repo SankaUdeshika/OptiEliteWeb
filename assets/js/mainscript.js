@@ -48,7 +48,6 @@ async function fetchBranchStatus() {
 
     let branchcount = response.locations.length;
 
-
     const container = document.getElementById("render-target");
 
     for (let i = 0; i < branchcount; i++) {
@@ -143,7 +142,6 @@ async function ChangeMonthForBranchStatus() {
 
     let branchcount = response.locations.length;
 
-
     const container = document.getElementById("render-target");
     container.innerHTML = "";
     for (let i = 0; i < branchcount; i++) {
@@ -223,8 +221,6 @@ async function ChangeMonthForBranchStatus() {
 }
 
 async function loadBills() {
-
-
   const result = await fetch("api/bill/bills", {
     method: "GET",
     headers: { "Content-type": "application/json" },
@@ -249,7 +245,6 @@ async function loadBills() {
 
       const payingPercentage = (payAmount / subTotal) * 100;
       var Percentage = Math.round(payingPercentage * 100) / 100;
-
 
       let bgColor, color, avatar;
 
@@ -322,8 +317,9 @@ function ViewBill(invoiceId) {
 function fetchInvoiceDetails() {
   loadInvoice();
   loadProductStock();
-  loadLensStock(invoiceId);
+  loadLensStock();
   loadPaymentHistory();
+  fetchActions();
 }
 
 // Load Functions
@@ -410,8 +406,6 @@ async function loadInvoice() {
       : (document.getElementById("invoice_status").className =
           "fw-semibold badge bg-success");
     document.getElementById("invoice_location").innerHTML = invoice_location;
-
-
   } else {
     console.log("Error fetching invoice details");
   }
@@ -511,7 +505,6 @@ async function loadPaymentHistory() {
   if (result.ok) {
     const response = await result.json();
 
-
     response.forEach((item, index) => {
       const {
         payment_id,
@@ -541,5 +534,26 @@ async function loadPaymentHistory() {
     });
   } else {
     console.log("Error fetching payment history");
+  }
+}
+
+async function fetchActions() {
+  const result = await fetch("/api/bill/bills/fetchBillActions", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (result.ok) {
+    const response = await result.json();
+    console.log(response);
+    console.log(response[0].id);
+    if(response[0].Type == "admin"){
+      const actionTab = document.getElementById("actionTab");
+      const dataHTML = `
+              <button class="btn btn-danger w-100 mb-2">Delete Bill</button>
+              `;
+      actionTab.insertAdjacentHTML("beforeend", dataHTML);
+    }
+  } else {
+    alert("working");
   }
 }

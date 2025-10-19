@@ -51,14 +51,12 @@ app.get("/update_bills", (req, res) => {
 
 app.get("/manage_bills", (req, res) => {
   // go Manage Bills
-  // if (req.session.username) {
-  res.sendFile(__dirname + "/public/bills/manageBills.html");
-  // } else {
-  //   res.redirect("/login");
-  // }
+  if (req.session.username) {
+    res.sendFile(__dirname + "/public/bills/manageBills.html");
+  } else {
+    res.redirect("/login");
+  }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
