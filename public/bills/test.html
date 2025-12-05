@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARES LANKA (PVT) LTD — Invoice</title>
+    <style>
+      :root {
+        --ink: #111;
+        --muted: #555;
+        --border: #222;
+        --soft: #dcdcdc;
+        --accent: #e31b23; /* ARES red */
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font: 14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans",
+          "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+        background: #f5f5f7;
+      }
+
+      /* Page */
+      .page {
+        width: 210mm; /* A4 width */
+        min-height: 297mm; /* A4 height */
+        margin: 24px auto;
+        background: #fff;
+        padding: 22mm 16mm 18mm; /* print-safe margins */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #eee;
+      }
+
+      /* Header */
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .brand {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+      .brand-mark {
+        width: 72px;
+        height: 72px;
+        border: 2px solid var(--accent);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: var(--accent);
+        font-weight: 800;
+      }
+      .brand h1 {
+        font-size: 20px;
+        line-height: 1.1;
+        margin: 0 0 4px;
+      }
+      .brand small {
+        color: var(--muted);
+      }
+
+      .right-head {
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+      }
+      .ares-logo {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        color: var(--accent);
+      }
+      .ares-sub {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: -4px;
+      }
+      .qr {
+        width: 78px;
+        height: 78px;
+        border: 2px solid #000;
+        background: repeating-linear-gradient(
+          45deg,
+          #000 0,
+          #000 2px,
+          #fff 2px,
+          #fff 4px
+        );
+      }
+
+      hr.rule {
+        border: none;
+        border-top: 2px solid #000;
+        margin: 16px 0;
+      }
+
+      /* Title & branch */
+      .title {
+        text-align: center;
+      }
+      .title h2 {
+        font-size: 26px;
+        letter-spacing: 0.06em;
+        margin: 2px 0 6px;
+      }
+      .branch {
+        font-size: 12px;
+        color: #000;
+      }
+      .branch .muted {
+        color: var(--muted);
+      }
+
+      /* Meta rows */
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .meta .billto {
+        border: 2px solid #000;
+        padding: 10px;
+      }
+      .meta h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+      .meta p {
+        margin: 0;
+        font-size: 12px;
+      }
+
+      .meta .when {
+        font-size: 12px;
+      }
+      .meta .when div {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .meta .when b {
+        min-width: 72px;
+        text-align: right;
+      }
+
+      /* Table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+      thead th {
+        border: 2px solid #000;
+        padding: 8px 8px;
+        background: #fff;
+        text-align: left;
+      }
+      tbody td {
+        border-left: 2px solid #000;
+        border-right: 2px solid #000;
+        padding: 8px 8px;
+        vertical-align: top;
+      }
+      tbody tr:last-child td {
+        border-bottom: 2px solid #000;
+      }
+      th.qty,
+      td.qty {
+        width: 60px;
+        text-align: center;
+      }
+      th.price,
+      td.price {
+        width: 120px;
+        text-align: right;
+      }
+      th.type {
+        width: 110px;
+      }
+      td.type {
+        font-weight: 700;
+      }
+      .muted {
+        color: var(--muted);
+      }
+
+      /* Totals block */
+      .totals {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 16px;
+        margin-top: 8px;
+      }
+      .history {
+        border-left: 2px solid #000;
+        border-right: 2px solid #000;
+        border-bottom: 2px solid #000;
+        padding: 10px;
+      }
+      .sum {
+        border: 2px solid #000;
+      }
+      .sum-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--soft);
+      }
+      .sum-row:last-child {
+        border-bottom: none;
+      }
+      .sum-row.total {
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      /* freebies */
+      .freebies {
+        margin-top: 14px;
+        font-size: 12px;
+        color: #000;
+      }
+      .freebies li {
+        margin: 2px 0;
+      }
+
+      /* terms */
+      .terms {
+        margin-top: 18px;
+      }
+      .terms h4 {
+        margin: 0 0 8px;
+      }
+      .terms ul {
+        margin: 0;
+        padding-left: 16px;
+      }
+      .terms li {
+        margin: 6px 0;
+      }
+
+      /* footer / signature */
+      .foot {
+        display: grid;
+        grid-template-columns: 1fr 220px;
+        gap: 16px;
+        margin-top: 28px;
+        align-items: end;
+      }
+      .cash {
+        color: #000;
+      }
+      .sig {
+        display: grid;
+        justify-items: end;
+      }
+      .sig .line {
+        width: 100%;
+        height: 1px;
+        background: #000;
+        margin: 0 0 6px;
+      }
+      .sig .label {
+        font-size: 12px;
+      }
+
+      /* Print */
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          border: none;
+        }
+        .brand-mark {
+          border-color: #000;
+          color: #000;
+        }
+        .ares-logo {
+          color: #000;
+        }
+      }
+      /* UI controls */
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        align-items: center;
+        background: linear-gradient(#ffffff, #fafafa);
+        border-bottom: 1px solid #e5e5e5;
+        padding: 10px 12px;
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid #d0d0d0;
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.primary {
+        border-color: #cfcfcf;
+        background: #111;
+        color: #fff;
+      }
+      @media print {
+        .toolbar {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button class="btn" onclick="printInvoice()">Save as PDF</button>
+      <button class="btn primary" onclick="window.print()">Print</button>
+    </div>
+    <section class="page" id="printpage">
+      <!-- Header -->
+      <div class="header">
+        <div class="brand">
+          <div class="brand-mark">ARES</div>
+          <div>
+            <h1>ARES LANKA (PVT) LTD</h1>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: auto 1fr;
+                column-gap: 10px;
+                row-gap: 2px;
+                font-size: 12px;
+              "
+            >
+              <span><b>Reg No</b> :</span><span> PV00253092</span>
+              <span><b>Email</b> :</span><span> areslanka@gmail.com</span>
+              <span><b>Web</b> :</span><span> www.areslanka.com</span>
+              <span><b>Address</b> :</span
+              ><span> 4/1,1/1, Nikape Road ,Dehiwala</span>
+            </div>
+          </div>
+        </div>
+        <div class="right-head">
+          <div class="ares-logo">ARES</div>
+          <div class="ares-sub">EUROPEAN QUALIFIED OPTOMETRIST</div>
+          <!-- <div class="qr" aria-label="QR placeholder"></div> -->
+        </div>
+      </div>
+
+      <hr class="rule" />
+
+      <!-- Title & Branch -->
+      <div class="title">
+        <h2>INVOICE</h2>
+        <div class="branch">
+          <div><b>ARES KALUTHARA</b></div>
+          <div>161, Galle Road, Kaluthara</div>
+          <div>Tel: 075170182 / 0777003622</div>
+        </div>
+      </div>
+
+      <!-- Meta -->
+      <div class="meta">
+        <div class="billto">
+          <h3>Bill To:</h3>
+          <p><b>Testd</b></p>
+          <p>kahathuduwa</p>
+          <p>0770211429 /</p>
+        </div>
+        <div class="when">
+          <div><b>Date:</b> <span>2025-05-17</span></div>
+          <div><b>Invoice #</b> <span>38</span></div>
+        </div>
+      </div>
+
+      <!-- Items table -->
+      <table>
+        <thead>
+          <tr>
+            <th class="type">TYPE</th>
+            <th>ITEM</th>
+            <th class="qty">QTY</th>
+            <th class="price">PRICE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="type">Frame</td>
+            <td>
+              <div>
+                <b>A0001</b>&nbsp;&nbsp;ARES&nbsp;&nbsp;<span class="muted"
+                  >Full Frame</span
+                >
+              </div>
+            </td>
+            <td class="qty">1</td>
+            <td class="price">5,500.00</td>
+          </tr>
+          <tr>
+            <td class="type">Lens</td>
+            <td>
+              <div>
+                <b>1065</b>&nbsp;&nbsp;Single Vision SPH– Stock&nbsp;&nbsp;<span
+                  class="muted"
+                  >1.50 PG+BC &nbsp; +10. 25+17.00</span
+                >
+              </div>
+            </td>
+            <td class="qty">2</td>
+            <td class="price">53,700.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Totals / Payment -->
+      <div class="totals">
+        <div class="history">
+          <b>Payment History</b>
+          <div class="muted" style="margin-top: 6px">
+            2025-05-17 = 5000.0 Paid
+          </div>
+        </div>
+        <div class="sum">
+          <div class="sum-row"><span>Discount</span><span>4,200.00</span></div>
+          <div class="sum-row"><span>Sub Total</span><span>55,000.0</span></div>
+          <div class="sum-row"><span>Advance</span><span>5,000.00</span></div>
+          <div class="sum-row">
+            <span>Pay Amount</span><span>5,000.00</span>
+          </div>
+          <div class="sum-row total">
+            <span>Total</span><span>50,000.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- freebies -->
+      <ul class="freebies">
+        <li>Free Bag – 01</li>
+        <li>Free Box – 01</li>
+        <li>Free Cleaning Cloth – 01</li>
+      </ul>
+
+      <!-- terms -->
+      <div class="terms">
+        <h4>You were served by:</h4>
+        <ul>
+          <li>
+            Please collect your delivery within 90 days, otherwise, the order
+            will be cancelled.
+          </li>
+          <li>Spectacle release after settling the full amount</li>
+          <li>Repair &amp; adjustments of frames at customers' risk.</li>
+          <li>Orders once booked can't be cancelled.</li>
+          <li>
+            If this invoice is fully paid this should be treated as receipt of
+            full payment.
+          </li>
+          <li>
+            If any advance is paid for this invoice this should be treated as a
+            Receipt of advance.
+          </li>
+          <li>
+            <b>All sales are final policy:</b> Once customers make a purchase,
+            they will not be able to return that item for a replacement or
+            refund. These policies typically apply to clearance and sale items.
+          </li>
+          <li>
+            <b>No refund, exchange–only policy:</b> Customers may exchange items
+            they wish to return, but they cannot get a monetary refund
+          </li>
+          <li>
+            <b>No cash refund policy:</b> No monetary refunds will be given for
+            any reason, though alternative refunds may be offered, such as store
+            credit or exchanges
+          </li>
+        </ul>
+      </div>
+
+      <!-- footer -->
+      <div class="foot">
+        <div class="cash">Cash</div>
+        <div class="sig">
+          <div class="line"></div>
+          <div class="label">Receiver's Signature</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notes:
+    • Replace the .brand-mark and .ares-logo with your actual images if needed.
+      Example: <img src="/path/to/logo.png" alt="ARES" style="height:64px"> 
+    • Replace the .qr div with an <img> to show the real QR.
+    • This layout is print–ready (A4). Press Ctrl/Cmd+P for a clean print.
+  -->
+    <script>
+      // Both buttons call window.print(). On most browsers you can pick
+      // "Save as PDF" in the print dialog to export a PDF, or choose a printer to print.
+
+      function printInvoice() {
+        var printContents = document.getElementById("printpage").innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        // Store original body content, then replace with just the print content
+        document.body.innerHTML = printContents;
+
+        // Wait a moment for DOM to update, then trigger print
+        setTimeout(function () {
+          window.print();
+
+          // Restore original content after printing
+          document.body.innerHTML = originalContents;
+        }, 100);
+      }
+    </script>
+  </body>
+</html>
