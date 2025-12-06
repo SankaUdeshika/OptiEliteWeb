@@ -8,6 +8,7 @@ const {
   loadLensStock,
   loadPaymentHistory,
   fetchBillActions,
+  fetchInvoiceDetails,
 } = require("../controllers/billController");
 
 router.get("/bills", fetchAllBills);
@@ -17,6 +18,7 @@ router.post("/bills/loadProductStock", loadStockItems);
 router.post("/bills/loadLensStock", loadLensStock);
 router.post("/bills/loadPaymentHistory", loadPaymentHistory);
 router.get("/bills/fetchBillActions", fetchBillActions);
+router.get("/bills/View/print/:id",fetchInvoiceDetails);
 
 
 module.exports = router;

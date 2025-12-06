@@ -302,8 +302,12 @@ async function loadBills() {
 }
 
 // Page Redirects
-async function UpdateBills() {
-  window.location = "/update_bills";
+async function Openinvoice() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  console.log("print invoice " + invoiceId);
+  window.location = "/api/bill/bills/View/print/" + invoiceId;
 }
 
 function GoBillManagement() {
@@ -546,7 +550,7 @@ async function fetchActions() {
     const response = await result.json();
     console.log(response);
     console.log(response[0].id);
-    if(response[0].Type == "admin"){
+    if (response[0].Type == "admin") {
       const actionTab = document.getElementById("actionTab");
       const dataHTML = `
               <button class="btn btn-danger w-100 mb-2">Delete Bill</button>

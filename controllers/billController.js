@@ -189,6 +189,17 @@ const fetchBillActions = async (req, res) => {
   }
 };
 
+const fetchInvoiceDetails = async (req, res) => {
+  const invoice_id = req.params.id;
+  console.log("View Bill" + invoice_id);
+
+  if (req.session.username) {
+    res.sendFile(path.join(__dirname, "../public/bills/test.html"));
+  } else {
+    res.redirect("/login");
+  }
+};
+
 module.exports = {
   fetchAllBills,
   ViewBill,
@@ -197,4 +208,5 @@ module.exports = {
   loadLensStock,
   loadPaymentHistory,
   fetchBillActions,
+  fetchInvoiceDetails,
 };

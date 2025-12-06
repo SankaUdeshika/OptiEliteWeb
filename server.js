@@ -44,10 +44,7 @@ app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/public/auth-login.html");
 });
 
-app.get("/update_bills", (req, res) => {
-  console.log("done");
-  res.sendFile(__dirname + "/public/components-table.html");
-});
+
 
 app.get("/manage_bills", (req, res) => {
   // go Manage Bills
