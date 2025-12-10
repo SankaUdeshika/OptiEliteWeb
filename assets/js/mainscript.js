@@ -563,9 +563,7 @@ async function fetchActions() {
 }
 
 async function fetchPrintInvoice() {
-  await Promise.all([
-    printInvoiceHeader(),
-  ]);
+  await Promise.all([printInvoiceHeader(), printProductStock()]);
 }
 
 async function printInvoiceHeader() {
@@ -679,14 +677,47 @@ async function printInvoiceHeader() {
       li.textContent = "free Clothing - 01";
       ulTag.appendChild(li);
     }
-
-    // const invoice_location = response[0].location_name;
-    // // inner html
-    // document.getElementById("print_invoice_id").innerHTML = invoice_id;
-    // document.getElementById("print_invoice_date").innerHTML = date;
-    // document.getElementById("print_invoice_location").innerHTML =
-    //   invoice_location;
   } else {
     console.log("Error fetching invoice details");
+  }
+}
+
+async function printProductStock() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  const request = await fetch(
+    `/api/bill/bills/loadCompanystocks/${invoiceId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (request.ok) {
+    const response = await request.json();
+    console.log(response);
+
+    //invoice
+    const saling_price = response[0].saling_price;
+    const product_id = response[0].product_id;
+    const product_name = response[0].product_name;
+    const qty = response[0].qty;
+    const sub_category = response[0].sub_category;
+    const brand_name = response[0].brand_name;
+
+
+    document.getElementById("printProductID").innerHTML = product_id;
+    document.getElementById("printProductName").innerHTML = product_name;
+    document.getElementById("printProductCategory").innerHTML = sub_category;
+    document.getElementById("printProductQty").innerHTML = qty;
+    document.getElementById("printProductPrice").innerHTML = saling_price;
+    document.getElementById("printProductBrand").innerHTML = brand_name;
+
+    console.log("Product Price :" + saling_price) ;
+
+    //   const reg_no = response[0].reg_no;
+    //   const email = response[0].email;
+    //   const web = response[0].web;
   }
 }

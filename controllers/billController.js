@@ -138,7 +138,6 @@ const loadLensStock = async (req, res) => {
 
 const loadPaymentHistory = async (req, res) => {
   const invoice_id = req.body.invoiceId;
-  console.log("Invoice ID: " + invoice_id);
   const result = await new Promise((resolve, reject) => {
     db.query(
       "SELECT * FROM `advance_payment_history` INNER JOIN `payment_method` ON `payment_method`.`Payment_id` = `payment_method` WHERE `invoice_invoice_id` = ?",
@@ -163,7 +162,6 @@ const loadPaymentHistory = async (req, res) => {
 
 const fetchBillActions = async (req, res) => {
   const User = req.session.username;
-  console.log("User: " + User);
   const userId = User.split("_")[1];
 
   // Implementation for fetching bill actions goes here
@@ -202,7 +200,6 @@ const fetchInvoiceDetails = async (req, res) => {
 
 const loadCompanyHeaderData = async (req, res) => {
   const invoiceId = req.params.id;
-  console.log("Load Company Header Data for invoice ID: " + invoiceId);
 
   const result = await new Promise((resolve, reject) => {
     db.query(
@@ -236,6 +233,35 @@ const loadCompanyHeaderData = async (req, res) => {
   }
 };
 
+const loadCompanystocks = async (req, res) => {
+  const invoice_id = req.params.id;
+  // product details
+  const Productresult = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT `brand_name`,`invoice_item`.`qty`,`saling_price`,`product_id`,`product_name`,`sub_category` FROM `invoice_item`" +
+        "INNER JOIN `stock` ON `invoice_item`.`stock_id` = `stock`.`id`" +
+        "INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid`" +
+        "INNER JOIN `sub_category` ON `product`.`sub_category_id` = `sub_category`.`id`" +
+        "WHERE `invoice_item`.`invoice_id` = ?",
+      [invoice_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading company header data:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+
+  if (Productresult.length === 0) {
+    return res.json("No Result");
+  } else {
+    // console.log(result);
+    res.json(Productresult);
+  }
+};
+
 module.exports = {
   fetchAllBills,
   ViewBill,
@@ -246,4 +272,5 @@ module.exports = {
   fetchBillActions,
   fetchInvoiceDetails,
   loadCompanyHeaderData,
+  loadCompanystocks,
 };
