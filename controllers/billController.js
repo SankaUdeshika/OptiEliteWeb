@@ -194,9 +194,45 @@ const fetchInvoiceDetails = async (req, res) => {
   console.log("View Bill" + invoice_id);
 
   if (req.session.username) {
-    res.sendFile(path.join(__dirname, "../public/bills/test.html"));
+    res.sendFile(path.join(__dirname, "../public/bills/invoice.html"));
   } else {
     res.redirect("/login");
+  }
+};
+
+const loadCompanyHeaderData = async (req, res) => {
+  const invoiceId = req.params.id;
+  console.log("Load Company Header Data for invoice ID: " + invoiceId);
+
+  const result = await new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * " +
+        "FROM `invoice` " +
+        "INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` " +
+        "INNER JOIN `location` ON `location`.`id` = `invoice_location` " +
+        "INNER JOIN `payment_status` ON `invoice`.`payment_status_id` = `payment_status`.`id` " +
+        // "LEFT JOIN `invoice_item` ON `invoice_item`.`invoice_id` = `invoice`.`invoice_id` " +
+        "WHERE `invoice`.`invoice_id` = ?",
+      // "LEFT JOIN `stock` ON `stock`.`id` = `invoice_item`.`stock_id` " +
+      // "INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid` " +
+      // "INNER JOIN sub_category ON sub_category.id = product.sub_category_id " +
+      // "LEFT JOIN lens_stock ON invoice.lens_stock_lens_id = lens_stock.lens_id " +
+      [invoiceId],
+      (err, result) => {
+        if (err) {
+          console.error("Error loading company header data:", err);
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+
+  if (result.length === 0) {
+    return res.json("No Result");
+  } else {
+    // console.log(result);
+    res.json(result);
   }
 };
 
@@ -209,4 +245,5 @@ module.exports = {
   loadPaymentHistory,
   fetchBillActions,
   fetchInvoiceDetails,
+  loadCompanyHeaderData,
 };

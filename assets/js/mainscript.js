@@ -561,3 +561,132 @@ async function fetchActions() {
     alert("working");
   }
 }
+
+async function fetchPrintInvoice() {
+  await Promise.all([
+    printInvoiceHeader(),
+  ]);
+}
+
+async function printInvoiceHeader() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
+
+  const request = await fetch(
+    `/api/bill/bills/loadCompanyHeaderData/${invoiceId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (request.ok) {
+    const response = await request.json();
+    console.log(response);
+
+    //invoice
+    const invoice_id = response[0].invoice_id;
+    const reg_name = response[0].reg_name;
+    const reg_no = response[0].reg_no;
+    const email = response[0].email;
+    const web = response[0].web;
+    const branch_address = response[0].branch_address;
+    const branch_name = response[0].branch_name;
+    const locaiton_mobile = response[0].locaiton_mobile;
+    const location_mobile2 = response[0].location_mobile2;
+    const customer_name = response[0].name;
+    const address = response[0].address_line1;
+    const customer_mobile = response[0].customer_mobile;
+    const purchsed_date = response[0].date;
+
+    //Lens stock Details
+    const lens_id = response[0].lens_stock_lens_id;
+    const lens_Qty = response[0].lens_Qty;
+    const lens_code = response[0].lens_code;
+    const lens_price = response[0].lens_price;
+    const lenstotal = response[0].lenstotal;
+
+    // Summery Details
+    const discount_percentage = response[0].discount_percentage;
+    const total = Number(response[0].total_price).toLocaleString();
+    const discount = Number(response[0].discount).toLocaleString();
+    const subtotal = Number(response[0].subtotal).toLocaleString();
+    const advance_payment = Number(
+      response[0].advance_payment
+    ).toLocaleString();
+    const payment_amount = Number(response[0].payment_amount).toLocaleString();
+
+    let due_amount_raw =
+      Number(response[0].subtotal) - Number(response[0].payment_amount);
+    let due_amount = due_amount_raw.toLocaleString();
+
+    // accessories items
+    const box = response[0].box;
+    const bag = response[0].bag;
+    const clothing = response[0].clothing;
+
+    document.getElementById("CompanyName").innerHTML = reg_name;
+    document.getElementById("CompanyRegNo").innerHTML = reg_no;
+    document.getElementById("CompanyEmail").innerHTML = email;
+    document.getElementById("CompanyWeb").innerHTML = web;
+    document.getElementById("BranchName").innerHTML = branch_name;
+    document.getElementById("BranchAddress").innerHTML =
+      "Address: " + branch_address;
+    document.getElementById("BranchContact1").innerHTML =
+      "Contact 1: " + locaiton_mobile;
+
+    if (location_mobile2 != null || location_mobile2 != "") {
+      document.getElementById("BranchContact2").innerHTML =
+        "Contact 2: " + location_mobile2;
+    }
+
+    document.getElementById("PrintCustomerName").innerHTML = customer_name;
+    document.getElementById("PrintCustomerAddress").innerHTML = address;
+    document.getElementById("PrintCustomerMobile").innerHTML =
+      "Contact: " + customer_mobile;
+    document.getElementById("PrintPurchaseDate").innerHTML =
+      "Date: " + purchsed_date;
+    document.getElementById("PrintInvoiceID").innerHTML =
+      "Invoice #: " + invoice_id;
+
+    // summery details loading
+    document.getElementById("PrintDiscount").innerHTML = discount;
+    if (discount_percentage != null || discount_percentage != "") {
+      document.getElementById("discount_percentage").innerHTML =
+        discount_percentage;
+    }
+
+    document.getElementById("PrintSubTotal").innerHTML = subtotal;
+    document.getElementById("PrintAdvancePayment").innerHTML = advance_payment;
+    document.getElementById("PrintPaymentAmount").innerHTML = payment_amount;
+    document.getElementById("PrintTotal").innerHTML = total;
+    document.getElementById("dueamount").innerHTML = due_amount;
+
+    // accessories items
+    const ulTag = document.getElementById("accessoriesList");
+    if (bag == "true") {
+      const li = document.createElement("li");
+      li.textContent = "free Bag - 01";
+      ulTag.appendChild(li);
+    }
+    if (box == "true") {
+      const li = document.createElement("li");
+      li.textContent = "free Box - 01";
+      ulTag.appendChild(li);
+    }
+    if (clothing == "true") {
+      const li = document.createElement("li");
+      li.textContent = "free Clothing - 01";
+      ulTag.appendChild(li);
+    }
+
+    // const invoice_location = response[0].location_name;
+    // // inner html
+    // document.getElementById("print_invoice_id").innerHTML = invoice_id;
+    // document.getElementById("print_invoice_date").innerHTML = date;
+    // document.getElementById("print_invoice_location").innerHTML =
+    //   invoice_location;
+  } else {
+    console.log("Error fetching invoice details");
+  }
+}
