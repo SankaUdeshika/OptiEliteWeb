@@ -208,6 +208,7 @@ const loadCompanyHeaderData = async (req, res) => {
         "INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` " +
         "INNER JOIN `location` ON `location`.`id` = `invoice_location` " +
         "INNER JOIN `payment_status` ON `invoice`.`payment_status_id` = `payment_status`.`id` " +
+        "INNER JOIN `lens_stock` ON `lens_stock`.`lens_id` = `invoice`.`lens_stock_lens_id` " +
         // "LEFT JOIN `invoice_item` ON `invoice_item`.`invoice_id` = `invoice`.`invoice_id` " +
         "WHERE `invoice`.`invoice_id` = ?",
       // "LEFT JOIN `stock` ON `stock`.`id` = `invoice_item`.`stock_id` " +
@@ -238,10 +239,12 @@ const loadCompanystocks = async (req, res) => {
   // product details
   const Productresult = await new Promise((resolve, reject) => {
     db.query(
-      "SELECT `brand_name`,`invoice_item`.`qty`,`saling_price`,`product_id`,`product_name`,`sub_category` FROM `invoice_item`" +
+      "SELECT `Category`,`brand_name`,`invoice_item`.`qty`,`saling_price`,`product_id`,`product_name`,`sub_category` FROM `invoice_item`" +
         "INNER JOIN `stock` ON `invoice_item`.`stock_id` = `stock`.`id`" +
         "INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid`" +
+        "INNER JOIN `brand` ON `product`.`brand_id` = `brand`.`id`" +
         "INNER JOIN `sub_category` ON `product`.`sub_category_id` = `sub_category`.`id`" +
+        "INNER JOIN `category` ON `category`.`id` = `sub_category`.`category_id`" +
         "WHERE `invoice_item`.`invoice_id` = ?",
       [invoice_id],
       (err, result) => {

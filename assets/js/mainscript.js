@@ -677,6 +677,43 @@ async function printInvoiceHeader() {
       li.textContent = "free Clothing - 01";
       ulTag.appendChild(li);
     }
+
+    // lens stock details
+    if (lens_id != null) {
+      const stockTable = document.getElementById("stockTable");
+      const tableRaw = document.createElement("tr");
+      tableRaw.innerHTML = `
+        <td class="type">Lens</td>
+        <td>
+            <div>
+               <b id="lensID">${lens_id}</b> &nbsp;&nbsp; <span id="lensCode">${lens_code} </span>
+            </div>
+        </td>
+        <td class="qty" id="lensQty"></td>
+        <td class="price" id="lensPrice"></td>
+        `;
+      stockTable.appendChild(tableRaw);
+
+      // document.getElementById("lensID").innerHTML = lens_id;
+      // document.getElementById("lensCode").innerHTML = lens_code;
+      // document.getElementById("lensQty").innerHTML = lens_Qty;
+      // document.getElementById("lensPrice").innerHTML = lens_price;
+      // document.getElementById("lensTotal").innerHTML = lenstotal;
+    } else {
+      const stockTable = document.getElementById("stockTable");
+      const tableRaw = document.createElement("tr");
+      tableRaw.innerHTML = `
+        <td class="type">Lens</td>
+        <td>
+            <div class="text-center">
+                 <span class=" text-black-50" id="lensCode">No Lens Details</span>
+            </div>
+        </td>
+         <td class="qty" id="lensQty"></td>
+            <td class="price" id="lensPrice"></td>
+        `;
+      stockTable.appendChild(tableRaw);
+    }
   } else {
     console.log("Error fetching invoice details");
   }
@@ -699,23 +736,54 @@ async function printProductStock() {
     console.log(response);
 
     //invoice
-    const saling_price = response[0].saling_price;
-    const product_id = response[0].product_id;
-    const product_name = response[0].product_name;
-    const qty = response[0].qty;
-    const sub_category = response[0].sub_category;
-    const brand_name = response[0].brand_name;
 
+    if (response != "No Result") {
+      for (let i = 0; i < response.length; i++) {
+        const saling_price = response[i].saling_price;
+        const product_id = response[i].product_id;
+        const product_name = response[i].product_name;
+        const qty = response[i].qty;
+        const sub_category = response[i].sub_category;
+        const brand_name = response[i].brand_name;
+        const category_name = response[i].Category;
 
-    document.getElementById("printProductID").innerHTML = product_id;
-    document.getElementById("printProductName").innerHTML = product_name;
-    document.getElementById("printProductCategory").innerHTML = sub_category;
-    document.getElementById("printProductQty").innerHTML = qty;
-    document.getElementById("printProductPrice").innerHTML = saling_price;
-    document.getElementById("printProductBrand").innerHTML = brand_name;
-
-    console.log("Product Price :" + saling_price) ;
-
+        const stockTable = document.getElementById("stockTable");
+        const tableRaw = document.createElement("tr");
+        tableRaw.innerHTML = `
+        <tr>
+            <td class="type">${category_name}</td>
+            <td>
+              <div>
+                <b id="printProductID">${product_id}</b>&nbsp;&nbsp;<span
+                  id="printProductBrand"
+                >${brand_name}</span
+                >&nbsp;&nbsp;<span
+                  class="muted"
+                  id="printProductCategory"
+                >${sub_category}</span>
+              </div>
+            </td>
+            <td class="qty" id="printProductQty">${qty}</td>
+            <td class="price" id="printProductPrice">${saling_price}</td>
+          </tr>
+        `;
+        stockTable.appendChild(tableRaw);
+      }
+    } else if(response == "No Result") {
+      const stockTable = document.getElementById("stockTable");
+      const tableRaw = document.createElement("tr");
+      tableRaw.innerHTML = `
+        <td class="type">Frame</td>
+        <td>
+            <div class="text-center">
+                 <span class=" text-black-50" id="lensCode">No Frame Details</span>
+            </div>
+        </td>
+         <td class="qty" id="lensQty"></td>
+            <td class="price" id="lensPrice"></td>
+        `;
+      stockTable.appendChild(tableRaw);
+    }
     //   const reg_no = response[0].reg_no;
     //   const email = response[0].email;
     //   const web = response[0].web;
