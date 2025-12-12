@@ -366,6 +366,7 @@ async function loadInvoice() {
     const clothing = response[0].clothing;
     const invoice_location = response[0].location_name;
     const isAccessories = response[0].isAccessories;
+    const total = Number(subtotal) + Number(discount);
 
     // customer
     const customer_name = response[0].name;
@@ -397,6 +398,7 @@ async function loadInvoice() {
     document.getElementById("advance").innerHTML = "LKR " + advance_payment;
     document.getElementById("payamount").innerHTML = "LKR " + payment_amount;
     document.getElementById("due").innerHTML = "LKR " + total_due;
+    document.getElementById("total").innerHTML =  "LKR " + total;
 
     prescription_details_job_no == "" || prescription_details_job_no == null
       ? (document.getElementById("prescription_details").innerHTML =
@@ -608,7 +610,7 @@ async function printInvoiceHeader() {
 
     // Summery Details
     const discount_percentage = response[0].discount_percentage;
-    const total = Number(response[0].total_price).toLocaleString();
+    const total = Number(response[0].subtotal) + Number(response[0].discount);
     const discount = Number(response[0].discount).toLocaleString();
     const subtotal = Number(response[0].subtotal).toLocaleString();
     const advance_payment = Number(
@@ -691,8 +693,8 @@ async function printInvoiceHeader() {
                <b id="lensID">${lens_id}</b> &nbsp;&nbsp; <span id="lensCode">${lens_code} </span>
             </div>
         </td>
-        <td class="qty" id="lensQty"></td>
-        <td class="price" id="lensPrice"></td>
+        <td class="qty" id="lensQty">${lens_Qty}</td>
+        <td class="price" id="lensPrice">${lenstotal}</td>
         `;
       stockTable.appendChild(tableRaw);
 
