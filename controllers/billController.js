@@ -113,10 +113,11 @@ const loadStockItems = async (req, res) => {
 
 const loadLensStock = async (req, res) => {
   const invoice_id = req.body.invoiceId;
+  console.log("Loading lens stock for invoice ID: " + invoice_id);
 
   const result = await new Promise((resolve, reject) => {
     db.query(
-      "SELECT * FROM `lens_stock` INNER JOIN `invoice` ON `invoice`.`lens_stock_lens_id` = `lens_stock`.`lens_id` WHERE `invoice`.`invoice_id` = ?",
+      "SELECT * FROM `lens_stock` INNER JOIN `invoice` ON `invoice`.`lens_stock_lens_id` = `lens_stock`.`lens_id`  WHERE `invoice`.`invoice_id` = ?",
       [invoice_id],
       (err, result) => {
         if (err) {
@@ -209,12 +210,8 @@ const loadCompanyHeaderData = async (req, res) => {
         "INNER JOIN `location` ON `location`.`id` = `invoice_location` " +
         "INNER JOIN `payment_status` ON `invoice`.`payment_status_id` = `payment_status`.`id` " +
         "INNER JOIN `lens_stock` ON `lens_stock`.`lens_id` = `invoice`.`lens_stock_lens_id` " +
-        // "LEFT JOIN `invoice_item` ON `invoice_item`.`invoice_id` = `invoice`.`invoice_id` " +
         "WHERE `invoice`.`invoice_id` = ?",
-      // "LEFT JOIN `stock` ON `stock`.`id` = `invoice_item`.`stock_id` " +
-      // "INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid` " +
-      // "INNER JOIN sub_category ON sub_category.id = product.sub_category_id " +
-      // "LEFT JOIN lens_stock ON invoice.lens_stock_lens_id = lens_stock.lens_id " +
+
       [invoiceId],
       (err, result) => {
         if (err) {

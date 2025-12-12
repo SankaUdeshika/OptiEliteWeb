@@ -461,7 +461,9 @@ async function loadProductStock() {
   }
 }
 
-async function loadLensStock(invoiceId) {
+async function loadLensStock() {
+  const currentURL = window.location.pathname;
+  const invoiceId = currentURL.split("/").pop();
   const result = await fetch("/api/bill/bills/loadLensStock", {
     method: "POST",
     body: JSON.stringify({ invoiceId }),
@@ -769,7 +771,7 @@ async function printProductStock() {
         `;
         stockTable.appendChild(tableRaw);
       }
-    } else if(response == "No Result") {
+    } else if (response == "No Result") {
       const stockTable = document.getElementById("stockTable");
       const tableRaw = document.createElement("tr");
       tableRaw.innerHTML = `
