@@ -134,3 +134,67 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Add these to your existing .gitignore
+
+# Custom project ignores
+# Don't ignore public folder completely, but ignore specific generated files
+public/uploads/
+public/temp/
+public/cache/
+
+# Database backups (if any)
+*.sql
+*.sql.gz
+*.backup
+database-backups/
+
+# Session store files (if using file-based sessions)
+sessions/
+data/
+
+# PM2 ecosystem files with sensitive data (if you add passwords)
+ecosystem.config.js
+!ecosystem.config.template.js
+
+# SSL certificates (never commit these)
+*.pem
+*.key
+*.crt
+*.csr
+certificates/
+
+# IDE/Editor files (already have .vscode-test, add these)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS generated files (add these)
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Build outputs (if you use any build tools)
+build/
+dist/
+*.min.js
+*.min.css
+
+# Application specific
+# Your app might generate these
+logs/
+temp/
+tmp/
+
+# Environment specific
+.env.staging
+.env.dev
+.env.prod
+
+# Package manager specific
+package-lock.json  # Optional: if you want to keep this, remove this line
+yarn.lock          # Optional: if you use yarn, keep it
