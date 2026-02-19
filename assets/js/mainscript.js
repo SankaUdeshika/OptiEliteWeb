@@ -398,7 +398,7 @@ async function loadInvoice() {
     document.getElementById("advance").innerHTML = "LKR " + advance_payment;
     document.getElementById("payamount").innerHTML = "LKR " + payment_amount;
     document.getElementById("due").innerHTML = "LKR " + total_due;
-    document.getElementById("total").innerHTML =  "LKR " + total;
+    document.getElementById("total").innerHTML = "LKR " + total;
 
     prescription_details_job_no == "" || prescription_details_job_no == null
       ? (document.getElementById("prescription_details").innerHTML =
@@ -788,8 +788,88 @@ async function printProductStock() {
         `;
       stockTable.appendChild(tableRaw);
     }
-    //   const reg_no = response[0].reg_no;
-    //   const email = response[0].email;
-    //   const web = response[0].web;
+  }
+}
+
+function GoAddBillPage() {
+  window.location = "/add_bill";
+}
+
+async function customerMobileSearch() {
+  let mobileOrName = document.getElementById("customerMobile").value;
+
+  const result = await fetch("/api/customer/mobile_search", {
+    method: "POST",
+    body: JSON.stringify({ mobileOrName }),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (result.ok) {
+    const response = await result.json();
+
+    const Table = document.getElementById("customerSearchTable");
+    console.log(response.length);
+    if (response.length <= 0) {
+      alert("No Results Found");
+      Table.innerHTML = `
+        <tr><td colspan='5' class='text-center'>No Results Found</td></tr>
+        
+        <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Collapsible Group Item #3
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+        `;
+      return;
+    } else if (response.length > 0) {
+      Table.innerHTML = ""; // Clear previous results
+      for (let i = 0; i < response.length; i++) {
+        const mobile = response[i].mobile;
+        const name = response[i].name;
+
+        // Table.removeChild(Table.lastChild);
+        const rowHtmlElement = document.createElement("tr");
+        rowHtmlElement.innerHTML = `
+             <tr>
+                                    <td><span>${name}</span></td>
+                                    <td>
+                                      <span>${mobile}</span>
+                                    </td>
+                                    <td>
+                                      <input type="radio" name="selectCustomer" /> 
+                                    </td>
+                                  </tr>
+              `;
+        Table.appendChild(rowHtmlElement);
+      }
+    }
+  } else {
+    const TableElement = document.getElementById("customerSearchResults");
+    const innerHtmlText = document.createElement("span");
+    innerHtmlText.innerHTML = "No Results Found";
+    TableElement.appendChild(innerHtmlText);
+
+    console.log("Error fetching customer details");
+  }
+}
+
+async function loadAddBillPage() {
+  const result = await fetch("/api/stock/getStocks", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (result.ok) {
+    console.log("yea Workign");
+    // const response = await result.json();
   }
 }
