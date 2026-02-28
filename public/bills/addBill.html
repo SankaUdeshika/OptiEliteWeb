@@ -621,6 +621,7 @@
                                         role="button"
                                         aria-expanded="false"
                                         aria-controls="collapseExample"
+                                        id="newCustomerBtn"
                                       >
                                         Add New Customer
                                       </a>
@@ -851,7 +852,7 @@
                     </div>
 
                     <!-- Customer Section -->
-                    <div class="col-lg-6 col-12 bg-warning">
+                    <div class="col-lg-6 col-12 ">
                       <h4 class="text-center">Order Details</h4>
                       <div class="row">
                         <div class="col-12">
@@ -899,9 +900,9 @@
         <!-- FOOTER -->
         <footer class="main-footer">
           <div class="footer-left">
-            Copyright &copy; 2018
+            Copyright &copy; 2026
             <div class="bullet"></div>
-            Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
+            Design By <a href="https://vayonova.com">Vayonova</a>
           </div>
           <div class="footer-right"></div>
         </footer>
@@ -952,6 +953,23 @@
             this.setAttribute("aria-expanded", "true");
           }
           // Notice: no code to remove 'show' class
+        });
+
+      document
+        .getElementById("newCustomerBtn")
+        .addEventListener("click", function () {
+          alert("clicked");
+          let btn = document.getElementById("newCustomerBtn");
+          alert(btn.innerHTML);
+          if (btn.innerHTML === "Add New Customer") {
+            btn.innerHTML = "Cancel";
+            btn.classList.remove("btn-outline-primary");
+            btn.classList.add("btn-outline-danger");
+          } else {
+            btn.innerHTML = "Add New Customer";
+            btn.classList.remove("btn-outline-danger");
+            btn.classList.add("btn-outline-primary");
+          }
         });
     </script>
   </body>

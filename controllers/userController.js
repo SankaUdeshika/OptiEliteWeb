@@ -36,7 +36,8 @@ const login = (req, res) => {
 
       if (result.length > 0) {
         req.session.username = data.username + "_" + result[0].id;
-        console.log("success " + req.session.username);
+        req.session.location_Id = result[0].location_id;
+        console.log("Session after login Locations:" + req.session.location_Id);
         res.send("success");
       } else {
         console.log("invalid");

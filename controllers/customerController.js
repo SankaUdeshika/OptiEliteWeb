@@ -30,6 +30,22 @@ const getCustomerbyMobile = async (req, res) => {
 
 };
 
+const getAllCustomer = async (req, res) => {
+
+    const result = await new Promise((promise, reject) => {
+        db.query("SELECT * FROM `customer` INNER JOIN `location` ON `customer`.`location_id` = `location`.`id` INNER JOIN `gender` ON `customer`.`gender_gender_id` = `gender`.`gender_id`", (err, result) => {
+            if (err) {
+                console.error("Error fetching all customers:", err);
+                return reject(err);
+            }
+            promise(result);
+        });
+    });
+    console.log(result);
+    res.json(result);
+};
+
 module.exports = {
   getCustomerbyMobile,
+  getAllCustomer,
 };
