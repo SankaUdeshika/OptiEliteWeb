@@ -814,7 +814,7 @@
                     </div>
                     <div class="card-body">
                       <!-- Customer registration form based on image description -->
-                      <form>
+                   
                         <div class="form-row">
                           <div class="form-group col-md-6">
                             <label for="fullName"
@@ -916,10 +916,10 @@
                             />
                           </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button onclick="addNewCustomer();" class="btn btn-primary">
                           Save customer
                         </button>
-                      </form>
+                      
                     </div>
                   </div>
                 </div>
@@ -963,7 +963,7 @@
           order: [[0, "asc"]],
         });
 
-        loadAllCustomers();
+        customerSectionLoading();
       });
     </script>
 

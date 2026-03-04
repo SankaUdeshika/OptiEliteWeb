@@ -880,9 +880,13 @@ async function loadAllAddBillStockData() {
   }
 }
 
-// customer Registration Page
+// customer -----------------------------------------------------------------------------
+// customer Registration
+async function customerSectionLoading(){
+  loadAllCustomers();
+  loadLocationsForCustomer();
+}
 async function loadAllCustomers() {
-
   const result = await fetch("/api/customer/getAllCustomers", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -912,4 +916,54 @@ async function loadAllCustomers() {
   } else {
     console.log("Error fetching customer details");
   }
+}
+// load  Locations 
+async function loadLocationsForCustomer() {
+  const result = await fetch("/api/customer/getLocations", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  
+}
+
+// add New Customer
+async function addNewCustomer() {
+  alert("Working");
+  // alert("Working");
+  // const name = document.getElementById("customerName").value;
+  // const gender = document.getElementById("customerGender").value;
+  // const location = document.getElementById("customerLocation").value;
+  // const mobile = document.getElementById("customerMobile").value;
+  // const birthday = document.getElementById("customerBirthday").value;
+  // const nic = document.getElementById("customerNIC").value;
+  // const email = document.getElementById("customerEmail").value;
+
+  // if (name == "" || gender == "" || location || !mobile || !birthday || !nic || !email) {
+  //   alert("Please fill in all fields.");
+  //   return;
+  // } else {
+  //   alert("OK");
+    // var customerData = {
+    //   name: name,
+    //   gender: gender,
+    //   location_name: location,
+    //   mobile: mobile,
+    //   birthday: birthday,
+    //   nic: nic,
+    //   email: email,
+    // };
+
+    // const result = await fetch("/api/customer/addCustomer", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(customerData),
+    // });
+
+    // if (result.ok) {
+    //   console.log("Customer added successfully");
+    //   loadAllCustomers(); // Reload customer list
+    // } else {
+    //   console.log("Error adding customer");
+    // }
+  // }
 }
