@@ -1,3 +1,5 @@
+const { getBranchLocation } = require("../../../controllers/branchController");
+
 // User Login Function
 async function Login() {
   let username = document.getElementById("username").value;
@@ -34,7 +36,7 @@ async function Login() {
 
 // fetch Branch Details
 async function fetchBranchStatus() {
-  const result = await fetch("brnch/fetch", {
+  const result = await fetch("branch/fetch", {
     method: "POST",
     body: JSON.stringify({
       date: "2025-09-25", // <-- test date you showed in HeidiSQL
@@ -129,7 +131,7 @@ async function fetchBranchStatus() {
 async function ChangeMonthForBranchStatus() {
   let dateInput = document.getElementById("startDate").value;
 
-  const result = await fetch("brnch/fetchMonth", {
+  const result = await fetch("branch/fetchMonth", {
     method: "POST",
     body: JSON.stringify({
       dateInput: dateInput,
@@ -882,7 +884,7 @@ async function loadAllAddBillStockData() {
 
 // customer -----------------------------------------------------------------------------
 // customer Registration
-async function customerSectionLoading(){
+async function customerSectionLoading() {
   loadAllCustomers();
   loadLocationsForCustomer();
 }
@@ -917,87 +919,113 @@ async function loadAllCustomers() {
     console.log("Error fetching customer details");
   }
 }
-// load  Locations 
+// load  Locations
 async function loadLocationsForCustomer() {
-  const result = await fetch("/api/customer/getLocations", {
+  const result = await fetch("/branch/getBranchLocation", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
-  
+
+  if (result.ok) {
+    const response = await result.json();
+    console.log(response);
+    const branchLocationSelect = document.getElementById("location");
+    response.forEach((location) => {
+      const option = document.createElement("option");
+      option.value = location.location_id;
+      option.textContent = location.location_name;
+      branchLocationSelect.appendChild(option);
+    });
+  }
 }
 
 // add New Customer
 async function addNewCustomer() {
-    // ... (Your existing variable declarations) ...
-    const name = document.getElementById("fullName").value;
-    const gender = document.getElementById("gender").value;
-    const location = document.getElementById("location").value;
-    const address = document.getElementById("address").value;
-    const mobile1 = document.getElementById("mobile1").value;
-    const mobile2 = document.getElementById("mobile2").value;
-    const landline = document.getElementById("landline").value;
-    const birthday = document.getElementById("dob").value;
-    const nic = document.getElementById("nic").value;
-    const email = document.getElementById("email").value;
+  // ... (Your existing variable declarations) ...
+  const name = document.getElementById("fullName").value;
+  const gender = document.getElementById("gender").value;
+  const location = document.getElementById("location").value;
+  const address = document.getElementById("address").value;
+  const mobile1 = document.getElementById("mobile1").value;
+  const mobile2 = document.getElementById("mobile2").value;
+  const landline = document.getElementById("landline").value;
+  const birthday = document.getElementById("dob").value;
+  const nic = document.getElementById("nic").value;
+  const email = document.getElementById("email").value;
 
-    // Validation
-    if (!name || !gender || !location || !mobile1 || !birthday || !nic || !email) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Missing Info',
-            text: 'Please fill in all required fields.',
-            confirmButtonColor: '#3085d6'
-        });
-        return;
+  // Validation
+  if (
+    !name ||
+    !gender ||
+    !location ||
+    !mobile1 ||
+    !birthday ||
+    !nic ||
+    !email
+  ) {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill in all required fields.",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  }
+
+  const customerData = {
+    name,
+    gender,
+    location_name: location,
+    address,
+    mobile1,
+    mobile2,
+    landline,
+    birthday,
+    nic,
+    email,
+  };
+
+  try {
+    const response = await fetch("/api/customer/addCustomer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(customerData),
+    });
+
+    if (response.ok) {
+      // --- BEAUTIFUL TOAST ALERT ---
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      await Toast.fire({
+        icon: "success",
+        title: "Customer Added Successfully!",
+      });
+
+      // RELOAD PAGE AFTER TOAST
+      window.location.reload();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong on the server.",
+      });
     }
-
-    const customerData = {
-        name, gender, location_name: location, address,
-        mobile1, mobile2, landline, birthday, nic, email
-    };
-
-    try {
-        const response = await fetch("/api/customer/addCustomer", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(customerData),
-        });
-
-        if (response.ok) {
-            // --- BEAUTIFUL TOAST ALERT ---
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            await Toast.fire({
-                icon: 'success',
-                title: 'Customer Added Successfully!'
-            });
-
-            // RELOAD PAGE AFTER TOAST
-            window.location.reload(); 
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong on the server.',
-            });
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Connection Failed',
-            text: 'Could not connect to the server.',
-        });
-    }
+  } catch (error) {
+    console.error("Error:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Connection Failed",
+      text: "Could not connect to the server.",
+    });
+  }
 }

@@ -28,7 +28,7 @@ const fetchBranchDetails = async (req, res) => {
         (err, result) => {
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
@@ -39,8 +39,7 @@ const fetchBranchDetails = async (req, res) => {
     // Step 2: Loop through each branch + query invoice stuff
     const location_details = await Promise.all(
       branchResults.map((branch) => {
-        return new Promise((resolve, reject) => { 
-
+        return new Promise((resolve, reject) => {
           db.query(
             "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile`  WHERE `customer`.`location_id` = ? AND `invoice`.`date` = ?",
             [branch.location_id, todayDate],
@@ -84,10 +83,10 @@ const fetchBranchDetails = async (req, res) => {
               };
               console.log(location_data);
               resolve(location_data);
-            }
+            },
           );
         });
-      })
+      }),
     );
 
     // Step 3: Send results back
@@ -129,7 +128,7 @@ const fetch_month_branch_details = async (req, res) => {
         (err, result) => {
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
@@ -186,10 +185,10 @@ const fetch_month_branch_details = async (req, res) => {
               };
               console.log(location_data);
               resolve(location_data);
-            }
+            },
           );
         });
-      })
+      }),
     );
 
     // Step 3: Send results back
@@ -200,4 +199,25 @@ const fetch_month_branch_details = async (req, res) => {
   }
 };
 
-module.exports = { fetchBranchDetails, fetch_month_branch_details };
+const getBranchLocation = async (req, res) => {
+  console.log("getBranchLocation function called");
+
+  try {
+    const result = await new Promise((resolve, reject) => {  // ← 'resolve', not 'promise'
+      db.query("SELECT * FROM location", [], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+    res.json(result);
+  } catch (err) {
+    console.error("Error fetching branch locations:", err);
+    res.status(500).json({ error: "Failed to fetch locations" });
+  }
+};
+
+module.exports = {
+  fetchBranchDetails,
+  fetch_month_branch_details,
+  getBranchLocation,
+};

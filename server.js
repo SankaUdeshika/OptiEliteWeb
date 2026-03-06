@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public"), { index: false }));
 // --- Controller Routes ---
 app.use("/api/users", userRoutes);
 app.use("/user", userRoutes);
-app.use("/brnch", branchRoutes);
+app.use("/branch", branchRoutes);
 app.use("/api/bill", billRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/stock", stockRoutes);
