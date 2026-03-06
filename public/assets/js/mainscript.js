@@ -36,189 +36,219 @@ async function Login() {
 
 // fetch Branch Details
 async function fetchBranchStatus() {
-  const result = await fetch("branch/fetch", {
-    method: "POST",
-    body: JSON.stringify({
-      date: "2025-09-25", // <-- test date you showed in HeidiSQL
-      // or new Date().toISOString().slice(0,10) for today
-    }),
-    headers: { "Content-type": "application/json" },
-  });
+  try {
+    const result = await fetch("branch/fetch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
-  if (result.ok) {
+    if (!result.ok) {
+      console.error("Failed to fetch branch data:", result.status);
+      return;
+    }
+
     const response = await result.json();
+    const locations = response.locations;
 
-    let branchcount = response.locations.length;
+    if (!locations || locations.length === 0) {
+      console.warn("No branch locations returned.");
+      return;
+    }
 
     const container = document.getElementById("render-target");
 
-    for (let i = 0; i < branchcount; i++) {
-      console.log(response.locations[i].location_name);
+    // ✅ Fix #3: build HTML string first, set innerHTML once
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const currentMonthIndex = new Date().getMonth(); // 0-based
+    const currentMonthName = monthNames[currentMonthIndex]; // ✅ Fix #4
 
-      container.innerHTML += `
-        <div class="row" >
-                <div class="col-lg-12 col-md-12 col-sm-12 ">
-                  <div class="card card-statistic-2  border border-1 border-dark rounded mb-3">
-                    <div class="card-stats ">
-                      <div class="card-stats-title">
-                        <b style="color :purple">${response.locations[i].location_name}</b> Order Statistics -
-                        <div class="dropdown d-inline " >
-                          <a
-                            class="font-weight-600 dropdown-toggle"
-                            data-toggle="dropdown"
-                            href="#"
-                            id="orders-month"
-                            >August</a
-                          >
-                          <ul class="dropdown-menu dropdown-menu-sm">
-                            <li class="dropdown-title">Select Month</li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(1)">January</a></li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(2)">February</a>
-                            </li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(3)">March</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(4)">April</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(5)">May</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(6)">June</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(7)" >July</a></li>
-                            <li>
-                              <span class="dropdown-item active"  onclick="ChangeMonthForBranchStatus(8)">August</span>
-                            </li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(9)">September</a>
-                            </li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(10)">October</a></li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(11)">November</a>
-                            </li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(12)">December</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div class="card-stats-items">
-                        <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].order_count} </div>
-                          <div class="card-stats-item-label">Orders</div>
-                        </div>
-                       
-                        <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].total_cash_collected}</div>
-                          <div class="card-stats-item-label">Cash Collected</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-icon shadow-primary bg-primary">
-                      <i class="fas fa-archive"></i>
-                    </div>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Total Sales</h4>
-                      </div>
-                      <div class="card-body"> ${response.locations[i].astimate_total_profit}</div>
-                    </div>
+    // ✅ Fix #6: currency formatter
+    const formatCurrency = (value) =>
+      Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    let html = "";
+
+    for (let i = 0; i < locations.length; i++) {
+      const loc = locations[i]; // cleaner reference
+
+      html += `
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-statistic-2 border-0 shadow-sm rounded-lg mb-4">
+              <div class="card-header d-flex justify-content-between align-items-center border-bottom py-3 px-4">
+                <h4 class="m-0 text-muted" style="font-size: 1.1rem;">
+                  <span class="text-primary mr-1"><i class="fas fa-map-marker-alt"></i></span>
+                  <span style="color: purple; font-weight: 700;">${loc.location_name}</span>
+                  <small class="text-dark ml-1">Order Statistics</small>
+                </h4>
+
+                <div class="dropdown d-inline">
+                  <button class="btn btn-outline-primary btn-sm dropdown-toggle font-weight-600"
+                          type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ${currentMonthName}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-title">Select Month</div>
+                    ${monthNames.map((name, idx) => `
+                      <a href="#" class="dropdown-item ${idx === currentMonthIndex ? "active" : ""}"
+                         onclick="ChangeMonthForBranchStatus(${idx + 1})">
+                        ${name}
+                      </a>
+                    `).join("")}
                   </div>
                 </div>
-                
-                
               </div>
-        `;
+
+              <div class="card-body d-flex align-items-center p-4">
+                <div class="card-icon shadow-primary bg-primary text-white mr-4">
+                  <i class="fas fa-shopping-bag"></i>
+                </div>
+
+                <div class="card-wrap flex-grow-1">
+                  <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
+                  <div class="h3 font-weight-bold mb-0 text-dark">
+                    ${formatCurrency(loc.estimated_total_sale)}
+                  </div>
+                </div>
+
+                <div class="card-stats d-flex border-left pl-4">
+                  <div class="card-stats-item px-3 text-center">
+                    <div class="font-weight-bold text-dark h5 mb-0">${loc.order_count}</div>
+                    <div class="text-muted small">Orders</div>
+                  </div>
+                  <div class="card-stats-item px-3 text-center">
+                    <div class="font-weight-bold text-success h5 mb-0">${formatCurrency(loc.total_cash_collected)}</div>
+                    <div class="text-muted small">Cash Collected</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     }
+
+    container.innerHTML = html; // ✅ Fix #3: single DOM write
+
+  } catch (err) {
+    // ✅ Fix #5: catch network or parse errors
+    console.error("Error fetching branch status:", err);
   }
 }
 
 async function ChangeMonthForBranchStatus() {
-  let dateInput = document.getElementById("startDate").value;
+  const dateInput = document.getElementById("startDate").value;
 
-  const result = await fetch("branch/fetchMonth", {
-    method: "POST",
-    body: JSON.stringify({
-      dateInput: dateInput,
-    }),
-    headers: { "Content-type": "application/json" },
-  });
+  // ✅ Fix #1: validate before sending
+  if (!dateInput || !/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+    alert("Please select a valid date (YYYY-MM-DD) before filtering.");
+    return;
+  }
 
-  if (result.ok) {
+  try {
+    const result = await fetch("branch/fetchMonth", {
+      method: "POST",
+      body: JSON.stringify({ dateInput }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // ✅ Fix #5: handle failed response
+    if (!result.ok) {
+      console.error("Failed to fetch branch data:", result.status);
+      return;
+    }
+
     const response = await result.json();
+    const locations = response.locations;
 
-    let branchcount = response.locations.length;
+    if (!locations || locations.length === 0) {
+      console.warn("No branch locations returned.");
+      return;
+    }
 
-    const container = document.getElementById("render-target");
-    container.innerHTML = "";
-    for (let i = 0; i < branchcount; i++) {
-      // console.log(response.locations[i].location_name);
+    // ✅ Fix #4: derive selected month name from dateInput
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const selectedMonthIndex = new Date(dateInput).getMonth(); // 0-based
+    const selectedMonthName = monthNames[selectedMonthIndex];
 
-      container.innerHTML += `
-        <div class="row" >
-                <div class="col-lg-12 col-md-12 col-sm-12 ">
-                  <div class="card card-statistic-2  border border-1 border-dark rounded mb-3">
-                    <div class="card-stats ">
-                      <div class="card-stats-title">
-                        <b style="color :purple">${response.locations[i].location_name}</b> Order Statistics -
-                        <div class="dropdown d-inline " >
-                          <a
-                            class="font-weight-600 dropdown-toggle"
-                            data-toggle="dropdown"
-                            href="#"
-                            id="orders-month"
-                            >August</a
-                          >
-                          <ul class="dropdown-menu dropdown-menu-sm">
-                            <li class="dropdown-title">Select Month</li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(1)">January</a></li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(2)">February</a>
-                            </li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(3)">March</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(4)">April</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(5)">May</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(6)">June</a></li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(7)" >July</a></li>
-                            <li>
-                              <span class="dropdown-item active"  onclick="ChangeMonthForBranchStatus(8)">August</span>
-                            </li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(9)">September</a>
-                            </li>
-                            <li><a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(10)">October</a></li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(11)">November</a>
-                            </li>
-                            <li>
-                              <a href="#" class="dropdown-item" onclick="ChangeMonthForBranchStatus(12)">December</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div class="card-stats-items">
-                        <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].order_count} </div>
-                          <div class="card-stats-item-label">Orders</div>
-                        </div>
-                       
-                        <div class="card-stats-item">
-                          <div class="card-stats-item-count">${response.locations[i].total_cash_collected}</div>
-                          <div class="card-stats-item-label">Cash Collected</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-icon shadow-primary bg-primary">
-                      <i class="fas fa-archive"></i>
-                    </div>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Total Sales</h4>
-                      </div>
-                      <div class="card-body"> ${response.locations[i].astimate_total_profit}</div>
-                    </div>
+    // ✅ Fix #6: currency formatter
+    const formatCurrency = (value) =>
+      Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // ✅ Fix #2: build full HTML string, set innerHTML once
+    let html = "";
+
+    for (let i = 0; i < locations.length; i++) {
+      const loc = locations[i];
+
+      html += `
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-statistic-2 border-0 shadow-sm rounded-lg mb-4">
+              <div class="card-header d-flex justify-content-between align-items-center border-bottom py-3 px-4">
+                <h4 class="m-0 text-muted" style="font-size: 1.1rem;">
+                  <span class="text-primary mr-1"><i class="fas fa-map-marker-alt"></i></span>
+                  <span style="color: purple; font-weight: 700;">${loc.location_name}</span>
+                  <small class="text-dark ml-1">Order Statistics</small>
+                </h4>
+
+                <div class="dropdown d-inline">
+                  <button class="btn btn-outline-primary btn-sm dropdown-toggle font-weight-600"
+                          type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ${selectedMonthName}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-title">Select Month</div>
+                    ${monthNames.map((name, idx) => `
+                      <a href="#" class="dropdown-item ${idx === selectedMonthIndex ? "active" : ""}"
+                         onclick="ChangeMonthForBranchStatus()">
+                        ${name}
+                      </a>
+                    `).join("")}
                   </div>
                 </div>
-                
-                
               </div>
-        `;
+
+              <div class="card-body d-flex align-items-center p-4">
+                <div class="card-icon shadow-primary bg-primary text-white mr-4">
+                  <i class="fas fa-shopping-bag"></i>
+                </div>
+
+                <div class="card-wrap flex-grow-1">
+                  <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
+                  <div class="h3 font-weight-bold mb-0 text-dark">
+                    ${formatCurrency(loc.estimated_total_sale)}
+                  </div>
+                </div>
+
+                <div class="card-stats d-flex border-left pl-4">
+                  <div class="card-stats-item px-3 text-center">
+                    <div class="font-weight-bold text-dark h5 mb-0">${loc.order_count}</div>
+                    <div class="text-muted small">Orders</div>
+                  </div>
+                  <div class="card-stats-item px-3 text-center">
+                    <div class="font-weight-bold text-success h5 mb-0">${formatCurrency(loc.total_cash_collected)}</div>
+                    <div class="text-muted small">Cash Collected</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     }
+
+    document.getElementById("render-target").innerHTML = html; // ✅ Fix #2: single DOM write
+
+  } catch (err) {
+    // ✅ Fix #5: catch network or parse errors
+    console.error("Error in ChangeMonthForBranchStatus:", err);
   }
 }
 

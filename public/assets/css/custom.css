@@ -38,4 +38,26 @@
   padding: 10px 0;
 }
 
+.card-statistic-2 {
+    transition: transform 0.2s ease-in-out;
+    background: #fff;
+}
 
+.card-statistic-2:hover {
+    transform: translateY(-3px);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 24px;
+}
+
+/* Fix for the dropdown button alignment */
+#orders-month::after {
+    margin-left: 0.5em;
+}
