@@ -776,7 +776,6 @@
                           <div class="col-12">
                             <h4>Customer list / manage table</h4>
                           </div>
-                    
                         </div>
                       </div>
                       <div class="card-body">
@@ -814,112 +813,119 @@
                     </div>
                     <div class="card-body">
                       <!-- Customer registration form based on image description -->
-                   
-                        <div class="form-row">
-                          <div class="form-group col-md-6">
-                            <label for="fullName"
-                              >Full Name
-                              <span class="text-danger">*</span></label
-                            >
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="fullName"
-                              placeholder="Enter full name"
-                            />
-                          </div>
-                          <div class="form-group col-md-3">
-                            <label for="gender"
-                              >Gender <span class="text-danger">*</span></label
-                            >
-                            <select id="gender" class="form-control">
-                              <option selected disabled>Select gender</option>
-                              <option>Male</option>
-                              <option>Female</option>
-                              <option>Other</option>
-                            </select>
-                          </div>
-                          <div class="form-group col-md-3">
-                            <label for="location"
-                              >Location
-                              <span class="text-danger">*</span></label
-                            >
-                            <select id="location" class="form-control">
-                              <option selected disabled>Select location</option>
-                              <option>North</option>
-                              <option>South</option>
-                              <option>East</option>
-                              <option>West</option>
-                              <option>Central</option>
-                            </select>
-                          </div>
-                        </div>
 
-                        <div class="form-row">
-                          <div class="form-group col-md-6">
-                            <label for="address">Address</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="address"
-                              placeholder="Enter customer address"
-                            />
-                          </div>
-                          <div class="form-group col-md-3">
-                            <label for="mobileSecondary"
-                              >Mobile Number (Secondary)</label
-                            >
-                            <input
-                              type="tel"
-                              class="form-control"
-                              id="mobileSecondary"
-                              placeholder="07XXXXXXXXX"
-                            />
-                          </div>
-                          <div class="form-group col-md-3">
-                            <label for="landline">Landline Number</label>
-                            <input
-                              type="tel"
-                              class="form-control"
-                              id="landline"
-                              placeholder="0XXXXXXXXX"
-                            />
-                          </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="fullName"
+                            >Full Name <span class="text-danger">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="fullName"
+                            placeholder="Enter full name"
+                          />
                         </div>
+                        <div class="form-group col-md-3">
+                          <label for="gender"
+                            >Gender <span class="text-danger">*</span></label
+                          >
+                          <select id="gender" class="form-control">
+                            <option selected disabled>Select gender</option>
+                            <option value="1">Male</option>
+                            <option value="2">Female</option>
+                          </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label for="location"
+                            >Location <span class="text-danger">*</span></label
+                          >
+                          <select id="location" class="form-control">
+                            <option selected disabled>Select location</option>
+                            <option value="1">Dehiwala</option>
+                            <option value="2">South</option>
+                            <option value="3">East</option>
+                          </select>
+                        </div>
+                      </div>
 
-                        <div class="form-row">
-                          <div class="form-group col-md-3">
-                            <label for="dob">Date of Birth</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="dob"
-                              placeholder="mm/dd/yyyy"
-                            />
-                          </div>
-                          <div class="form-group col-md-3">
-                            <label for="nic">NIC Number</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="nic"
-                              placeholder="NIC number"
-                            />
-                          </div>
-                          <div class="form-group col-md-6">
-                            <label for="email">Email Address</label>
-                            <input
-                              type="email"
-                              class="form-control"
-                              id="email"
-                              placeholder="example@email.com"
-                            />
-                          </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-4">
+                          <label for="address">Address</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="address"
+                            placeholder="Enter customer address"
+                          />
                         </div>
-                        <button onclick="addNewCustomer();" class="btn btn-primary">
-                          Save customer
-                        </button>
-                      
+                        <div class="form-group col-md-2">
+                          <label for="mobile"
+                            >Mobile Number (Whatsapp)
+                            <sub style="color: red">*</sub></label
+                          >
+                          <input
+                            type="tel"
+                            class="form-control"
+                            id="mobile1"
+                            placeholder="07XXXXXXXXX"
+                          />
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="mobile">Mobile Number (Secondary)</label>
+                          <input
+                            type="tel"
+                            class="form-control"
+                            id="mobile2"
+                            placeholder="07XXXXXXXXX"
+                          />
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="landline">Landline Number</label>
+                          <input
+                            type="tel"
+                            class="form-control"
+                            id="landline"
+                            placeholder="07XXXXXXXXX"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group col-md-3">
+                          <label for="dob">Date of Birth</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            id="dob"
+                            placeholder="mm/dd/yyyy"
+                          />
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label for="nic">NIC Number</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="nic"
+                            placeholder="NIC number"
+                          />
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="email">Email Address</label>
+                          <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            placeholder="example@email.com"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onclick="addNewCustomer()"
+                        class="btn btn-primary"
+                      >
+                        Save customer
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -971,5 +977,7 @@
     <script src="assets/js/scripts.js"></script>
     <script src="assets/js/custom.js"></script>
     <script src="assets/js/mainscript.js"></script>
+    <!-- Toast Alert Response  -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>

@@ -928,42 +928,76 @@ async function loadLocationsForCustomer() {
 
 // add New Customer
 async function addNewCustomer() {
-  alert("Working");
-  // alert("Working");
-  // const name = document.getElementById("customerName").value;
-  // const gender = document.getElementById("customerGender").value;
-  // const location = document.getElementById("customerLocation").value;
-  // const mobile = document.getElementById("customerMobile").value;
-  // const birthday = document.getElementById("customerBirthday").value;
-  // const nic = document.getElementById("customerNIC").value;
-  // const email = document.getElementById("customerEmail").value;
+    // ... (Your existing variable declarations) ...
+    const name = document.getElementById("fullName").value;
+    const gender = document.getElementById("gender").value;
+    const location = document.getElementById("location").value;
+    const address = document.getElementById("address").value;
+    const mobile1 = document.getElementById("mobile1").value;
+    const mobile2 = document.getElementById("mobile2").value;
+    const landline = document.getElementById("landline").value;
+    const birthday = document.getElementById("dob").value;
+    const nic = document.getElementById("nic").value;
+    const email = document.getElementById("email").value;
 
-  // if (name == "" || gender == "" || location || !mobile || !birthday || !nic || !email) {
-  //   alert("Please fill in all fields.");
-  //   return;
-  // } else {
-  //   alert("OK");
-    // var customerData = {
-    //   name: name,
-    //   gender: gender,
-    //   location_name: location,
-    //   mobile: mobile,
-    //   birthday: birthday,
-    //   nic: nic,
-    //   email: email,
-    // };
+    // Validation
+    if (!name || !gender || !location || !mobile1 || !birthday || !nic || !email) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Info',
+            text: 'Please fill in all required fields.',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
 
-    // const result = await fetch("/api/customer/addCustomer", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(customerData),
-    // });
+    const customerData = {
+        name, gender, location_name: location, address,
+        mobile1, mobile2, landline, birthday, nic, email
+    };
 
-    // if (result.ok) {
-    //   console.log("Customer added successfully");
-    //   loadAllCustomers(); // Reload customer list
-    // } else {
-    //   console.log("Error adding customer");
-    // }
-  // }
+    try {
+        const response = await fetch("/api/customer/addCustomer", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(customerData),
+        });
+
+        if (response.ok) {
+            // --- BEAUTIFUL TOAST ALERT ---
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            await Toast.fire({
+                icon: 'success',
+                title: 'Customer Added Successfully!'
+            });
+
+            // RELOAD PAGE AFTER TOAST
+            window.location.reload(); 
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong on the server.',
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Connection Failed',
+            text: 'Could not connect to the server.',
+        });
+    }
 }
