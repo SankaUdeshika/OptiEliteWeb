@@ -35,12 +35,39 @@ const login = (req, res) => {
         req.session.username = data.username + "_" + result[0].id;
         req.session.db_name = result[0].db_name;
 
-        res.send("success");
+        const db = getAppDb(result[0].db_name); // ✅ get DB connection for this user
+        db.query("SELECT * FROM `location`", (err, branchLocations) => {
+          if (err) {
+            console.error("Error fetching branch data: " + err);
+            return res.status(500).json({ error: "DB Error" });
+          }  
+          res.send(branchLocations);
+        });
       } else {
         res.send("Invalid");
       }
-    }
+    },
   );
 };
 
-module.exports = { login, getAllUsers };
+const updateUserLocation = async (req, res) => {
+  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
+  try {
+    db.query(
+      "UPDATE `users` SET `location_id` = ? WHERE `id` = ?",
+      [req.body.location_id, req.session.user.id],
+      (err, result) => {
+        if (err) {
+          console.error("Error updating user location: " + err);
+          return res.status(500).json({ error: "DB Error" });
+        }
+        res.json({ success: true, message: "Location updated successfully" });
+      }
+    );
+  } catch (error) {
+    console.error("Error updating user location: " + error);
+    res.status(500).json({ error: "DB Error" });
+  }
+}
+
+module.exports = { login, getAllUsers, updateUserLocation };

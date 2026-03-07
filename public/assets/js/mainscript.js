@@ -24,12 +24,46 @@ async function Login() {
     });
     if (result.ok) {
       const response = await result.text();
-      if (response == "success") {
-        window.location = "/";
-      } else if (response == "Invalid") {
+      if (response == "Invalid") {
         document.getElementById("errormessage").innerHTML =
           "Invalid User Details, Please Try again later";
+      } else {
+        const locations = JSON.parse(response);
+        console.log("Locations received:", locations);
+        const locationDiv = document.getElementById("locationdiv");
+        locationDiv.innerHTML = ""; // Clear previous content
+        locations.forEach((loc) => {
+          locationDiv.innerHTML += `<button class="btn btn-outline-danger" onclick="setUserLocation('${loc.id}')">${loc.location_name}</button>`;
+        });
+
+        // Get the modal element
+        var myModal = new bootstrap.Modal(
+          document.getElementById("exampleModal"),
+        );
+        myModal.show();
       }
+    }
+  }
+}
+// set user Location 
+async function setUserLocation(location_id) {
+
+  const result = await fetch("user/updateLocation", {
+    method: "POST",
+    body: JSON.stringify({
+      location_id: location_id
+    }),
+    headers: {
+      "Content-type": "application/json"
+    }
+  });
+
+  if(result.ok){
+    const response = await result.json();
+    if(response.success){
+      window.location = "/";
+    }else{
+      alert("Failed to set location. Please try again.");
     }
   }
 }
@@ -59,15 +93,28 @@ async function fetchBranchStatus() {
 
     // ✅ Fix #3: build HTML string first, set innerHTML once
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     const currentMonthIndex = new Date().getMonth(); // 0-based
     const currentMonthName = monthNames[currentMonthIndex]; // ✅ Fix #4
 
     // ✅ Fix #6: currency formatter
     const formatCurrency = (value) =>
-      Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
     let html = "";
 
@@ -92,12 +139,16 @@ async function fetchBranchStatus() {
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-title">Select Month</div>
-                    ${monthNames.map((name, idx) => `
+                    ${monthNames
+                      .map(
+                        (name, idx) => `
                       <a href="#" class="dropdown-item ${idx === currentMonthIndex ? "active" : ""}"
                          onclick="ChangeMonthForBranchStatus(${idx + 1})">
                         ${name}
                       </a>
-                    `).join("")}
+                    `,
+                      )
+                      .join("")}
                   </div>
                 </div>
               </div>
@@ -132,7 +183,6 @@ async function fetchBranchStatus() {
     }
 
     container.innerHTML = html; // ✅ Fix #3: single DOM write
-
   } catch (err) {
     // ✅ Fix #5: catch network or parse errors
     console.error("Error fetching branch status:", err);
@@ -171,15 +221,28 @@ async function ChangeMonthForBranchStatus() {
 
     // ✅ Fix #4: derive selected month name from dateInput
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     const selectedMonthIndex = new Date(dateInput).getMonth(); // 0-based
     const selectedMonthName = monthNames[selectedMonthIndex];
 
     // ✅ Fix #6: currency formatter
     const formatCurrency = (value) =>
-      Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
     // ✅ Fix #2: build full HTML string, set innerHTML once
     let html = "";
@@ -205,12 +268,16 @@ async function ChangeMonthForBranchStatus() {
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-title">Select Month</div>
-                    ${monthNames.map((name, idx) => `
+                    ${monthNames
+                      .map(
+                        (name, idx) => `
                       <a href="#" class="dropdown-item ${idx === selectedMonthIndex ? "active" : ""}"
                          onclick="ChangeMonthForBranchStatus()">
                         ${name}
                       </a>
-                    `).join("")}
+                    `,
+                      )
+                      .join("")}
                   </div>
                 </div>
               </div>
@@ -245,7 +312,6 @@ async function ChangeMonthForBranchStatus() {
     }
 
     document.getElementById("render-target").innerHTML = html; // ✅ Fix #2: single DOM write
-
   } catch (err) {
     // ✅ Fix #5: catch network or parse errors
     console.error("Error in ChangeMonthForBranchStatus:", err);
