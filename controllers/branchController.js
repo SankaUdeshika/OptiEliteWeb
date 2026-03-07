@@ -1,8 +1,8 @@
-const { error, Console } = require("console");
-const db = require("../db/db");
-const path = require("path");
+const getAppDb = require("../db/appDb");
 
 const fetchBranchDetails = async (req, res) => {
+  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
+
   const date = new Date();
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -15,10 +15,9 @@ const fetchBranchDetails = async (req, res) => {
 
   const username = req.session.username;
   const userIdParts = username.split("_");
-  const userId = userIdParts[userIdParts.length - 1]; // ✅ Fix #1: always get last part
+  const userId = userIdParts[userIdParts.length - 1];
 
   try {
-    // Step 1: Get branch users and location info
     const branchResults = await new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM `branch_users` INNER JOIN `location` ON `branch_users`.`location_id` = `location`.`id` WHERE `users_id` = ?",
@@ -26,7 +25,7 @@ const fetchBranchDetails = async (req, res) => {
         (err, result) => {
           if (err) return reject(err);
           resolve(result);
-        },
+        }
       );
     });
 
@@ -34,7 +33,6 @@ const fetchBranchDetails = async (req, res) => {
       return res.json("No Result");
     }
 
-    // Step 2: Loop through each branch + query invoice stuff
     const location_details = await Promise.all(
       branchResults.map((branch) => {
         return new Promise((resolve, reject) => {
@@ -52,24 +50,22 @@ const fetchBranchDetails = async (req, res) => {
 
               for (let x = 0; x < result2.length; x++) {
                 const invoice = result2[x];
-                const statusId = String(invoice.payment_status_id); // ✅ Fix #4: safe type cast
+                const statusId = String(invoice.payment_status_id);
 
-                estimated_total_sale += invoice.total_price; // all orders estimate
+                estimated_total_sale += invoice.total_price;
 
                 if (statusId === "1") {
-                  // Pending: only advance paid
                   total_branch_advance_payments += invoice.advance_payment;
                   cash_collected += invoice.advance_payment;
                 }
 
                 if (statusId === "2") {
-                  // Completed: full price collected
                   actual_total_profit += invoice.total_price;
                   cash_collected += invoice.total_price;
                 }
               }
 
-              const location_data = {
+              resolve({
                 location_id: branch.location_id,
                 location_name: branch.location_name,
                 branch_name: branch.branch_name,
@@ -78,20 +74,18 @@ const fetchBranchDetails = async (req, res) => {
                 order_count: branch_OrderCount,
                 total_advance_payments: total_branch_advance_payments,
                 total_profit: actual_total_profit,
-                estimated_total_sale: estimated_total_sale, // ✅ Fix #2 & #3: renamed clearly
+                estimated_total_sale: estimated_total_sale,
                 total_cash_collected: cash_collected,
-              };
-
-              console.log(location_data);
-              resolve(location_data);
-            },
+              });
+            }
           );
         });
-      }),
+      })
     );
 
-    // Step 3: Send results back
+    db.end(); // ✅ close after all queries done
     res.json({ locations: location_details });
+
   } catch (err) {
     console.error("Server error:", err);
     res.status(500).json({ error: "Server error" });
@@ -99,21 +93,19 @@ const fetchBranchDetails = async (req, res) => {
 };
 
 const fetch_month_branch_details = async (req, res) => {
+  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
 
-  // ✅ Fix #3: validate dateInput before using it
   const dateInput = req.body.dateInput;
 
   if (!dateInput || !/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
     return res.status(400).json({ error: "Invalid or missing dateInput. Expected format: YYYY-MM-DD" });
   }
 
-  const dateArray = dateInput.split("-"); // ✅ Fix #3: also fixed typo "dateArrya" → "dateArray"
+  const dateArray = dateInput.split("-");
   const year  = dateArray[0];
   const month = dateArray[1];
   const day   = dateArray[2];
   const todayDate = `${year}-${month}-${day}`;
-
-  console.log(`${todayDate} is being processed`);
 
   if (!req.session.username) {
     return res.send("no");
@@ -121,10 +113,9 @@ const fetch_month_branch_details = async (req, res) => {
 
   const username = req.session.username;
   const userIdParts = username.split("_");
-  const userId = userIdParts[userIdParts.length - 1]; // ✅ Fix #2: always grab last part
+  const userId = userIdParts[userIdParts.length - 1];
 
   try {
-    // Step 1: Get branch users and location info
     const branchResults = await new Promise((resolve, reject) => {
       db.query(
         "SELECT * FROM `branch_users` INNER JOIN `location` ON `branch_users`.`location_id` = `location`.`id` WHERE `users_id` = ?",
@@ -132,7 +123,7 @@ const fetch_month_branch_details = async (req, res) => {
         (err, result) => {
           if (err) return reject(err);
           resolve(result);
-        },
+        }
       );
     });
 
@@ -140,12 +131,9 @@ const fetch_month_branch_details = async (req, res) => {
       return res.json("No Result");
     }
 
-    // Step 2: Loop through each branch + query invoice stuff
     const location_details = await Promise.all(
       branchResults.map((branch) => {
         return new Promise((resolve, reject) => {
-          console.log(branch.location_id); // ✅ Fix #1: removed stray `9;`
-
           db.query(
             "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` WHERE `customer`.`location_id` = ? AND `invoice`.`date` = ?",
             [branch.location_id, todayDate],
@@ -156,28 +144,26 @@ const fetch_month_branch_details = async (req, res) => {
               let branch_order_count = result2.length;
               let total_branch_advance_payments = 0;
               let actual_total_profit = 0;
-              let cash_collected = 0; // ✅ Fix #6: consistent naming
+              let cash_collected = 0;
 
               for (let x = 0; x < result2.length; x++) {
                 const invoice = result2[x];
-                const statusId = String(invoice.payment_status_id); // ✅ Fix #5: safe type cast
+                const statusId = String(invoice.payment_status_id);
 
                 estimated_total_sale += invoice.total_price;
 
                 if (statusId === "1") {
-                  // Pending: only advance paid
                   total_branch_advance_payments += invoice.advance_payment;
                   cash_collected += invoice.advance_payment;
                 }
 
                 if (statusId === "2") {
-                  // Completed: full price collected
                   actual_total_profit += invoice.total_price;
                   cash_collected += invoice.total_price;
                 }
               }
 
-              const location_data = {
+              resolve({
                 location_id: branch.location_id,
                 location_name: branch.location_name,
                 branch_name: branch.branch_name,
@@ -186,19 +172,16 @@ const fetch_month_branch_details = async (req, res) => {
                 order_count: branch_order_count,
                 total_advance_payments: total_branch_advance_payments,
                 total_profit: actual_total_profit,
-                estimated_total_sale: estimated_total_sale, // ✅ Fix #4: typo fixed
+                estimated_total_sale: estimated_total_sale,
                 total_cash_collected: cash_collected,
-              };
-
-              console.log(location_data);
-              resolve(location_data);
-            },
+              });
+            }
           );
         });
-      }),
+      })
     );
 
-    // Step 3: Send results back
+    db.end(); // ✅ close after all queries done
     res.json({ locations: location_details });
 
   } catch (err) {
@@ -208,16 +191,20 @@ const fetch_month_branch_details = async (req, res) => {
 };
 
 const getBranchLocation = async (req, res) => {
+  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
   console.log("getBranchLocation function called");
 
   try {
-    const result = await new Promise((resolve, reject) => {  // ← 'resolve', not 'promise'
+    const result = await new Promise((resolve, reject) => {
       db.query("SELECT * FROM location", [], (err, result) => {
+        db.end(); // ✅ close after query
         if (err) return reject(err);
         resolve(result);
       });
     });
+
     res.json(result);
+
   } catch (err) {
     console.error("Error fetching branch locations:", err);
     res.status(500).json({ error: "Failed to fetch locations" });

@@ -45,17 +45,17 @@ app.use("/api/stock", stockRoutes);
 // });
 
 // --- ADD THIS: Login endpoint ---
-app.post("/user/login", (req, res) => {
-  const { username, password } = req.body;
+// app.post("/user/login", (req, res) => {
+  // const { username, password } = req.body;
 
   // This is a simple example - replace with your actual database validation
-  if (username === "sankaudeshika" && password === "12345678") {
-    req.session.username = username;
-    res.send("success");
-  } else {
-    res.status(401).send("Invalid");
-  }
-});
+  // if (username === "sankaudeshika" && password === "12345678") {
+  //   req.session.username = username;
+  //   res.send("success");
+  // } else {
+  //   res.status(401).send("Invalid");
+  // }
+// });
 
 // --- Page Routes ---
 app.get("/", (req, res) => {

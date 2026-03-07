@@ -61,3 +61,63 @@
 #orders-month::after {
     margin-left: 0.5em;
 }
+
+.under-construction-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .uc-icon {
+        font-size: 3.5rem;
+        color: #f6c23e;
+        margin-bottom: 18px;
+        animation: wobble 2.5s ease-in-out infinite;
+      }
+      @keyframes wobble {
+        0%, 100% { transform: rotate(0deg); }
+        20%       { transform: rotate(-8deg); }
+        40%       { transform: rotate(8deg); }
+        60%       { transform: rotate(-4deg); }
+        80%       { transform: rotate(4deg); }
+      }
+      .uc-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+      }
+      .uc-subtitle {
+        font-size: 0.97rem;
+        color: #718096;
+        margin-bottom: 28px;
+        max-width: 380px;
+        line-height: 1.65;
+      }
+      .uc-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff8e6;
+        border: 1px solid #f6c23e;
+        color: #b7791f;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        padding: 6px 16px;
+        border-radius: 999px;
+        text-transform: uppercase;
+      }
+      .uc-dot {
+        width: 7px; height: 7px;
+        background: #f6c23e;
+        border-radius: 50%;
+        animation: blink 1.2s ease-in-out infinite;
+      }
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.2; }
+      }

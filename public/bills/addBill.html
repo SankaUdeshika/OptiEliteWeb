@@ -158,14 +158,14 @@
                   ><i class="fas fa-fire"></i><span>Dashboard</span></a
                 >
                 <ul class="dropdown-menu">
-                  <li>
+                  <!-- <li>
                     <a class="nav-link" href="index-0.html"
                       >General Dashboard</a
                     >
-                  </li>
+                  </li> -->
                   <li class="active">
-                    <a class="nav-link" href="index.html"
-                      >Ecommerce Dashboard</a
+                    <a class="nav-link" href="/"
+                      >Admin Dashboard</a
                     >
                   </li>
                 </ul>
@@ -549,350 +549,27 @@
         </div>
 
         <!-- MAIN CONTENT -->
+        <!-- MAIN CONTENT -->
         <div class="main-content">
           <section class="section">
-            <div class="col-12 bg-white badge-soft">
-              <div class="row">
-                <div class="col-12">
-                  <!-- page topic -->
-                  <div class="row d-flex justify-content-center">
-                    <div class="col-6 bg-info">
-                      <span class="text-center pageTopic">ADD BILL</span>
-                    </div>
-                  </div>
+            <div class="under-construction-box">
 
-                  <div class="row">
-                    <!-- Customer Section -->
-                    <div class="col-lg-6 col-12">
-                      <h4 class="text-center">Customer Details</h4>
-                      <div class="row">
-                        <div class="col-12">
-                          <label>Customer Mobile or Name</label>
-                          <!-- <div class="form-group">
-                          <label>Customer Mobile or Name</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="customerName"
-                            placeholder="Enter Mobile or Name"
-                          />
-                        </div> -->
-                        </div>
-                        <!-- Add Customer Details -->
-                        <div class="col-12">
-                          <div
-                            class="accordion"
-                            id="accordionPanelsStayOpenExample"
-                          >
-                            <div class="accordion-item">
-                              <h2 class="accordion-header">
-                                <button
-                                  class="accordion-button"
-                                  type="button"
-                                  data-bs-target="#panelsStayOpen-collapseOne"
-                                  aria-expanded="false"
-                                  aria-controls="panelsStayOpen-collapseOne"
-                                >
-                                  <div class="col-10">
-                                    <input
-                                      type="text"
-                                      class="form-control"
-                                      id="customerMobile"
-                                      placeholder="Enter Mobile or Name"
-                                      onkeyup="customerMobileSearch()"
-                                    />
-                                  </div>
-                                </button>
-                              </h2>
-                              <div
-                                id="panelsStayOpen-collapseOne"
-                                class="accordion-collapse collapse"
-                              >
-                                <div class="accordion-body">
-                                  <table
-                                    class="table table-striped"
-                                    id="customerSearchTable"
-                                  >
-                                    <!-- <div class="d-flex justify-content-center">
-                                      <a
-                                        class="btn btn-outline-primary"
-                                        data-toggle="collapse"
-                                        href="#collapseExample"
-                                        role="button"
-                                        aria-expanded="false"
-                                        aria-controls="collapseExample"
-                                        id="newCustomerBtn"
-                                      >
-                                        Add New Customer
-                                      </a>
-                                    </div> -->
-
-                                    <div class="collapse" id="collapseExample">
-                                      <div class="card shadow-sm border-0">
-                                        <div class="card-body bg-white">
-                                          <h6
-                                            class="mb-3 text-muted fw-semibold"
-                                          >
-                                            Customer Information
-                                          </h6>
-
-                                          <!-- Full Name -->
-                                          <div class="mb-3">
-                                            <label
-                                              for="newCustomerName"
-                                              class="form-label"
-                                            >
-                                              Full Name
-                                              <span class="text-danger">*</span>
-                                            </label>
-                                            <input
-                                              type="text"
-                                              class="form-control"
-                                              id="newCustomerName"
-                                              placeholder="Enter full name"
-                                            />
-                                          </div>
-
-                                          <!-- Gender & Location -->
-                                          <div class="row mb-3">
-                                            <div class="col-md-6">
-                                              <label
-                                                for="genderType"
-                                                class="form-label"
-                                              >
-                                                Gender
-                                                <span class="text-danger"
-                                                  >*</span
-                                                >
-                                              </label>
-                                              <select
-                                                id="genderType"
-                                                class="form-select"
-                                              >
-                                                <option
-                                                  value=""
-                                                  selected
-                                                  disabled
-                                                >
-                                                  Select gender
-                                                </option>
-                                                <option value="Male">
-                                                  Male
-                                                </option>
-                                                <option value="Female">
-                                                  Female
-                                                </option>
-                                              </select>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                              <label
-                                                for="location"
-                                                class="form-label"
-                                              >
-                                                Location
-                                                <span class="text-danger"
-                                                  >*</span
-                                                >
-                                              </label>
-                                              <select
-                                                id="location"
-                                                class="form-select"
-                                              >
-                                                <option
-                                                  value=""
-                                                  selected
-                                                  disabled
-                                                >
-                                                  Select location
-                                                </option>
-                                                <option value="Agalawatta">
-                                                  Agalawatta
-                                                </option>
-                                                <option value="Matugama">
-                                                  Matugama
-                                                </option>
-                                              </select>
-                                            </div>
-                                          </div>
-
-                                          <!-- Address -->
-                                          <div class="mb-3">
-                                            <label
-                                              for="customerAddress"
-                                              class="form-label"
-                                            >
-                                              Address
-                                            </label>
-                                            <textarea
-                                              id="customerAddress"
-                                              class="form-control"
-                                              rows="2"
-                                              placeholder="Enter customer address"
-                                            ></textarea>
-                                          </div>
-
-                                          <!-- Contact Numbers -->
-                                          <div class="row mb-3">
-                                            <div class="col-md-6">
-                                              <label
-                                                for="newCustomerMobile2"
-                                                class="form-label"
-                                              >
-                                                Mobile Number (Secondary)
-                                              </label>
-                                              <input
-                                                type="text"
-                                                class="form-control"
-                                                id="newCustomerMobile2"
-                                                placeholder="07XXXXXXXX"
-                                              />
-                                            </div>
-
-                                            <div class="col-md-6">
-                                              <label
-                                                for="newCustomerLandNumber"
-                                                class="form-label"
-                                              >
-                                                Landline Number
-                                              </label>
-                                              <input
-                                                type="text"
-                                                class="form-control"
-                                                id="newCustomerLandNumber"
-                                                placeholder="0XXXXXXXX"
-                                              />
-                                            </div>
-                                          </div>
-
-                                          <!-- Personal Details -->
-                                          <div class="row mb-3">
-                                            <div class="col-md-5">
-                                              <label
-                                                for="newCustomerBirthday"
-                                                class="form-label"
-                                              >
-                                                Date of Birth
-                                              </label>
-                                              <input
-                                                type="date"
-                                                class="form-control"
-                                                id="newCustomerBirthday"
-                                              />
-                                            </div>
-
-                                            <div class="col-md-7">
-                                              <label
-                                                for="newCustomerNIC"
-                                                class="form-label"
-                                              >
-                                                NIC Number
-                                              </label>
-                                              <input
-                                                type="text"
-                                                class="form-control"
-                                                id="newCustomerNIC"
-                                                placeholder="NIC number"
-                                              />
-                                            </div>
-                                          </div>
-
-                                          <!-- Email -->
-                                          <div class="mb-3">
-                                            <label
-                                              for="newCustomerEmail"
-                                              class="form-label"
-                                            >
-                                              Email Address
-                                            </label>
-                                            <input
-                                              type="email"
-                                              class="form-control"
-                                              id="newCustomerEmail"
-                                              placeholder="example@email.com"
-                                            />
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <!-- <tr>
-                                    <td>
-                                      <div class="sort-handler">
-                                        <i class="fas fa-th"></i>
-                                      </div>
-                                    </td>
-                                    <td>1</td>
-
-                                    <td>
-                                      <img
-                                        alt="image"
-                                        src="/assets/img/avatar/avatar-5.png"
-                                        class="rounded-circle"
-                                        width="35"
-                                        data-toggle="tooltip"
-                                        title="${customerName}"
-                                      />
-                                    </td>
-                                    <td><span>NAme</span></td>
-                                    <td>
-                                      <span>customer Mobile</span>
-                                    </td>
-                                    <td>
-                                      <input type="radio" name="selectCustomer" /> 
-                                    </td>
-                                  </tr> -->
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Customer Section -->
-                    <div class="col-lg-6 col-12 ">
-                      <h4 class="text-center">Order Details</h4>
-                      <div class="row">
-                        <div class="col-12">
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter Brand or Frame Code "
-                          />
-                        </div>
-                        <div class="col-12">
-                          <div class="container mt-4 mb-4">
-                            <div class="prescription-card">
-                              <div class="table-responsive">
-                                <table class="table mb-0">
-                                  <thead>
-                                    <tr>
-                                      <th>Brand</th>
-                                      <th>Frame ID</th>
-                                      <th>Frame Category</th>
-                                      <th>Price</th>
-                                      <th>Product ID</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody
-                                    class="FrameTableBody"
-                                    id="OrderStockTableBody"
-                                  >
-                                    <!-- insert Details -->
-                                    <tr></tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="uc-icon">
+                <i class="fas fa-hard-hat"></i>
               </div>
+
+              <div class="uc-title">This Feature is Under Construction</div>
+
+              <p class="uc-subtitle">
+                We're still working on this page. It will be ready in a few days.<br/>
+                Thank you for your patience!
+              </p>
+
+              <div class="uc-badge">
+                <span class="uc-dot"></span>
+                Coming Soon
+              </div>
+
             </div>
           </section>
         </div>
