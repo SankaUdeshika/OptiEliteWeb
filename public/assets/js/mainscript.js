@@ -45,26 +45,46 @@ async function Login() {
     }
   }
 }
-// set user Location 
+// set user Location
 async function setUserLocation(location_id) {
-
   const result = await fetch("user/updateLocation", {
     method: "POST",
     body: JSON.stringify({
-      location_id: location_id
+      location_id: location_id,
     }),
     headers: {
-      "Content-type": "application/json"
-    }
+      "Content-type": "application/json",
+    },
   });
 
-  if(result.ok){
+  if (result.ok) {
     const response = await result.json();
-    if(response.success){
+    if (response.success) {
       window.location = "/";
-    }else{
+    } else {
       alert("Failed to set location. Please try again.");
     }
+  }
+}
+
+// ----------------------------------------------------------------------------------
+// load Index Page Data
+async function loadIndexPage() {
+  await fetchBranchStatus();
+  await getUserDetails();
+}
+
+// get UserDetails
+async function getUserDetails() {
+  const result = await fetch("user/getUserDetails", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (result.ok) {
+    const response = await result.json();
+    // console.log("User details received:", response.userbane);
+  } else {
+    console.error("Failed to fetch user details:", result.status);
   }
 }
 
@@ -394,6 +414,7 @@ async function loadBills() {
 
       tableBody.insertAdjacentHTML("beforeend", rowHtml);
     });
+    document.getElementById("loading-row").remove();
   } else {
     console.log("Error fetching bills");
   }

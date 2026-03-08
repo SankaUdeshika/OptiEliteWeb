@@ -22,52 +22,94 @@ const login = (req, res) => {
         return res.status(500).json({ error: "DB Error" });
       }
 
-      if (result.length > 0) {
-        const user = result[0];
-
-        // ✅ Store all user info in session on login
-        req.session.user = {
-          id: user.id,
-          username: user["user-name"],
-          db_name: user.db_name,
-        };
-
-        req.session.username = data.username + "_" + result[0].id;
-        req.session.db_name = result[0].db_name;
-
-        const db = getAppDb(result[0].db_name); // ✅ get DB connection for this user
-        db.query("SELECT * FROM `location`", (err, branchLocations) => {
-          if (err) {
-            console.error("Error fetching branch data: " + err);
-            return res.status(500).json({ error: "DB Error" });
-          }  
-          res.send(branchLocations);
-        });
-      } else {
-        res.send("Invalid");
+      if (result.length === 0) {
+        return res.send("Invalid"); // ✅ return early
       }
-    },
+
+      const user = result[0];
+
+      // Step 1: get user details from app DB
+      const db2 = getAppDb(user.db_name);
+      db2.query(
+        "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?",
+        [username, password],
+        (err, userResults) => {
+          db2.end();
+          if (err) {
+            console.error("Error fetching user details: " + err);
+            return res.status(500).json({ error: "DB Error" });
+          }
+
+          if (userResults.length === 0) {
+            return res.send("Invalid"); // ✅ guard against empty userResults
+          }
+
+          // Step 2: set session
+          req.session.user = {
+            id: user.id,
+            username: user["user-name"],
+            db_name: user["db_name"],
+            fname: userResults[0].fname,
+            lname: userResults[0].lname,
+            email: userResults[0].email,
+            location_id: userResults[0].location_id,
+          };
+
+          req.session.username = data.username + "_" + result[0].id;
+          req.session.db_name = result[0].db_name;
+
+          // Step 3: get branch locations — send response HERE only
+          const db = getAppDb(result[0].db_name);
+          db.query("SELECT * FROM `location`", (err, branchLocations) => {
+            db.end();
+            if (err) {
+              console.error("Error fetching branch data: " + err);
+              return res.status(500).json({ error: "DB Error" });
+            }
+            return res.send(branchLocations); // ✅ only one response sent
+          });
+        }
+      );
+    }
   );
 };
 
 const updateUserLocation = async (req, res) => {
-  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
+  const db = getAppDb(req.session.user.db_name);
   try {
     db.query(
       "UPDATE `users` SET `location_id` = ? WHERE `id` = ?",
       [req.body.location_id, req.session.user.id],
       (err, result) => {
+        db.end();
         if (err) {
           console.error("Error updating user location: " + err);
           return res.status(500).json({ error: "DB Error" });
         }
-        res.json({ success: true, message: "Location updated successfully" });
+        return res.json({ success: true, message: "Location updated successfully" }); // ✅ only here
       }
     );
+    // ❌ removed duplicate res.json() that was here
   } catch (error) {
     console.error("Error updating user location: " + error);
     res.status(500).json({ error: "DB Error" });
   }
-}
+};
 
-module.exports = { login, getAllUsers, updateUserLocation };
+const getUserDetails = (req, res) => {
+  const UserObject = req.session.user;
+  if (UserObject) {
+    return res.json({
+      id: UserObject.id,
+      username: UserObject.username,
+      fname: UserObject.fname,
+      lname: UserObject.lname,
+      email: UserObject.email,
+      location_id: UserObject.location_id,
+    });
+  } else {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+};
+
+module.exports = { login, getAllUsers, updateUserLocation, getUserDetails };
