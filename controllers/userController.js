@@ -46,7 +46,7 @@ const login = (req, res) => {
 
           // Step 2: set session
           req.session.user = {
-            id: user.id,
+            id: userResults[0].id,
             username: user["user-name"],
             db_name: user["db_name"],
             fname: userResults[0].fname,
@@ -106,7 +106,7 @@ const getUserDetails = (req, res) => {
       lname: UserObject.lname,
       email: UserObject.email,
       location_id: UserObject.location_id,
-    });
+    }); 
   } else {
     return res.status(401).json({ error: "Unauthorized" });
   }

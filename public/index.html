@@ -34,6 +34,197 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/custom.css" />
     <link rel="stylesheet" href="assets/css/components.css" />
+
+    <!-- Responsive Overrides -->
+    <style>
+      /* ========================================
+         RESPONSIVE OVERRIDES — Desktop / Tablet / Mobile
+         ======================================== */
+
+      /* --- Date picker row --- */
+      .glassEffectt {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 12px 16px;
+      }
+
+      /* --- Stat card button area --- */
+      .card-statistic-2 .card-body .btn {
+        white-space: normal;
+        word-break: break-word;
+      }
+
+      /* ---- TABLET  (≤ 991px) ---- */
+      @media (max-width: 991.98px) {
+
+        /* Sidebar collapses — give main content full width */
+        .main-content {
+          padding: 15px !important;
+        }
+
+        /* Date-picker block: full width on tablet */
+        .col-lg-4.offset-lg-8 {
+          max-width: 100%;
+          width: 100%;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+
+        /* Stat card: comfortable sizing */
+        .card-statistic-2 {
+          margin-bottom: 20px;
+        }
+
+        /* Navbar search bar width */
+        .search-element input.form-control {
+          width: 180px !important;
+        }
+      }
+
+      /* ---- MOBILE  (≤ 767px) ---- */
+      @media (max-width: 767.98px) {
+
+        /* Navbar — tighten spacing */
+        .main-navbar .navbar-nav.mr-3 {
+          margin-right: 6px !important;
+        }
+
+        .main-navbar .nav-link-lg {
+          padding: 0 8px !important;
+        }
+
+        /* Hide "Hi, admin" text on very small screens, keep avatar */
+        .nav-link-user .d-lg-inline-block {
+          display: none !important;
+        }
+
+        /* Main content area */
+        .main-content {
+          padding: 10px !important;
+          margin-left: 0 !important; /* sidebar hidden on mobile */
+        }
+
+        /* Section padding */
+        .section {
+          padding: 10px 0 !important;
+        }
+
+        /* Date picker: stack label + input vertically, full width */
+        .glassEffectt {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin-left: 0 !important;
+          padding: 10px 12px;
+        }
+
+        .glassEffectt .col-12 {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+
+        #startDate {
+          font-size: 14px;
+        }
+
+        /* Register Customer card: full width, centred */
+        .card-statistic-2 {
+          margin-bottom: 16px;
+        }
+
+        .card-statistic-2 .card-wrap .card-header h4 {
+          font-size: 15px;
+        }
+
+        .card-statistic-2 .card-body .btn span {
+          font-size: 16px !important;
+        }
+
+        /* Card icon sizing */
+        .card-icon {
+          width: 50px !important;
+          height: 50px !important;
+          line-height: 50px !important;
+          font-size: 20px !important;
+        }
+
+        /* Footer: stack left/right, centre both */
+        .main-footer {
+          flex-direction: column !important;
+          text-align: center !important;
+          padding: 12px 16px !important;
+          gap: 6px;
+        }
+
+        .footer-left,
+        .footer-right {
+          width: 100%;
+          text-align: center;
+        }
+
+        /* Dropdown lists: constrain width on small screens */
+        .dropdown-list {
+          width: 280px !important;
+          max-width: calc(100vw - 20px) !important;
+        }
+
+        .dropdown-menu-right {
+          right: 0 !important;
+          left: auto !important;
+        }
+      }
+
+      /* ---- EXTRA SMALL  (≤ 480px) ---- */
+      @media (max-width: 480px) {
+
+        /* Shrink brand name */
+        .sidebar-brand a {
+          font-size: 16px;
+        }
+
+        /* Register button text */
+        .card-statistic-2 .card-body .btn {
+          padding: 10px 8px;
+        }
+
+        .card-statistic-2 .card-body .btn span {
+          font-size: 14px !important;
+        }
+
+        /* Date label */
+        .glassEffectt label {
+          font-size: 13px;
+        }
+
+        /* Dropdown notifications/messages */
+        .dropdown-list {
+          width: 260px !important;
+        }
+
+        .dropdown-item-desc p {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 160px;
+        }
+      }
+
+      /* ---- Utility: ensure row children never overflow ---- */
+      .row {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      /* Prevent horizontal scroll on the full page */
+      body {
+        overflow-x: hidden;
+      }
+
+      #app,
+      .main-wrapper {
+        overflow-x: hidden;
+      }
+    </style>
+
     <!-- Start GA -->
     <script
       async
@@ -757,7 +948,7 @@
 
            <div class="col-12">
             <div class="row">
-              <div class="col-lg-4 col-12 offset-lg-8 offset-0 glassEffectt mb-2">
+              <div class="col-lg-4 col-md-6 col-12 offset-lg-8 offset-md-6 offset-0 glassEffectt mb-2">
                 <div class="col-12">
                   <label for="startDate" class="text-white">Select Date:</label>
                 </div>
@@ -775,7 +966,7 @@
 
             <div class="col-12">
               <div class="row d-flex justify-content-center">
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-10 col-12">
                   <div class="card card-statistic-2">
                     <div class="card-icon shadow-secondary bg-warning">
                       <i class="fas fa-users"></i>
