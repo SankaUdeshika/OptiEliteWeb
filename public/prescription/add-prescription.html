@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
+      name="viewport"
+    />
+    <title>Customer Prescription — OptiElite</title>
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css" />
+
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="assets/modules/datatables/datatables.min.css" />
+    <link rel="stylesheet" href="assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+
+    <!-- Start GA -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", "UA-94034622-3");
+    </script>
+    <!-- /END GA -->
+
+    <style>
+      /* ── Prescription Eye Grid ── */
+      .prescription-grid {
+        background: #1e2130;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #2d3147;
+      }
+
+      .prescription-grid .grid-header {
+        display: grid;
+        grid-template-columns: 90px repeat(8, 1fr);
+        background: #252840;
+        border-bottom: 1px solid #2d3147;
+      }
+
+      .prescription-grid .grid-header div,
+      .prescription-grid .grid-row label {
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #9399b2;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+        border-right: 1px solid #2d3147;
+      }
+
+      .prescription-grid .grid-header div:last-child,
+      .prescription-grid .grid-row > *:last-child {
+        border-right: none;
+      }
+
+      .prescription-grid .grid-row {
+        display: grid;
+        grid-template-columns: 90px repeat(8, 1fr);
+        border-bottom: 1px solid #2d3147;
+        align-items: center;
+      }
+
+      .prescription-grid .grid-row:last-child {
+        border-bottom: none;
+      }
+
+      .prescription-grid .grid-row label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #c9cde0;
+        padding: 12px 14px;
+        text-align: left;
+        text-transform: none;
+        letter-spacing: 0;
+        margin: 0;
+        border-right: 1px solid #2d3147;
+        background: #252840;
+      }
+
+      .prescription-grid .grid-row .cell {
+        padding: 8px 8px;
+        border-right: 1px solid #2d3147;
+      }
+
+      .prescription-grid .grid-row .cell input,
+      .prescription-grid .grid-row .cell select {
+        width: 100%;
+        background: #13151f;
+        border: 1px solid #2d3147;
+        border-radius: 4px;
+        color: #e0e3f0;
+        padding: 6px 8px;
+        font-size: 13px;
+        text-align: center;
+        transition: border-color 0.2s;
+        height: 36px;
+      }
+
+      .prescription-grid .grid-row .cell input:focus,
+      .prescription-grid .grid-row .cell select:focus {
+        outline: none;
+        border-color: #6c63ff;
+        background: #1a1c2b;
+        box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.15);
+      }
+
+      .prescription-grid .grid-row .cell select option {
+        background: #1e2130;
+        color: #e0e3f0;
+      }
+
+      /* ── Customer Search Card ── */
+      #customerSearchInput {
+        border-radius: 6px 0 0 6px;
+      }
+
+      .search-btn-addon {
+        border-radius: 0 6px 6px 0;
+      }
+
+      /* ── Selected customer badge ── */
+      #selectedCustomerBadge {
+        display: none;
+        background: #252840;
+        border: 1px solid #3d4260;
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin-bottom: 16px;
+        color: #c9cde0;
+        font-size: 14px;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #selectedCustomerBadge .badge-name {
+        font-weight: 700;
+        color: #6c63ff;
+        font-size: 15px;
+      }
+
+      #selectedCustomerBadge .badge-clear {
+        margin-left: auto;
+        cursor: pointer;
+        color: #ff6b6b;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      #selectedCustomerBadge .badge-clear:hover {
+        color: #ff4040;
+      }
+
+      /* ── Prescription table header fix ── */
+      #prescriptionTable thead th {
+        white-space: nowrap;
+        font-size: 12px;
+      }
+
+      /* ── Responsive grid label ── */
+      @media (max-width: 768px) {
+        .prescription-grid .grid-header,
+        .prescription-grid .grid-row {
+          grid-template-columns: 80px repeat(8, minmax(70px, 1fr));
+          overflow-x: auto;
+        }
+      }
+
+      /* ── Notes textarea ── */
+      #prescriptionNotes {
+        background: #13151f;
+        border: 1px solid #2d3147;
+        color: #e0e3f0;
+        border-radius: 6px;
+        resize: vertical;
+      }
+      #prescriptionNotes:focus {
+        border-color: #6c63ff;
+        background: #1a1c2b;
+        box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.15);
+        outline: none;
+        color: #e0e3f0;
+      }
+
+      /* ── Prescription history badge row ── */
+      .rx-eye-badge {
+        display: inline-block;
+        background: #252840;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 11px;
+        color: #9399b2;
+        margin-right: 3px;
+        border: 1px solid #2d3147;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="main-wrapper main-wrapper-1">
+        <div class="navbar-bg"></div>
+        <nav class="navbar navbar-expand-lg main-navbar">
+          <form class="form-inline mr-auto">
+            <ul class="navbar-nav mr-3">
+              <li>
+                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+              </li>
+              <li>
+                <a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a>
+              </li>
+            </ul>
+            <div class="search-element">
+              <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250" />
+              <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+              <div class="search-backdrop"></div>
+              <div class="search-result">
+                <div class="search-header">Histories</div>
+                <div class="search-item">
+                  <a href="#" onclick="fetchUsers();">How to hack NASA using CSS</a>
+                  <a href="#" class="search-close"><i class="fas fa-times"></i></a>
+                </div>
+                <div class="search-item">
+                  <a href="#">Kodinger.com</a>
+                  <a href="#" class="search-close"><i class="fas fa-times"></i></a>
+                </div>
+                <div class="search-item">
+                  <a href="/">#OptiElite</a>
+                  <a href="#" class="search-close"><i class="fas fa-times"></i></a>
+                </div>
+              </div>
+            </div>
+          </form>
+          <ul class="navbar-nav navbar-right">
+            <li class="dropdown dropdown-list-toggle">
+              <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
+              <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                <div class="dropdown-header">Messages <div class="float-right"><a href="#">Mark All As Read</a></div></div>
+                <div class="dropdown-list-content dropdown-list-message">
+                  <a href="#" class="dropdown-item dropdown-item-unread">
+                    <div class="dropdown-item-avatar">
+                      <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle" />
+                      <div class="is-online"></div>
+                    </div>
+                    <div class="dropdown-item-desc"><b>Kusnaedi</b><p>Hello, Bro!</p><div class="time">10 Hours Ago</div></div>
+                  </a>
+                </div>
+                <div class="dropdown-footer text-center"><a href="#">View All <i class="fas fa-chevron-right"></i></a></div>
+              </div>
+            </li>
+            <li class="dropdown dropdown-list-toggle">
+              <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
+              <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                <div class="dropdown-header">Notifications <div class="float-right"><a href="#">Mark All As Read</a></div></div>
+                <div class="dropdown-list-content dropdown-list-icons">
+                  <a href="#" class="dropdown-item dropdown-item-unread">
+                    <div class="dropdown-item-icon bg-primary text-white"><i class="fas fa-code"></i></div>
+                    <div class="dropdown-item-desc">Template update is available now!<div class="time text-primary">2 Min Ago</div></div>
+                  </a>
+                </div>
+                <div class="dropdown-footer text-center"><a href="#">View All <i class="fas fa-chevron-right"></i></a></div>
+              </div>
+            </li>
+            <li class="dropdown">
+              <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1" />
+                <div class="d-sm-none d-lg-inline-block">Hi, admin</div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-title">Logged in 5 min ago</div>
+                <a href="features-profile.html" class="dropdown-item has-icon"><i class="far fa-user"></i> Profile</a>
+                <a href="features-activities.html" class="dropdown-item has-icon"><i class="fas fa-bolt"></i> Activities</a>
+                <a href="features-settings.html" class="dropdown-item has-icon"><i class="fas fa-cog"></i> Settings</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item has-icon text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="main-sidebar sidebar-style-2">
+          <aside id="sidebar-wrapper">
+            <div class="sidebar-brand"><a href="/">OptiElites</a></div>
+            <div class="sidebar-brand sidebar-brand-sm"><a href="index.html">St</a></div>
+            <ul class="sidebar-menu">
+              <li class="menu-header">Dashboard</li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+                <ul class="dropdown-menu">
+                  <!-- <li><a class="nav-link" href="index-0.html">General Dashboard</a></li> -->
+                  <li><a class="nav-link" href="/">Admin Dashboard</a></li>
+                </ul>
+              </li>
+              <li class="menu-header">Actions</li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Invoice / Bills</span></a>
+                <ul class="dropdown-menu">
+                  <li><a class="nav-link" onclick="GoAddBillPage();">Add Invoice</a></li>
+                  <li><a class="nav-link" onclick="GoBillManagement();">Invoice Management</a></li>
+                </ul>
+              </li>
+              <!-- <li><a class="nav-link" href="blank.html"><i class="far fa-square"></i> <span>Blank Page</span></a></li> -->
+              <li class="menu-header">OptiElite</li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i> <span>Stock</span></a>
+                <ul class="dropdown-menu">
+                  <div class="col-12 text-center"><small class="text-danger">Comming soon</small></div>
+                  <!-- <li><a class="nav-link beep beep-sidebar" href="components-article.html">Stock Managemnet</a></li> -->
+                  <!-- <li><a class="nav-link beep beep-sidebar" href="components-avatar.html">Lens Management</a></li> -->
+                  <!-- <li><a class="nav-link" href="components-avatar.html">Products List</a></li> -->
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Customer</span></a>
+                <ul class="dropdown-menu">
+                  <li><a class="nav-link" href="/customerRegister">Register & Management</a></li>
+                  <!-- <li><a class="nav-link" href="forms-editor.html">Editor</a></li> -->
+                  <!-- <li><a class="nav-link" href="forms-validation.html">Validation</a></li> -->
+                </ul>
+              </li>
+              <li class="dropdown active">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-eye"></i> <span>Prescription</span></a>
+                <ul class="dropdown-menu">
+                  <li class="active"><a class="nav-link" href="/prescription">Add Prescription</a></li>
+                  <!-- <li><a class="nav-link" href="/prescriptionList">Prescription History</a></li> -->
+                </ul>
+              </li>
+            </ul>
+          </aside>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <section class="section">
+            <div class="section-header">
+              <h1>Customer Prescription</h1>
+              <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                <div class="breadcrumb-item"><a href="#">Customers</a></div>
+                <div class="breadcrumb-item">Prescription</div>
+              </div>
+            </div>
+
+            <div class="section-body">
+              <div class="row">
+
+                <!-- ══════════════════════════════════════════
+                     SECTION 1: Customer Search & Select
+                ══════════════════════════════════════════ -->
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4><i class="fas fa-search mr-2"></i>Search Customer</h4>
+                    </div>
+                    <div class="card-body">
+
+                      <!-- Search Input -->
+                      <div class="form-row align-items-end mb-3">
+                        <div class="form-group col-md-6 mb-0">
+                          <label for="customerSearchInput">Search by Name, NIC or Mobile</label>
+                          <div class="input-group">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="customerSearchInput"
+                              placeholder="Type customer name, NIC or mobile number..."
+                              oninput="filterCustomerTable(this.value)"
+                              autocomplete="off"
+                            />
+                            <div class="input-group-append">
+                              <button class="btn btn-primary search-btn-addon" type="button" onclick="filterCustomerTable(document.getElementById('customerSearchInput').value)">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-3 mb-0">
+                          <label class="d-block">&nbsp;</label>
+                          <button class="btn btn-outline-secondary btn-block" type="button" onclick="clearCustomerSearch()">
+                            <i class="fas fa-times mr-1"></i> Clear Search
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Selected Customer Badge (shown when a customer is picked) -->
+                      <div id="selectedCustomerBadge" class="d-flex">
+                        <i class="fas fa-user-circle text-primary" style="font-size:20px;"></i>
+                        <div class="ml-2">
+                          <span class="badge-name" id="badgeCustomerName">—</span>
+                          <span class="ml-2 text-muted" id="badgeCustomerInfo"></span>
+                        </div>
+                        <span class="badge-clear" onclick="clearSelectedCustomer()" title="Deselect customer"><i class="fas fa-times-circle"></i></span>
+                      </div>
+
+                      <!-- Customer Table -->
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="prescriptionCustomerTable">
+                          <thead>
+                            <tr>
+                              <th>Full Name</th>
+                              <th>Gender</th>
+                              <th>Mobile</th>
+                              <th>NIC</th>
+                              <th>Location</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody id="prescriptionCustomerTableBody">
+                            <!-- Populated via JS -->
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     SECTION 2: Add Prescription Form
+                ══════════════════════════════════════════ -->
+                <div class="col-12" id="prescriptionFormCard">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4><i class="fas fa-glasses mr-2"></i>Add Prescription</h4>
+                      <div class="card-header-action">
+                        <!-- Optional: could add a collapse toggle -->
+                      </div>
+                    </div>
+                    <div class="card-body">
+
+                      <!-- Prescription Date & Reference -->
+                      <div class="form-row mb-3">
+                        <div class="form-group col-md-3">
+                          <label for="rxDate">Prescription Date <span class="text-danger">*</span></label>
+                          <input type="date" class="form-control" id="rxDate" />
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label for="rxDoctor">Prescribed By / Doctor</label>
+                          <input type="text" class="form-control" id="rxDoctor" placeholder="Doctor name (optional)" />
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label for="rxRefNo">Reference No.</label>
+                          <input type="text" class="form-control" id="rxRefNo" placeholder="Auto-generated if blank" />
+                        </div>
+                        <div class="form-group col-md-3">
+                          <label for="rxType">Prescription Type</label>
+                          <select id="rxType" class="form-control">
+                            <option value="">Select type</option>
+                            <option value="distance">Distance</option>
+                            <option value="reading">Reading</option>
+                            <option value="bifocal">Bifocal / Progressive</option>
+                            <option value="contact">Contact Lens</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- ── Prescription Eye Grid ── -->
+                      <label class="font-weight-bold mb-2" style="color:#c9cde0;">
+                        <i class="fas fa-eye mr-1 text-primary"></i> Eye Measurements
+                      </label>
+
+                      <div class="prescription-grid mb-4">
+                        <!-- Header Row -->
+                        <div class="grid-header">
+                          <div></div>
+                          <div>SPH</div>
+                          <div>Cyl.</div>
+                          <div>Axis</div>
+                          <div>DVA</div>
+                          <div>Addition</div>
+                          <div>NVA</div>
+                          <div>PD</div>
+                          <div>Height</div>
+                        </div>
+
+                        <!-- Right Eye -->
+                        <div class="grid-row">
+                          <label>Right Eye</label>
+                          <div class="cell">
+                            <input type="text" id="rxRightSph" placeholder="e.g. -1.50" />
+                          </div>
+                          <div class="cell">
+                            <input type="text" id="rxRightCyl" placeholder="e.g. -0.50" />
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxRightAxis" placeholder="1–180" min="1" max="180" />
+                          </div>
+                          <div class="cell">
+                            <select id="rxRightDva">
+                              <option value="6/6">6/6</option>
+                              <option value="6/9">6/9</option>
+                              <option value="6/12">6/12</option>
+                              <option value="6/18">6/18</option>
+                              <option value="6/24">6/24</option>
+                              <option value="6/36">6/36</option>
+                              <option value="6/60">6/60</option>
+                              <option value="CF">CF</option>
+                              <option value="HM">HM</option>
+                              <option value="PL">PL</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <select id="rxRightAdd">
+                              <option value="0">0</option>
+                              <option value="+0.50">+0.50</option>
+                              <option value="+0.75">+0.75</option>
+                              <option value="+1.00">+1.00</option>
+                              <option value="+1.25">+1.25</option>
+                              <option value="+1.50">+1.50</option>
+                              <option value="+1.75">+1.75</option>
+                              <option value="+2.00">+2.00</option>
+                              <option value="+2.25">+2.25</option>
+                              <option value="+2.50">+2.50</option>
+                              <option value="+2.75">+2.75</option>
+                              <option value="+3.00">+3.00</option>
+                              <option value="+3.25">+3.25</option>
+                              <option value="+3.50">+3.50</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <select id="rxRightNva">
+                              <option value="N6">N.6</option>
+                              <option value="N8">N.8</option>
+                              <option value="N10">N.10</option>
+                              <option value="N12">N.12</option>
+                              <option value="N14">N.14</option>
+                              <option value="N18">N.18</option>
+                              <option value="N24">N.24</option>
+                              <option value="N36">N.36</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxRightPd" placeholder="e.g. 32" min="20" max="40" step="0.5" />
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxRightHeight" placeholder="mm" min="10" max="40" step="0.5" />
+                          </div>
+                        </div>
+
+                        <!-- Left Eye -->
+                        <div class="grid-row">
+                          <label>Left Eye</label>
+                          <div class="cell">
+                            <input type="text" id="rxLeftSph" placeholder="e.g. -1.50" />
+                          </div>
+                          <div class="cell">
+                            <input type="text" id="rxLeftCyl" placeholder="e.g. -0.50" />
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxLeftAxis" placeholder="1–180" min="1" max="180" />
+                          </div>
+                          <div class="cell">
+                            <select id="rxLeftDva">
+                              <option value="6/6">6/6</option>
+                              <option value="6/9">6/9</option>
+                              <option value="6/12">6/12</option>
+                              <option value="6/18">6/18</option>
+                              <option value="6/24">6/24</option>
+                              <option value="6/36">6/36</option>
+                              <option value="6/60">6/60</option>
+                              <option value="CF">CF</option>
+                              <option value="HM">HM</option>
+                              <option value="PL">PL</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <select id="rxLeftAdd">
+                              <option value="0">0</option>
+                              <option value="+0.50">+0.50</option>
+                              <option value="+0.75">+0.75</option>
+                              <option value="+1.00">+1.00</option>
+                              <option value="+1.25">+1.25</option>
+                              <option value="+1.50">+1.50</option>
+                              <option value="+1.75">+1.75</option>
+                              <option value="+2.00">+2.00</option>
+                              <option value="+2.25">+2.25</option>
+                              <option value="+2.50">+2.50</option>
+                              <option value="+2.75">+2.75</option>
+                              <option value="+3.00">+3.00</option>
+                              <option value="+3.25">+3.25</option>
+                              <option value="+3.50">+3.50</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <select id="rxLeftNva">
+                              <option value="N6">N.6</option>
+                              <option value="N8">N.8</option>
+                              <option value="N10">N.10</option>
+                              <option value="N12">N.12</option>
+                              <option value="N14">N.14</option>
+                              <option value="N18">N.18</option>
+                              <option value="N24">N.24</option>
+                              <option value="N36">N.36</option>
+                            </select>
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxLeftPd" placeholder="e.g. 32" min="20" max="40" step="0.5" />
+                          </div>
+                          <div class="cell">
+                            <input type="number" id="rxLeftHeight" placeholder="mm" min="10" max="40" step="0.5" />
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /END Eye Grid -->
+
+                      <!-- Notes -->
+                      <div class="form-group">
+                        <label for="prescriptionNotes">Additional Notes / Remarks</label>
+                        <textarea class="form-control" id="prescriptionNotes" rows="3" placeholder="Any additional notes about this prescription..."></textarea>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="d-flex align-items-center" style="gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="savePrescription()">
+                          <i class="fas fa-save mr-1"></i> Save Prescription
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearPrescriptionForm()">
+                          <i class="fas fa-undo mr-1"></i> Clear Form
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     SECTION 3: Prescription History Table
+                ══════════════════════════════════════════ -->
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4><i class="fas fa-history mr-2"></i>Prescription History</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table class="table table-striped" id="prescriptionTable">
+                          <thead>
+                            <tr>
+                              <th>Ref No.</th>
+                              <th>Customer</th>
+                              <th>Date</th>
+                              <th>Type</th>
+                              <th>R — SPH / Cyl / Axis</th>
+                              <th>L — SPH / Cyl / Axis</th>
+                              <th>DVA (R/L)</th>
+                              <th>Addition (R/L)</th>
+                              <th>NVA (R/L)</th>
+                              <th>PD (R/L)</th>
+                              <th>Doctor</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody id="prescriptionTableBody">
+                            <!-- Populated via JS -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- /Main Content -->
+
+        <footer class="main-footer">
+          <div class="footer-left">
+            Copyright &copy; 2018
+            <div class="bullet"></div>
+            Design By <a href="https://vayonova.com">VAYONOVA</a>
+          </div>
+          <div class="footer-right"></div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- General JS Scripts -->
+    <script src="assets/modules/jquery.min.js"></script>
+    <script src="assets/modules/popper.js"></script>
+    <script src="assets/modules/tooltip.js"></script>
+    <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="assets/modules/moment.min.js"></script>
+    <script src="assets/js/OptiElite.js"></script>
+
+    <!-- JS Libraries -->
+    <script src="assets/modules/datatables/datatables.min.js"></script>
+    <script src="assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Page Specific JS -->
+    <script>
+      // ─────────────────────────────────────────────
+      //  STATE
+      // ─────────────────────────────────────────────
+      let selectedCustomerId = null;
+      let prescriptionDT = null;
+      let customerDT = null;
+
+      // In-memory store (replace with API calls as needed)
+      let prescriptions = [];
+      let rxCounter = 1000;
+
+      // ─────────────────────────────────────────────
+      //  INIT
+      // ─────────────────────────────────────────────
+      $(document).ready(function () {
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('rxDate').value = today;
+
+        // Init prescription history DataTable
+        prescriptionDT = $('#prescriptionTable').DataTable({
+          pageLength: 10,
+          lengthMenu: [5, 10, 25, 50],
+          order: [[2, 'desc']],
+          columnDefs: [{ orderable: false, targets: 11 }]
+        });
+
+        // Init customer search DataTable
+        customerDT = $('#prescriptionCustomerTable').DataTable({
+          pageLength: 5,
+          lengthMenu: [5, 10, 25],
+          order: [[0, 'asc']],
+          columnDefs: [{ orderable: false, targets: 5 }]
+        });
+
+        // Load customers
+        prescriptionSectionLoading();
+      });
+
+      // ─────────────────────────────────────────────
+      //  LOAD CUSTOMERS  (replace with your API call)
+      // ─────────────────────────────────────────────
+      function prescriptionSectionLoading() {
+        // TODO: Replace with actual API call, e.g.:
+        //   fetch('/api/customers').then(r=>r.json()).then(data => renderCustomerTable(data));
+        // Using sample data for demonstration:
+        const sampleCustomers = [
+          { id: 1, fullName: 'Amal Perera',   gender: 'Male',   mobile: '0771234567', nic: '199012345678', location: 'Colombo' },
+          { id: 2, fullName: 'Nimal Silva',   gender: 'Male',   mobile: '0779876543', nic: '198876543210', location: 'Kandy' },
+          { id: 3, fullName: 'Kamali Fernando', gender: 'Female', mobile: '0762345678', nic: '200234567890', location: 'Galle' },
+          { id: 4, fullName: 'Ruwan Bandara', gender: 'Male',   mobile: '0713456789', nic: '197534567890', location: 'Matara' },
+          { id: 5, fullName: 'Dilini Jayawardena', gender: 'Female', mobile: '0784567890', nic: '199945678901', location: 'Colombo' },
+        ];
+        renderCustomerTable(sampleCustomers);
+      }
+
+      function renderCustomerTable(customers) {
+        if (customerDT) { customerDT.clear(); }
+        const tbody = document.getElementById('prescriptionCustomerTableBody');
+        tbody.innerHTML = '';
+
+        customers.forEach(function (c) {
+          const tr = document.createElement('tr');
+          tr.setAttribute('data-id', c.id);
+          tr.innerHTML = `
+            <td>${escapeHtml(c.fullName)}</td>
+            <td>${escapeHtml(c.gender)}</td>
+            <td>${escapeHtml(c.mobile)}</td>
+            <td>${escapeHtml(c.nic)}</td>
+            <td>${escapeHtml(c.location)}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" onclick="selectCustomer(${c.id}, '${escapeJs(c.fullName)}', '${escapeJs(c.mobile)}', '${escapeJs(c.nic)}')">
+                <i class="fas fa-check mr-1"></i>Select
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        if (customerDT) {
+          customerDT.rows.add($(tbody).find('tr')).draw();
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      //  CUSTOMER SEARCH (live filter)
+      // ─────────────────────────────────────────────
+      function filterCustomerTable(query) {
+        if (customerDT) {
+          customerDT.search(query).draw();
+        }
+      }
+
+      function clearCustomerSearch() {
+        document.getElementById('customerSearchInput').value = '';
+        filterCustomerTable('');
+      }
+
+      // ─────────────────────────────────────────────
+      //  SELECT / DESELECT CUSTOMER
+      // ─────────────────────────────────────────────
+      function selectCustomer(id, name, mobile, nic) {
+        selectedCustomerId = id;
+
+        // Show badge
+        document.getElementById('badgeCustomerName').textContent = name;
+        document.getElementById('badgeCustomerInfo').textContent = `NIC: ${nic}  |  Mobile: ${mobile}`;
+        const badge = document.getElementById('selectedCustomerBadge');
+        badge.style.display = 'flex';
+
+        // Auto-generate a reference number
+        document.getElementById('rxRefNo').value = 'RX-' + (++rxCounter);
+
+        // Highlight selected row
+        $('#prescriptionCustomerTable tbody tr').removeClass('table-primary');
+        $(`#prescriptionCustomerTable tbody tr[data-id="${id}"]`).addClass('table-primary');
+
+        // Scroll to form
+        document.getElementById('prescriptionFormCard').scrollIntoView({ behavior: 'smooth' });
+
+        // Toast
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: `Customer "${name}" selected`,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+      }
+
+      function clearSelectedCustomer() {
+        selectedCustomerId = null;
+        document.getElementById('selectedCustomerBadge').style.display = 'none';
+        document.getElementById('badgeCustomerName').textContent = '—';
+        document.getElementById('badgeCustomerInfo').textContent = '';
+        $('#prescriptionCustomerTable tbody tr').removeClass('table-primary');
+      }
+
+      // ─────────────────────────────────────────────
+      //  SAVE PRESCRIPTION
+      // ─────────────────────────────────────────────
+      function savePrescription() {
+        // Validate: customer must be selected
+        if (!selectedCustomerId) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'No Customer Selected',
+            text: 'Please search and select a customer before saving a prescription.',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
+        // Validate: date required
+        const rxDate = document.getElementById('rxDate').value;
+        if (!rxDate) {
+          Swal.fire({ icon: 'warning', title: 'Missing Date', text: 'Please enter the prescription date.' });
+          return;
+        }
+
+        // Collect values
+        const rx = {
+          refNo:       document.getElementById('rxRefNo').value || ('RX-' + Date.now()),
+          customerId:  selectedCustomerId,
+          customerName: document.getElementById('badgeCustomerName').textContent,
+          date:        rxDate,
+          type:        document.getElementById('rxType').value || '—',
+          doctor:      document.getElementById('rxDoctor').value,
+          notes:       document.getElementById('prescriptionNotes').value,
+          right: {
+            sph:    document.getElementById('rxRightSph').value,
+            cyl:    document.getElementById('rxRightCyl').value,
+            axis:   document.getElementById('rxRightAxis').value,
+            dva:    document.getElementById('rxRightDva').value,
+            add:    document.getElementById('rxRightAdd').value,
+            nva:    document.getElementById('rxRightNva').value,
+            pd:     document.getElementById('rxRightPd').value,
+            height: document.getElementById('rxRightHeight').value,
+          },
+          left: {
+            sph:    document.getElementById('rxLeftSph').value,
+            cyl:    document.getElementById('rxLeftCyl').value,
+            axis:   document.getElementById('rxLeftAxis').value,
+            dva:    document.getElementById('rxLeftDva').value,
+            add:    document.getElementById('rxLeftAdd').value,
+            nva:    document.getElementById('rxLeftNva').value,
+            pd:     document.getElementById('rxLeftPd').value,
+            height: document.getElementById('rxLeftHeight').value,
+          }
+        };
+
+        // TODO: Replace with API call:
+        //   fetch('/api/prescriptions', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(rx) })
+        //     .then(r => r.json())
+        //     .then(res => { /* handle response */ });
+
+        // Add to local store and table
+        prescriptions.push(rx);
+        addPrescriptionRow(rx);
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Prescription saved successfully!',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true
+        });
+
+        clearPrescriptionForm();
+      }
+
+      function addPrescriptionRow(rx) {
+        const r = rx.right;
+        const l = rx.left;
+        const typeBadge = rx.type !== '—'
+          ? `<span class="badge badge-info">${escapeHtml(rx.type)}</span>`
+          : '<span class="text-muted">—</span>';
+
+        const row = prescriptionDT.row.add([
+          `<strong>${escapeHtml(rx.refNo)}</strong>`,
+          escapeHtml(rx.customerName),
+          escapeHtml(rx.date),
+          typeBadge,
+          eyeCell(r.sph, r.cyl, r.axis),
+          eyeCell(l.sph, l.cyl, l.axis),
+          `${r.dva || '—'} / ${l.dva || '—'}`,
+          `${r.add || '—'} / ${l.add || '—'}`,
+          `${r.nva || '—'} / ${l.nva || '—'}`,
+          `${r.pd || '—'} / ${l.pd || '—'}`,
+          escapeHtml(rx.doctor) || '<span class="text-muted">—</span>',
+          `<button class="btn btn-sm btn-danger" onclick="deletePrescriptionRow(this)"><i class="fas fa-trash"></i></button>`
+        ]).draw(false);
+      }
+
+      function eyeCell(sph, cyl, axis) {
+        const parts = [sph || '—', cyl || '—', axis || '—'];
+        return parts.map(p => `<span class="rx-eye-badge">${escapeHtml(String(p))}</span>`).join('');
+      }
+
+      function deletePrescriptionRow(btn) {
+        Swal.fire({
+          title: 'Delete this prescription?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#e74c3c',
+          confirmButtonText: 'Yes, delete it'
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            prescriptionDT.row($(btn).closest('tr')).remove().draw();
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Deleted!', showConfirmButton: false, timer: 1500 });
+          }
+        });
+      }
+
+      // ─────────────────────────────────────────────
+      //  CLEAR FORM
+      // ─────────────────────────────────────────────
+      function clearPrescriptionForm() {
+        // Eye fields
+        ['Right', 'Left'].forEach(function (eye) {
+          ['Sph','Cyl','Axis','Pd','Height'].forEach(function (field) {
+            const el = document.getElementById('rx' + eye + field);
+            if (el) el.value = '';
+          });
+          document.getElementById('rx' + eye + 'Dva').value = '6/6';
+          document.getElementById('rx' + eye + 'Add').value = '0';
+          document.getElementById('rx' + eye + 'Nva').value = 'N6';
+        });
+        document.getElementById('rxDoctor').value = '';
+        document.getElementById('rxType').value = '';
+        document.getElementById('rxRefNo').value = '';
+        document.getElementById('prescriptionNotes').value = '';
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('rxDate').value = today;
+      }
+
+      // ─────────────────────────────────────────────
+      //  UTILS
+      // ─────────────────────────────────────────────
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function escapeJs(str) {
+        if (!str) return '';
+        return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+      }
+    </script>
+
+    <!-- Template JS File -->
+    <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/mainscript.js"></script>
+  </body>
+</html>
