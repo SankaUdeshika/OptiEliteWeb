@@ -100,6 +100,13 @@ app.get("/customerRegister", (req, res) => {
   }
 });
 
+app.get("/add_prescription", (req, res) => {
+  if (req.session && req.session.username) {
+    res.sendFile(path.join(__dirname, "public", "prescription", "add-prescription.html"));
+  } else {
+    res.redirect("/login");
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:3000`);

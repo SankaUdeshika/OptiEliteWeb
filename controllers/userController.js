@@ -1,5 +1,6 @@
 const getAppDb = require("../db/appDb");
-const UserDb = require("../db/userDb");
+const getUserDb = require("../db/userDb"); 
+
 
 const getAllUsers = (req, res) => {
   console.log("working");
@@ -13,22 +14,24 @@ const login = (req, res) => {
   let password = data.password;
   let statusID = 1;
 
+  const UserDb = getUserDb(); // ✅ fresh connection each login
+
   UserDb.query(
     "SELECT * FROM `users` WHERE `user-name` = ? AND `password` = ? AND `user_status_status_id` = ?",
     [username, password, statusID],
     (err, result) => {
+      UserDb.end(); // ✅ close after query
       if (err) {
         console.error("Error fetching users: " + err);
         return res.status(500).json({ error: "DB Error" });
       }
 
       if (result.length === 0) {
-        return res.send("Invalid"); // ✅ return early
+        return res.send("Invalid");
       }
 
       const user = result[0];
 
-      // Step 1: get user details from app DB
       const db2 = getAppDb(user.db_name);
       db2.query(
         "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?",
@@ -41,10 +44,9 @@ const login = (req, res) => {
           }
 
           if (userResults.length === 0) {
-            return res.send("Invalid"); // ✅ guard against empty userResults
+            return res.send("Invalid");
           }
 
-          // Step 2: set session
           req.session.user = {
             id: userResults[0].id,
             username: user["user-name"],
@@ -58,7 +60,6 @@ const login = (req, res) => {
           req.session.username = data.username + "_" + result[0].id;
           req.session.db_name = result[0].db_name;
 
-          // Step 3: get branch locations — send response HERE only
           const db = getAppDb(result[0].db_name);
           db.query("SELECT * FROM `location`", (err, branchLocations) => {
             db.end();
@@ -66,7 +67,7 @@ const login = (req, res) => {
               console.error("Error fetching branch data: " + err);
               return res.status(500).json({ error: "DB Error" });
             }
-            return res.send(branchLocations); // ✅ only one response sent
+            return res.send(branchLocations);
           });
         }
       );
