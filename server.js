@@ -12,6 +12,7 @@ const branchRoutes = require("./routes/branchRoutes");
 const billRoutes = require("./routes/billRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const stockRoutes = require("./routes/stockRoutes");
+const prescriptionRoutes = require("./routes/prescriptionRoutes");
 
 // --- Middleware ---
 app.use(cors());
@@ -37,6 +38,7 @@ app.use("/branch", branchRoutes);
 app.use("/api/bill", billRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/stock", stockRoutes);
+app.use("/api/prescription",prescriptionRoutes);
 
 // Debug middleware (optional - uncomment to see session info)
 // app.use((req, res, next) => {

@@ -1168,3 +1168,128 @@ async function addNewCustomer() {
     });
   }
 }
+
+// load Prescription Details -----------------------------------------------------------------
+async function loadPrescriptionDetails() {
+  await loadCustomersInPrescription();
+}
+
+async function loadCustomersInPrescription() {
+  // Show spinner before fetch
+  $("#prescriptionSpinner").show();
+
+  try {
+    const result = await fetch("/api/customer/getAllCustomers", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (result.ok) {
+      const response = await result.json();
+      renderCustomerTable(response);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed to load customers",
+        text: "Server returned an error.",
+      });
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: "error",
+      title: "Network Error",
+      text: "Could not reach the server.",
+    });
+  } finally {
+    // Always hide spinner — even if fetch fails
+    $("#prescriptionSpinner").hide();
+  }
+}
+// ─────────────────────────────────────────────
+//  SAVE PRESCRIPTION
+// ─────────────────────────────────────────────
+
+async function savePrescription() {
+  // Validate: customer must be selected
+  if (!selectedCustomerId) {
+    Swal.fire({
+      icon: "warning",
+      title: "No Customer Selected",
+      text: "Please search and select a customer before saving a prescription.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  // Validate: date required
+  const rxDate = document.getElementById("rxDate").value;
+  if (!rxDate) {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Date",
+      text: "Please enter the prescription date.",
+    });
+    return;
+  }
+
+  // Collect values
+  const rx = {
+    customerName: document.getElementById("badgeCustomerName").textContent,
+    customerMobile: document.getElementById("badgeCustomerInfo").textContent.split(": ")[1],
+    date: rxDate,
+    doctor: document.getElementById("rxDoctor").value,
+    notes: document.getElementById("prescriptionNotes").value,
+    right: {
+      sph: document.getElementById("rxRightSph").value,
+      cyl: document.getElementById("rxRightCyl").value,
+      axis: document.getElementById("rxRightAxis").value,
+      dva: document.getElementById("rxRightDva").value,
+      add: document.getElementById("rxRightAdd").value,
+      nva: document.getElementById("rxRightNva").value,
+      pd: document.getElementById("rxRightPd").value,
+      height: document.getElementById("rxRightHeight").value,
+    },
+    left: {
+      sph: document.getElementById("rxLeftSph").value,
+      cyl: document.getElementById("rxLeftCyl").value,
+      axis: document.getElementById("rxLeftAxis").value,
+      dva: document.getElementById("rxLeftDva").value,
+      add: document.getElementById("rxLeftAdd").value,
+      nva: document.getElementById("rxLeftNva").value,
+      pd: document.getElementById("rxLeftPd").value,
+      height: document.getElementById("rxLeftHeight").value,
+    },
+  };
+
+  // TODO: Replace with API call:
+  const result = await fetch("/api/prescription/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(rx),
+  });
+
+  if (!result.ok) {
+    Swal.fire({
+      icon: "error",
+      title: "Failed to Save Prescription",
+      text: "Could not save the prescription.",
+    });
+    return;
+  }
+
+  // Add to local store and table
+  // prescriptions.push(rx);
+  // addPrescriptionRow(rx);
+
+  Swal.fire({
+    toast: true,
+    position: "top-end",
+    icon: "success",
+    title: "Prescription saved successfully!",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+  });
+
+  clearPrescriptionForm();
+}
