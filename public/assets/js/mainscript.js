@@ -1235,7 +1235,9 @@ async function savePrescription() {
   // Collect values
   const rx = {
     customerName: document.getElementById("badgeCustomerName").textContent,
-    customerMobile: document.getElementById("badgeCustomerInfo").textContent.split(": ")[1],
+    customerMobile: document
+      .getElementById("badgeCustomerInfo")
+      .textContent.split(": ")[1],
     date: rxDate,
     doctor: document.getElementById("rxDoctor").value,
     notes: document.getElementById("prescriptionNotes").value,
@@ -1292,4 +1294,45 @@ async function savePrescription() {
   });
 
   clearPrescriptionForm();
+}
+
+async function fetchCustomerPrescriptions(customerMobile) {
+  const result = await fetch(`/api/prescription/get_prescription`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mobile: customerMobile }),
+  });
+  if (result.ok) {
+    const prescriptions = await result.json();
+    console.log("Fetched prescriptions:", prescriptions);
+    prescriptions.forEach((rx) => addPrescriptionRow(rx));
+  } else {
+    console.log("Error fetching prescriptions for customer");
+  }
+}
+
+function addPrescriptionRow(rx) {
+  const r = rx.right;
+  const l = rx.left;
+  const operator =
+    rx.operator !== "—"
+      ? `<span class="badge badge-info">${escapeHtml(rx.operator)}</span>`
+      : '<span class="text-muted">—</span>';
+
+  const row = prescriptionDT.row
+    .add([
+      `<strong>${escapeHtml(rx.job_no)}</strong>`,
+      escapeHtml(rx.customerName),
+      escapeHtml(rx.date),
+      operator,
+      eyeCell(r.sph, r.cyl, r.axis),
+      eyeCell(l.sph, l.cyl, l.axis),
+      `${r.dva || "—"} / ${l.dva || "—"}`,
+      `${r.add || "—"} / ${l.add || "—"}`,
+      `${r.nva || "—"} / ${l.nva || "—"}`,
+      `${r.pd || "—"} / ${l.pd || "—"}`,
+      escapeHtml(rx.doctor) || '<span class="text-muted">—</span>',
+      `<button class="btn btn-sm btn-danger" onclick="deletePrescriptionRow(this)"><i class="fas fa-print"></i></button>`,
+    ])
+    .draw(false);
 }

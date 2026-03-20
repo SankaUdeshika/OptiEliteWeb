@@ -927,7 +927,7 @@
                               <th>Ref No.</th>
                               <th>Customer</th>
                               <th>Date</th>
-                              <th>Type</th>
+                              <th>Operator</th>
                               <th>R — SPH / Cyl / Axis</th>
                               <th>L — SPH / Cyl / Axis</th>
                               <th>DVA (R/L)</th>
@@ -943,7 +943,7 @@
                           </tbody>
                         </table>
                       </div>
-                    </div>
+                    </div>  
                   </div>
                 </div>
               </div>
@@ -1097,7 +1097,6 @@
         badge.style.display = "flex";
 
         // Auto-generate a reference number
-        document.getElementById("rxRefNo").value = "RX-" + ++rxCounter;
 
         // Highlight selected row
         $("#prescriptionCustomerTable tbody tr").removeClass("table-primary");
@@ -1120,6 +1119,9 @@
           timer: 2000,
           timerProgressBar: true,
         });
+
+        fetchCustomerPrescriptions(mobile);
+
       }
 
       function clearSelectedCustomer() {
@@ -1130,31 +1132,7 @@
         $("#prescriptionCustomerTable tbody tr").removeClass("table-primary");
       }
 
-      function addPrescriptionRow(rx) {
-        const r = rx.right;
-        const l = rx.left;
-        const typeBadge =
-          rx.type !== "—"
-            ? `<span class="badge badge-info">${escapeHtml(rx.type)}</span>`
-            : '<span class="text-muted">—</span>';
-
-        const row = prescriptionDT.row
-          .add([
-            `<strong>${escapeHtml(rx.refNo)}</strong>`,
-            escapeHtml(rx.customerName),
-            escapeHtml(rx.date),
-            typeBadge,
-            eyeCell(r.sph, r.cyl, r.axis),
-            eyeCell(l.sph, l.cyl, l.axis),
-            `${r.dva || "—"} / ${l.dva || "—"}`,
-            `${r.add || "—"} / ${l.add || "—"}`,
-            `${r.nva || "—"} / ${l.nva || "—"}`,
-            `${r.pd || "—"} / ${l.pd || "—"}`,
-            escapeHtml(rx.doctor) || '<span class="text-muted">—</span>',
-            `<button class="btn btn-sm btn-danger" onclick="deletePrescriptionRow(this)"><i class="fas fa-trash"></i></button>`,
-          ])
-          .draw(false);
-      }
+      
 
       function eyeCell(sph, cyl, axis) {
         const parts = [sph || "—", cyl || "—", axis || "—"];
@@ -1202,7 +1180,6 @@
           document.getElementById("rx" + eye + "Nva").value = "N6";
         });
         document.getElementById("rxDoctor").value = "";
-        document.getElementById("rxRefNo").value = "";
         document.getElementById("prescriptionNotes").value = "";
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("rxDate").value = today;
