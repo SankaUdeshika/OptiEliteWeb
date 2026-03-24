@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARES Prescription</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #e8e4de;
+        font-family: "EB Garamond", Georgia, serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+
+      .page {
+        background: #fff;
+        width: 660px;
+        min-height: 900px;
+        padding: 36px 44px 44px;
+        box-shadow:
+          0 8px 40px rgba(0, 0, 0, 0.13),
+          0 1px 4px rgba(0, 0, 0, 0.07);
+        position: relative;
+      }
+
+      /* ── HEADER ── */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 18px;
+        border-bottom: 1.5px solid #222;
+      }
+
+      .logo-block {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .logo-wordmark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Eye icons */
+      .eye-icons {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .eye-svg {
+        width: 38px;
+        height: 22px;
+      }
+
+      .brand-name {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        color: #1a1a1a;
+        line-height: 1;
+      }
+
+      .brand-tagline {
+        font-family: "DM Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 0.22em;
+        color: #c0392b;
+        text-transform: uppercase;
+        margin-top: 3px;
+        padding-left: 2px;
+      }
+
+      .prescription-block {
+        text-align: right;
+      }
+
+      .prescription-title {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: 0.04em;
+      }
+
+      .prescription-meta {
+        margin-top: 8px;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: #444;
+        line-height: 1.8;
+      }
+      .prescription-meta span {
+        color: #1a1a1a;
+        font-weight: 500;
+      }
+
+      /* ── ADDRESS ── */
+      .address-block {
+        margin-top: 16px;
+        font-family: "DM Mono", monospace;
+        font-size: 10.5px;
+        color: #555;
+        line-height: 1.7;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 14px;
+      }
+
+      /* ── PATIENT ── */
+      .patient-block {
+        margin-top: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px dashed #ccc;
+      }
+      .patient-name {
+        font-family: "Playfair Display", serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+      .patient-numbers {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: #666;
+        margin-top: 4px;
+        line-height: 1.6;
+      }
+
+      /* ── Rx symbol ── */
+      .rx-symbol {
+        margin-top: 12px;
+        font-family: "EB Garamond", serif;
+        font-style: italic;
+        font-size: 26px;
+        color: #c0392b;
+        border: 2px solid #c0392b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 36px;
+        border-radius: 4px;
+      }
+
+      /* ── EYE DIALS ── */
+      .dials-row {
+        display: flex;
+        justify-content: center;
+        gap: 48px;
+        margin: 28px 0 18px;
+      }
+
+      .dial-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dial-label {
+        font-family: "Playfair Display", serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: #1a1a1a;
+      }
+
+      /* SVG dial */
+      .dial-svg {
+        width: 160px;
+        height: 90px;
+      }
+
+      /* separator between dials */
+      .dial-separator {
+        display: flex;
+        align-items: center;
+        padding-top: 40px;
+      }
+      .dial-sep-line {
+        width: 1px;
+        height: 28px;
+        background: #999;
+      }
+      .dial-sep-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #555;
+        margin: 4px 0;
+      }
+
+      /* ── TABLE ── */
+      .rx-table-wrapper {
+        margin-top: 18px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "DM Mono", monospace;
+      }
+
+      thead tr {
+        background: #1a1a1a;
+        color: #fff;
+      }
+
+      thead th {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        padding: 9px 0;
+        text-align: center;
+        border: 1px solid #333;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #f5f3f0;
+      }
+      tbody tr:nth-child(odd) {
+        background: #ffffff;
+      }
+
+      tbody td {
+        font-size: 13px;
+        text-align: center;
+        padding: 10px 6px;
+        border: 1px solid #ccc;
+        color: #1a1a1a;
+      }
+
+      /* Row label cell */
+      td.row-label {
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+        width: 28px;
+      }
+
+      /* ── SIGNATURE ── */
+      .signature-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        margin-top: 48px;
+        padding-top: 12px;
+      }
+
+      .sig-label {
+        font-family: "EB Garamond", serif;
+        font-size: 12px;
+        font-style: italic;
+        color: #666;
+      }
+
+      .sig-dots {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: #aaa;
+        flex: 1;
+        max-width: 220px;
+        border-bottom: 1px dotted #aaa;
+        height: 1px;
+        align-self: flex-end;
+        margin-bottom: 2px;
+      }
+
+      /* ── THANK YOU FOOTER ── */
+      .footer {
+        margin-top: 36px;
+        background: #e8e4de;
+        text-align: center;
+        padding: 14px;
+        border-radius: 2px;
+      }
+
+      .footer-text {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: 0.06em;
+      }
+    </style>
+  </head>
+  <body onload="fetchViewPrescriptionPage()">
+    <div class="page">
+      <!-- HEADER -->
+      <div class="header">
+        <div class="logo-block">
+          <div class="logo-wordmark">
+            <!-- Eye icons -->
+            <div class="eye-icons">
+              <svg
+                class="eye-svg"
+                viewBox="0 0 80 46"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Left eye outline -->
+                <ellipse
+                  cx="22"
+                  cy="23"
+                  rx="18"
+                  ry="13"
+                  stroke="#c0392b"
+                  stroke-width="3"
+                  fill="none"
+                />
+                <circle
+                  cx="22"
+                  cy="23"
+                  r="7"
+                  stroke="#c0392b"
+                  stroke-width="3"
+                  fill="none"
+                />
+                <circle cx="22" cy="23" r="2.5" fill="#c0392b" />
+                <!-- Right eye outline -->
+                <ellipse
+                  cx="58"
+                  cy="23"
+                  rx="18"
+                  ry="13"
+                  stroke="#c0392b"
+                  stroke-width="3"
+                  fill="none"
+                />
+                <circle
+                  cx="58"
+                  cy="23"
+                  r="7"
+                  stroke="#c0392b"
+                  stroke-width="3"
+                  fill="none"
+                />
+                <circle cx="58" cy="23" r="2.5" fill="#c0392b" />
+              </svg>
+            </div>
+            <div class="brand-name">ARES</div>
+          </div>
+          <div class="brand-tagline">European Qualified Optometrist</div>
+        </div>
+
+        <div class="prescription-block">
+          <div class="prescription-title">Prescription</div>
+          <div class="prescription-meta">
+            Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="p_date"
+              >_______</span
+            ><br />
+            Invoice # &nbsp;<span id="InvoiceId">____</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDRESS -->
+      <div class="address-block">
+        <span id="branchLocation"> ________________________________ </span
+        ><br />
+        Tel : <span id="mobile1">__________</span> &nbsp;|&nbsp;
+        <span id="mobile2">____________</span>
+      </div>
+
+      <!-- PATIENT -->
+      <div class="patient-block">
+        <div class="patient-name" id="customerName">________________</div>
+        <div class="patient-numbers">
+          <span id="customer_mobile1">__________</span><br />
+          <span id="customer_mobile2"></span>
+        </div>
+        <div class="rx-symbol">℞</div>
+      </div>
+
+      <!-- DIALS -->
+      <div class="dials-row">
+        <!-- RIGHT dial -->
+        <div class="dial-wrapper">
+          <svg
+            class="dial-svg"
+            viewBox="0 0 160 95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Semicircle arc -->
+            <path
+              d="M 10 88 A 70 70 0 0 1 150 88"
+              stroke="#222"
+              stroke-width="1.5"
+              fill="none"
+            />
+            <!-- Tick marks -->
+            <g stroke="#222" stroke-width="1">
+              <!-- Generate ticks from 0 to 180 degrees along top semicircle -->
+              <!-- We'll place major ticks at 10-degree intervals -->
+              <!-- The arc goes from left (180°) to right (0°) -->
+              <!-- Center: 80,88; radius inner:62, outer major:72, outer minor:68 -->
+              <script type="text/ignored">
+                /* ticks generated inline */
+              </script>
+              <!-- 180° = left -->
+              <line x1="10" y1="88" x2="18" y2="88" />
+              <!-- 170° -->
+              <line x1="11.2" y1="75.8" x2="18.9" y2="77.2" />
+              <!-- 160° -->
+              <line x1="14.8" y1="64.1" x2="21.8" y2="67.1" />
+              <!-- 150° -->
+              <line x1="20.5" y1="53.0" x2="27.0" y2="57.5" />
+              <!-- 140° -->
+              <line x1="27.5" y1="43.1" x2="33.4" y2="49.1" />
+              <!-- 130° -->
+              <line x1="36.0" y1="34.5" x2="41.1" y2="41.6" />
+              <!-- 120° -->
+              <line x1="45.5" y1="27.5" x2="49.8" y2="35.2" />
+              <!-- 110° -->
+              <line x1="56.0" y1="22.0" x2="59.4" y2="30.2" />
+              <!-- 100° -->
+              <line x1="67.0" y1="18.0" x2="69.3" y2="26.5" />
+              <!-- 90° = top -->
+              <line x1="80" y1="16" x2="80" y2="25" />
+              <!-- 80° -->
+              <line x1="93" y1="18.0" x2="90.7" y2="26.5" />
+              <!-- 70° -->
+              <line x1="104" y1="22.0" x2="100.6" y2="30.2" />
+              <!-- 60° -->
+              <line x1="114.5" y1="27.5" x2="110.2" y2="35.2" />
+              <!-- 50° -->
+              <line x1="124.0" y1="34.5" x2="118.9" y2="41.6" />
+              <!-- 40° -->
+              <line x1="132.5" y1="43.1" x2="126.6" y2="49.1" />
+              <!-- 30° -->
+              <line x1="139.5" y1="53.0" x2="133.0" y2="57.5" />
+              <!-- 20° -->
+              <line x1="145.2" y1="64.1" x2="138.2" y2="67.1" />
+              <!-- 10° -->
+              <line x1="148.8" y1="75.8" x2="141.1" y2="77.2" />
+              <!-- 0° = right -->
+              <line x1="150" y1="88" x2="142" y2="88" />
+            </g>
+            <!-- Labels -->
+            <g
+              font-family="monospace"
+              font-size="7"
+              fill="#333"
+              text-anchor="middle"
+            >
+              <text x="8" y="84">180</text>
+              <text x="10" y="72">170</text>
+              <text x="14" y="60">160</text>
+              <text x="21" y="49">150</text>
+              <text x="28" y="39">140</text>
+              <text x="36" y="30">130</text>
+              <text x="45" y="22">120</text>
+              <text x="56" y="17">110</text>
+              <text x="68" y="12">100</text>
+              <text x="80" y="10">90</text>
+              <text x="92" y="12">80</text>
+              <text x="104" y="17">70</text>
+              <text x="115" y="22">60</text>
+              <text x="124" y="30">50</text>
+              <text x="132" y="39">40</text>
+              <text x="139" y="49">30</text>
+              <text x="146" y="60">20</text>
+              <text x="150" y="72">10</text>
+              <text x="152" y="84">0</text>
+            </g>
+            <!-- Inner curved label area -->
+            <path
+              d="M 28 88 A 52 52 0 0 1 132 88"
+              stroke="#aaa"
+              stroke-width="0.8"
+              fill="none"
+              stroke-dasharray="2,2"
+            />
+            <!-- Label -->
+            <text
+              x="80"
+              y="78"
+              font-family="'Playfair Display', serif"
+              font-size="13"
+              font-weight="700"
+              fill="#1a1a1a"
+              text-anchor="middle"
+              letter-spacing="2"
+            >
+              RIGHT
+            </text>
+          </svg>
+        </div>
+
+        <!-- separator -->
+        <div class="dial-separator">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 3px;
+            "
+          >
+            <div class="dial-sep-dot"></div>
+            <div class="dial-sep-line"></div>
+            <div class="dial-sep-dot"></div>
+          </div>
+        </div>
+
+        <!-- LEFT dial -->
+        <div class="dial-wrapper">
+          <svg
+            class="dial-svg"
+            viewBox="0 0 160 95"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M 10 88 A 70 70 0 0 1 150 88"
+              stroke="#222"
+              stroke-width="1.5"
+              fill="none"
+            />
+            <g stroke="#222" stroke-width="1">
+              <line x1="10" y1="88" x2="18" y2="88" />
+              <line x1="11.2" y1="75.8" x2="18.9" y2="77.2" />
+              <line x1="14.8" y1="64.1" x2="21.8" y2="67.1" />
+              <line x1="20.5" y1="53.0" x2="27.0" y2="57.5" />
+              <line x1="27.5" y1="43.1" x2="33.4" y2="49.1" />
+              <line x1="36.0" y1="34.5" x2="41.1" y2="41.6" />
+              <line x1="45.5" y1="27.5" x2="49.8" y2="35.2" />
+              <line x1="56.0" y1="22.0" x2="59.4" y2="30.2" />
+              <line x1="67.0" y1="18.0" x2="69.3" y2="26.5" />
+              <line x1="80" y1="16" x2="80" y2="25" />
+              <line x1="93" y1="18.0" x2="90.7" y2="26.5" />
+              <line x1="104" y1="22.0" x2="100.6" y2="30.2" />
+              <line x1="114.5" y1="27.5" x2="110.2" y2="35.2" />
+              <line x1="124.0" y1="34.5" x2="118.9" y2="41.6" />
+              <line x1="132.5" y1="43.1" x2="126.6" y2="49.1" />
+              <line x1="139.5" y1="53.0" x2="133.0" y2="57.5" />
+              <line x1="145.2" y1="64.1" x2="138.2" y2="67.1" />
+              <line x1="148.8" y1="75.8" x2="141.1" y2="77.2" />
+              <line x1="150" y1="88" x2="142" y2="88" />
+            </g>
+            <g
+              font-family="monospace"
+              font-size="7"
+              fill="#333"
+              text-anchor="middle"
+            >
+              <text x="8" y="84">180</text>
+              <text x="10" y="72">170</text>
+              <text x="14" y="60">160</text>
+              <text x="21" y="49">150</text>
+              <text x="28" y="39">140</text>
+              <text x="36" y="30">130</text>
+              <text x="45" y="22">120</text>
+              <text x="56" y="17">110</text>
+              <text x="68" y="12">100</text>
+              <text x="80" y="10">90</text>
+              <text x="92" y="12">80</text>
+              <text x="104" y="17">70</text>
+              <text x="115" y="22">60</text>
+              <text x="124" y="30">50</text>
+              <text x="132" y="39">40</text>
+              <text x="139" y="49">30</text>
+              <text x="146" y="60">20</text>
+              <text x="150" y="72">10</text>
+              <text x="152" y="84">0</text>
+            </g>
+            <path
+              d="M 28 88 A 52 52 0 0 1 132 88"
+              stroke="#aaa"
+              stroke-width="0.8"
+              fill="none"
+              stroke-dasharray="2,2"
+            />
+            <text
+              x="80"
+              y="78"
+              font-family="'Playfair Display', serif"
+              font-size="13"
+              font-weight="700"
+              fill="#1a1a1a"
+              text-anchor="middle"
+              letter-spacing="2"
+            >
+              LEFT
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="rx-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>RX</th>
+              <th>SPH.</th>
+              <th>CYL.</th>
+              <th>AXIS.</th>
+              <th>DVA</th>
+              <th>ADD</th>
+              <th>NVA</th>
+              <th>PD</th>
+              <th>HEIGHT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">R</td>
+              <td id="R_SPH"></td>
+              <td id="R_CYL"></td>
+              <td id="R_AXIS"></td>
+              <td id="R_DVA"></td>
+              <td id="R_ADD"></td>
+              <td id="R_NVA"></td>
+              <td id="R_PD"></td>
+              <td id="R_HEIGHT"></td>
+            </tr>
+            <tr>
+              <td class="row-label">L</td>
+              <td id="L_SPH"></td>
+              <td id="L_CYL"></td>
+              <td id="L_AXIS"></td>
+              <td id="L_DVA"></td>
+              <td id="L_ADD"></td>
+              <td id="L_NVA"></td>
+              <td id="L_PD"></td>
+              <td id="L_HEIGHT"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SIGNATURE -->
+      <div class="signature-row">
+        <span class="sig-label">Optometrist's Signature</span>
+        <div class="sig-dots"></div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <div class="footer-text">Thank You</div>
+      </div>
+    </div>
+    <!-- Template JS File -->
+    <!-- <script src="assets/js/scripts.js"></script> -->
+    <!-- <script src="assets/js/custom.js"></script> -->
+    <script src="assets/js/mainscript.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>

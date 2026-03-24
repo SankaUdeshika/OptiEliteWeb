@@ -110,6 +110,14 @@ app.get("/add_prescription", (req, res) => {
   }
 });
 
+app.get("/view_prescriptions",(req,res)=>{
+  if (req.session && req.session.username) {
+    res.sendFile(path.join(__dirname, "public", "prescription", "prescription.html"));
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:3000`);
 });

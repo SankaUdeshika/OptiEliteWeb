@@ -725,9 +725,7 @@ async function printInvoiceHeader() {
 
   if (request.ok) {
     const response = await request.json();
-    console.log(response);
 
-    //invoice
     const invoice_id = response[0].invoice_id;
     const reg_name = response[0].reg_name;
     const reg_no = response[0].reg_no;
@@ -742,14 +740,12 @@ async function printInvoiceHeader() {
     const customer_mobile = response[0].customer_mobile;
     const purchsed_date = response[0].date;
 
-    //Lens stock Details
     const lens_id = response[0].lens_stock_lens_id;
     const lens_Qty = response[0].lens_Qty;
     const lens_code = response[0].lens_code;
     const lens_price = response[0].lens_price;
     const lenstotal = response[0].lenstotal;
 
-    // Summery Details
     const discount_percentage = response[0].discount_percentage;
     const total = Number(response[0].subtotal) + Number(response[0].discount);
     const discount = Number(response[0].discount).toLocaleString();
@@ -758,12 +754,10 @@ async function printInvoiceHeader() {
       response[0].advance_payment,
     ).toLocaleString();
     const payment_amount = Number(response[0].payment_amount).toLocaleString();
-
     let due_amount_raw =
       Number(response[0].subtotal) - Number(response[0].payment_amount);
     let due_amount = due_amount_raw.toLocaleString();
 
-    // accessories items
     const box = response[0].box;
     const bag = response[0].bag;
     const clothing = response[0].clothing;
@@ -773,90 +767,63 @@ async function printInvoiceHeader() {
     document.getElementById("CompanyEmail").innerHTML = email;
     document.getElementById("CompanyWeb").innerHTML = web;
     document.getElementById("BranchName").innerHTML = branch_name;
-    document.getElementById("BranchAddress").innerHTML =
-      "Address: " + branch_address;
-    document.getElementById("BranchContact1").innerHTML =
-      "Contact 1: " + locaiton_mobile;
-
+    document.getElementById("BranchAddress").innerHTML = branch_address;
+    document.getElementById("BranchContact1").innerHTML = locaiton_mobile;
     if (location_mobile2 != null || location_mobile2 != "") {
-      document.getElementById("BranchContact2").innerHTML =
-        "Contact 2: " + location_mobile2;
+      document.getElementById("BranchContact2").innerHTML = location_mobile2;
     }
-
     document.getElementById("PrintCustomerName").innerHTML = customer_name;
     document.getElementById("PrintCustomerAddress").innerHTML = address;
     document.getElementById("PrintCustomerMobile").innerHTML =
       "Contact: " + customer_mobile;
-    document.getElementById("PrintPurchaseDate").innerHTML =
-      "Date: " + purchsed_date;
-    document.getElementById("PrintInvoiceID").innerHTML =
-      "Invoice #: " + invoice_id;
+    document.getElementById("PrintPurchaseDate").innerHTML = purchsed_date;
+    document.getElementById("PrintInvoiceID").innerHTML = invoice_id;
 
-    // summery details loading
     document.getElementById("PrintDiscount").innerHTML = discount;
     if (discount_percentage != null || discount_percentage != "") {
       document.getElementById("discount_percentage").innerHTML =
         discount_percentage;
     }
-
     document.getElementById("PrintSubTotal").innerHTML = subtotal;
     document.getElementById("PrintAdvancePayment").innerHTML = advance_payment;
     document.getElementById("PrintPaymentAmount").innerHTML = payment_amount;
     document.getElementById("PrintTotal").innerHTML = total;
     document.getElementById("dueamount").innerHTML = due_amount;
 
-    // accessories items
     const ulTag = document.getElementById("accessoriesList");
-    if (bag == "true") {
+    if (bag === "true") {
       const li = document.createElement("li");
-      li.textContent = "free Bag - 01";
+      li.textContent = "Free Bag — 01";
       ulTag.appendChild(li);
     }
-    if (box == "true") {
+    if (box === "true") {
       const li = document.createElement("li");
-      li.textContent = "free Box - 01";
+      li.textContent = "Free Box — 01";
       ulTag.appendChild(li);
     }
-    if (clothing == "true") {
+    if (clothing === "true") {
       const li = document.createElement("li");
-      li.textContent = "free Clothing - 01";
+      li.textContent = "Free Cloth — 01";
       ulTag.appendChild(li);
     }
 
-    // lens stock details
     if (lens_id != null) {
       const stockTable = document.getElementById("stockTable");
       const tableRaw = document.createElement("tr");
       tableRaw.innerHTML = `
-        <td class="type">Lens</td>
-        <td>
-            <div>
-               <b id="lensID">${lens_id}</b> &nbsp;&nbsp; <span id="lensCode">${lens_code} </span>
-            </div>
-        </td>
-        <td class="qty" id="lensQty">${lens_Qty}</td>
-        <td class="price" id="lensPrice">${lenstotal}</td>
-        `;
+            <td class="type">Lens</td>
+            <td><b>${lens_id}</b>&nbsp;&nbsp;<span>${lens_code}</span></td>
+            <td class="qty">${lens_Qty}</td>
+            <td class="price">${lenstotal}</td>`;
       stockTable.appendChild(tableRaw);
-
-      // document.getElementById("lensID").innerHTML = lens_id;
-      // document.getElementById("lensCode").innerHTML = lens_code;
-      // document.getElementById("lensQty").innerHTML = lens_Qty;
-      // document.getElementById("lensPrice").innerHTML = lens_price;
-      // document.getElementById("lensTotal").innerHTML = lenstotal;
     } else {
       const stockTable = document.getElementById("stockTable");
       const tableRaw = document.createElement("tr");
       tableRaw.innerHTML = `
-        <td class="type">Lens</td>
-        <td>
-            <div class="text-center">
-                 <span class=" text-black-50" id="lensCode">No Lens Details</span>
-            </div>
-        </td>
-         <td class="qty" id="lensQty"></td>
-            <td class="price" id="lensPrice"></td>
-        `;
+            <td class="type">Lens</td>
+            <td><span class="muted">No Lens Details</span></td>
+            <td class="qty"></td>
+            <td class="price"></td>`;
       stockTable.appendChild(tableRaw);
     }
   } else {
@@ -878,55 +845,37 @@ async function printProductStock() {
 
   if (request.ok) {
     const response = await request.json();
-    console.log(response);
-
-    //invoice
 
     if (response != "No Result") {
       for (let i = 0; i < response.length; i++) {
         const saling_price = response[i].saling_price;
         const product_id = response[i].product_id;
-        const product_name = response[i].product_name;
+        const brand_name = response[i].brand_name;
         const qty = response[i].qty;
         const sub_category = response[i].sub_category;
-        const brand_name = response[i].brand_name;
         const category_name = response[i].Category;
 
         const stockTable = document.getElementById("stockTable");
         const tableRaw = document.createElement("tr");
         tableRaw.innerHTML = `
-        <tr>
-            <td class="type">${category_name}</td>
-            <td>
-              <div>
-                <b id="printProductID">${product_id}</b>&nbsp;&nbsp;<span
-                  id="printProductBrand"
-                >${brand_name}</span
-                >&nbsp;&nbsp;<span
-                  class="muted"
-                  id="printProductCategory"
-                >${sub_category}</span>
-              </div>
-            </td>
-            <td class="qty" id="printProductQty">${qty}</td>
-            <td class="price" id="printProductPrice">${saling_price}</td>
-          </tr>
-        `;
+              <td class="type">${category_name}</td>
+              <td>
+                <b>${product_id}</b>&nbsp;&nbsp;
+                <span>${brand_name}</span>&nbsp;&nbsp;
+                <span class="muted">${sub_category}</span>
+              </td>
+              <td class="qty">${qty}</td>
+              <td class="price">${saling_price}</td>`;
         stockTable.appendChild(tableRaw);
       }
-    } else if (response == "No Result") {
+    } else {
       const stockTable = document.getElementById("stockTable");
       const tableRaw = document.createElement("tr");
       tableRaw.innerHTML = `
-        <td class="type">Frame</td>
-        <td>
-            <div class="text-center">
-                 <span class=" text-black-50" id="lensCode">No Frame Details</span>
-            </div>
-        </td>
-         <td class="qty" id="lensQty"></td>
-            <td class="price" id="lensPrice"></td>
-        `;
+            <td class="type">Frame</td>
+            <td><span class="muted">No Frame Details</span></td>
+            <td class="qty"></td>
+            <td class="price"></td>`;
       stockTable.appendChild(tableRaw);
     }
   }
@@ -1332,7 +1281,108 @@ function addPrescriptionRow(rx) {
       `${r.nva || "—"} / ${l.nva || "—"}`,
       `${r.pd || "—"} / ${l.pd || "—"}`,
       escapeHtml(rx.doctor) || '<span class="text-muted">—</span>',
-      `<button class="btn btn-sm btn-danger" onclick="deletePrescriptionRow(this)"><i class="fas fa-print"></i></button>`,
+      `<button class="btn btn-sm btn-danger" onclick="window.location.href='/view_prescriptions?p_id=${rx.job_no}'"><i class="fas fa-print"></i></button>`,
     ])
     .draw(false);
+}
+
+// ─────────────────────────────────────────────
+//  Load Prescription Details (prescription.html)
+// ─────────────────────────────────────────────
+
+async function fetchViewPrescriptionPage() {
+  const params = new URLSearchParams(window.location.search);
+  const p_id = params.get("p_id");
+
+  const result = await fetch(`/api/prescription/view/${p_id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!result.ok) {
+    Swal.fire({
+      icon: "error",
+      title: "Failed to Load Prescription",
+      text: "Could not fetch prescription details.",
+    });
+    return;
+  } else {
+    const prescriptionObject = await result.json();
+    // data Visible
+    document.getElementById("p_date").innerHTML =
+      prescriptionObject.prescription.date;
+
+    document.getElementById("InvoiceId").innerHTML =
+      prescriptionObject.prescription.invoice_id;
+
+    document.getElementById("branchLocation").innerHTML =
+      prescriptionObject.prescription.branch_address;
+
+    document.getElementById("mobile1").innerHTML =
+      prescriptionObject.prescription.branch_mobile1;
+
+    document.getElementById("mobile2").innerHTML =
+      prescriptionObject.prescription.branch_mobile2;
+
+    document.getElementById("customerName").innerHTML =
+      prescriptionObject.prescription.customerName;
+
+    document.getElementById("customer_mobile1").innerHTML =
+      prescriptionObject.prescription.customerMobile;
+    document.getElementById("customer_mobile2").innerHTML =
+      prescriptionObject.prescription.customerName;
+
+    //    fill Prescription Table ---- LEFT
+    document.getElementById("R_SPH").innerHTML =
+      prescriptionObject.prescription.right.sph;
+
+    document.getElementById("R_CYL").innerHTML =
+      prescriptionObject.prescription.right.cyl;
+
+    document.getElementById("R_AXIS").innerHTML =
+      prescriptionObject.prescription.right.axis;
+
+    document.getElementById("R_DVA").innerHTML =
+      prescriptionObject.prescription.right.dva;
+
+    document.getElementById("R_ADD").innerHTML =
+      prescriptionObject.prescription.right.add;
+
+    document.getElementById("R_NVA").innerHTML =
+      prescriptionObject.prescription.right.nva;
+
+    document.getElementById("R_PD").innerHTML =
+      prescriptionObject.prescription.right.pd;
+
+    document.getElementById("R_HEIGHT").innerHTML =
+      prescriptionObject.prescription.right.height;
+
+    // ----------------------------------RIGHT
+
+      document.getElementById("L_SPH").innerHTML =
+      prescriptionObject.prescription.left.sph;
+
+    document.getElementById("L_CYL").innerHTML =
+      prescriptionObject.prescription.left.cyl;
+
+    document.getElementById("L_AXIS").innerHTML =
+      prescriptionObject.prescription.left.axis;
+
+    document.getElementById("L_DVA").innerHTML =
+      prescriptionObject.prescription.left.dva;
+
+    document.getElementById("L_ADD").innerHTML =
+      prescriptionObject.prescription.left.add;
+
+    document.getElementById("L_NVA").innerHTML =
+      prescriptionObject.prescription.left.nva;
+
+    document.getElementById("L_PD").innerHTML =
+      prescriptionObject.prescription.left.pd;
+
+    document.getElementById("L_HEIGHT").innerHTML =
+      prescriptionObject.prescription.left.height;
+
+
+  }
 }
