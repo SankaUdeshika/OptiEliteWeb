@@ -1309,6 +1309,7 @@ async function fetchViewPrescriptionPage() {
   } else {
     const prescriptionObject = await result.json();
     // data Visible
+    document.getElementById("imageUrl").src = prescriptionObject.prescription.logo_url;
     document.getElementById("p_date").innerHTML =
       prescriptionObject.prescription.date;
 

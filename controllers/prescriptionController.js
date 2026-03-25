@@ -136,6 +136,7 @@ const viewPrescriptionDetails = async (req, res) => {
       customerName: result[0].name,
       customerMobile: result[0].mobile,
       customerMobile2 : result[0].mobile2,
+      imageUrl : result[0].logo_url,
 
 
       right: {
