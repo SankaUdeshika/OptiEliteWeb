@@ -305,14 +305,50 @@
         color: #1a1a1a;
         letter-spacing: 0.06em;
       }
+
+      .print-btn {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        background: #c0392b;
+        color: #fff;
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        border: none;
+        padding: 12px 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(192, 57, 43, 0.35);
+        border-radius: 2px;
+        transition: red 0.2s;
+        z-index: 1;
+      }
+      .print-btn:hover {
+        background: #a93226;
+      }
+
+      @media print {
+        .print-btn {
+          display: none;
+        }
+        body {
+          background: #fff;
+          padding: 0;
+        }
+        /* .page {
+          box-shadow: none;
+        } */
+      }
     </style>
   </head>
   <body onload="fetchViewPrescriptionPage()">
-    <div class="page">
+    <button class="print-btn" onclick="printPrescription()">⎙ Print</button>
+    <div class="page" id="prescriptionPage">
       <!-- HEADER -->
       <div class="header">
         <div class="logo-block">
-          <img src="" id="imageUrl" style="width: 250px;">
+          <img src="" id="imageUrl" style="width: 250px" />
         </div>
 
         <div class="prescription-block">
@@ -618,5 +654,11 @@
     <script src="assets/js/mainscript.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function printPrescription() {
+        window.print();
+      }
+    </script>
   </body>
 </html>

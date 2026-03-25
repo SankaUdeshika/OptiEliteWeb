@@ -1,4 +1,4 @@
-const { getBranchLocation } = require("../../../controllers/branchController");
+// const { getBranchLocation } = require("../../../controllers/branchController");
 
 // User Login Function
 async function Login() {
