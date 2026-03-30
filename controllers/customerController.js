@@ -13,12 +13,11 @@ const getCustomerbyMobile = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     res.json(result);
-
   } catch (error) {
     console.error("Error fetching customer by mobile:", error);
     res.status(500).json({ error: "Failed to fetch customer" });
@@ -36,12 +35,11 @@ const getAllCustomer = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     res.json(result);
-
   } catch (error) {
     console.error("Error fetching all customers:", error);
     res.status(500).json({ error: "Failed to fetch customers" });
@@ -50,7 +48,9 @@ const getAllCustomer = async (req, res) => {
 
 const addnewCustomer = async (req, res) => {
   const db = getAppDb(req.session.user.db_name); // ✅ moved inside
-  console.log("addnewCustomer function called");
+  const UserObject = req.session.user;
+
+
 
   const {
     name,
@@ -65,6 +65,8 @@ const addnewCustomer = async (req, res) => {
     email,
   } = req.body;
 
+   const Userlocation_id = UserObject.location_id;
+
   try {
     const result = await new Promise((resolve, reject) => {
       const sql = `
@@ -73,7 +75,18 @@ const addnewCustomer = async (req, res) => {
           mobile, mobile2, telephone_land, birthday, nic, email, register_date
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
 
-      const values = [name, gender, location_name, address, mobile1, mobile2, landline, birthday, nic, email];
+      const values = [
+        name,
+        gender,
+        Userlocation_id,
+        address,
+        mobile1,
+        mobile2,
+        landline,
+        birthday,
+        nic,
+        email,
+      ];
 
       db.query(sql, values, (err, result) => {
         db.end();
@@ -82,11 +95,14 @@ const addnewCustomer = async (req, res) => {
       });
     });
 
-    res.status(200).json({ message: "Customer added successfully", data: result });
-
+    res
+      .status(200)
+      .json({ message: "Customer added successfully", data: result });
   } catch (error) {
     console.error("Error adding new customer:", error);
-    res.status(500).json({ error: "Failed to insert customer", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to insert customer", details: error.message });
   }
 };
 

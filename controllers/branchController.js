@@ -16,6 +16,7 @@ const fetchBranchDetails = async (req, res) => {
   const username = req.session.username;
   const userIdParts = username.split("_");
   const userId = userIdParts[userIdParts.length - 1];
+  
 
   try {
     const branchResults = await new Promise((resolve, reject) => {

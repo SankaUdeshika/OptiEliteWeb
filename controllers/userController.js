@@ -34,7 +34,7 @@ const login = (req, res) => {
 
       const db2 = getAppDb(user.db_name);
       db2.query(
-        "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?",
+        "SELECT * FROM `users` INNER JOIN `location` ON `location`.`id` = `users`.`location_id` WHERE `username` = ? AND `password` = ?",
         [username, password],
         (err, userResults) => {
           db2.end();
@@ -55,6 +55,7 @@ const login = (req, res) => {
             lname: userResults[0].lname,
             email: userResults[0].email,
             location_id: userResults[0].location_id,
+            location_name : userResults[0].location_name,
           };
 
           req.session.username = data.username + "_" + result[0].id;
@@ -107,6 +108,7 @@ const getUserDetails = (req, res) => {
       lname: UserObject.lname,
       email: UserObject.email,
       location_id: UserObject.location_id,
+      location_name : UserObject.location_name,
     }); 
   } else {
     return res.status(401).json({ error: "Unauthorized" });

@@ -762,10 +762,13 @@ async function printInvoiceHeader() {
     const bag = response[0].bag;
     const clothing = response[0].clothing;
 
+    const logo_url = response[0].logo_url;
+
     document.getElementById("CompanyName").innerHTML = reg_name;
     document.getElementById("CompanyRegNo").innerHTML = reg_no;
     document.getElementById("CompanyEmail").innerHTML = email;
     document.getElementById("CompanyWeb").innerHTML = web;
+    document.getElementById("imageUrl").src = logo_url;
     document.getElementById("BranchName").innerHTML = branch_name;
     document.getElementById("BranchAddress").innerHTML = branch_address;
     document.getElementById("BranchContact1").innerHTML = locaiton_mobile;
@@ -975,6 +978,7 @@ async function loadAllAddBillStockData() {
 async function customerSectionLoading() {
   loadAllCustomers();
   loadLocationsForCustomer();
+  loadUserDetails();
 }
 async function loadAllCustomers() {
   const result = await fetch("/api/customer/getAllCustomers", {
@@ -1017,13 +1021,27 @@ async function loadLocationsForCustomer() {
   if (result.ok) {
     const response = await result.json();
     console.log(response);
-    const branchLocationSelect = document.getElementById("location");
-    response.forEach((location) => {
-      const option = document.createElement("option");
-      option.value = location.location_id;
-      option.textContent = location.location_name;
-      branchLocationSelect.appendChild(option);
-    });
+    // const branchLocationSelect = document.getElementById("location");
+    // response.forEach((location) => {
+    //   const option = document.createElement("option");
+    //   option.value = location.location_id;
+    //   option.textContent = location.location_name;
+    //   branchLocationSelect.appendChild(option);
+    // });
+  }
+}
+//load UserDetails in CustomerRegister Page
+async function loadUserDetails() {
+  const result = await fetch("/user/getUserDetails", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+
+  if(result.ok){
+    const response = await result.json();
+    console.log("this is the Results ->" + response.location_name);
+    document.getElementById("location").value = response.location_name;
   }
 }
 
@@ -1042,15 +1060,7 @@ async function addNewCustomer() {
   const email = document.getElementById("email").value;
 
   // Validation
-  if (
-    !name ||
-    !gender ||
-    !location ||
-    !mobile1 ||
-    !birthday ||
-    !nic ||
-    !email
-  ) {
+  if (!name || !gender || !location || !mobile1 || !birthday || !address) {
     Swal.fire({
       icon: "warning",
       title: "Missing Info",
@@ -1309,7 +1319,8 @@ async function fetchViewPrescriptionPage() {
   } else {
     const prescriptionObject = await result.json();
     // data Visible
-    document.getElementById("imageUrl").src = prescriptionObject.prescription.logo_url;
+    document.getElementById("imageUrl").src =
+      prescriptionObject.prescription.logo_url;
     document.getElementById("p_date").innerHTML =
       prescriptionObject.prescription.date;
 
@@ -1360,7 +1371,7 @@ async function fetchViewPrescriptionPage() {
 
     // ----------------------------------RIGHT
 
-      document.getElementById("L_SPH").innerHTML =
+    document.getElementById("L_SPH").innerHTML =
       prescriptionObject.prescription.left.sph;
 
     document.getElementById("L_CYL").innerHTML =
@@ -1383,7 +1394,5 @@ async function fetchViewPrescriptionPage() {
 
     document.getElementById("L_HEIGHT").innerHTML =
       prescriptionObject.prescription.left.height;
-
-
   }
 }
