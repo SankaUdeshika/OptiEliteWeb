@@ -103,6 +103,7 @@ async function fetchBranchStatus() {
 
     const response = await result.json();
     const locations = response.locations;
+    console.log(locations);
 
     if (!locations || locations.length === 0) {
       console.warn("No branch locations returned.");
@@ -187,7 +188,7 @@ async function fetchBranchStatus() {
           <div class="card-wrap">
             <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
             <div class="h4 font-weight-bold mb-0 text-dark" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
-              ${formatCurrency(loc.estimated_total_sale)}
+              ${formatCurrency(loc.TotalSale)}
             </div>
           </div>
         </div>
@@ -245,6 +246,8 @@ async function ChangeMonthForBranchStatus() {
     const response = await result.json();
     const locations = response.locations;
 
+    console.log(locations);
+
     if (!locations || locations.length === 0) {
       console.warn("No branch locations returned.");
       return;
@@ -265,8 +268,8 @@ async function ChangeMonthForBranchStatus() {
       "November",
       "December",
     ];
-    const selectedMonthIndex = new Date(dateInput).getMonth(); // 0-based
-    const selectedMonthName = monthNames[selectedMonthIndex];
+    const currentMonthIndex = new Date(dateInput).getMonth(); // 0-based
+    const currentMonthName = monthNames[currentMonthIndex];
 
     // ✅ Fix #6: currency formatter
     const formatCurrency = (value) =>
@@ -327,7 +330,7 @@ async function ChangeMonthForBranchStatus() {
           <div class="card-wrap">
             <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
             <div class="h4 font-weight-bold mb-0 text-dark" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
-              ${formatCurrency(loc.estimated_total_sale)}
+              ${formatCurrency(loc.TotalSale)}
             </div>
           </div>
         </div>
@@ -1037,8 +1040,7 @@ async function loadUserDetails() {
     headers: { "Content-Type": "application/json" },
   });
 
-
-  if(result.ok){
+  if (result.ok) {
     const response = await result.json();
     console.log("this is the Results ->" + response.location_name);
     document.getElementById("location").value = response.location_name;
