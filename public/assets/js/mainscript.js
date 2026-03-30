@@ -1062,11 +1062,51 @@ async function addNewCustomer() {
   const email = document.getElementById("email").value;
 
   // Validation
-  if (!name || !gender || !location || !mobile1 || !birthday || !address) {
+  if (name == "" || !name) {
     Swal.fire({
       icon: "warning",
       title: "Missing Info",
-      text: "Please fill in all required fields.",
+      text: "Please fill the customer",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  } else if (!gender || gender == "0") {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill the Gender",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  } else if (!location || location == "") {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill the Location",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  } else if (!mobile1 || mobile1 == "") {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill the Mobile Number",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  } else if (!birthday || birthday == "") {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill the Birthday",
+      confirmButtonColor: "#3085d6",
+    });
+    return;
+  } else if (!address || address == "") {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Info",
+      text: "Please fill the Address",
       confirmButtonColor: "#3085d6",
     });
     return;
@@ -1094,30 +1134,35 @@ async function addNewCustomer() {
 
     if (response.ok) {
       // --- BEAUTIFUL TOAST ALERT ---
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
         },
+        buttonsStyling: false,
       });
-
-      await Toast.fire({
-        icon: "success",
-        title: "Customer Added Successfully!",
-      });
-
-      // RELOAD PAGE AFTER TOAST
-      window.location.reload();
+      swalWithBootstrapButtons
+        .fire({
+          title: "Customer Added",
+          text: "Do you want to add Prescription ?",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "Add Prescription",
+          cancelButtonText: "No",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location = "add_prescription";
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            window.location.reload();
+          }
+        });
     } else {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Something went wrong on the server.",
+        text: "Something went wrong on the server." + response.error,
       });
     }
   } catch (error) {

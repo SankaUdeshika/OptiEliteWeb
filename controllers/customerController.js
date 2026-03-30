@@ -51,7 +51,6 @@ const addnewCustomer = async (req, res) => {
   const UserObject = req.session.user;
 
 
-
   const {
     name,
     gender,
@@ -66,6 +65,8 @@ const addnewCustomer = async (req, res) => {
   } = req.body;
 
    const Userlocation_id = UserObject.location_id;
+
+   
 
   try {
     const result = await new Promise((resolve, reject) => {
