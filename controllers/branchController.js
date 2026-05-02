@@ -14,14 +14,16 @@ const fetchBranchDetails = async (req, res) => {
   }
 
   const username = req.session.username;
+  const dbName = req.session.user.db_name;
+  const password = req.session.user.password;
   const userIdParts = username.split("_");
   const userId = userIdParts[userIdParts.length - 1];
 
   try {
     const branchResults = await new Promise((resolve, reject) => {
       db.query(
-        "SELECT * FROM `branch_users` INNER JOIN `location` ON `branch_users`.`location_id` = `location`.`id` WHERE `users_id` = ?",
-        [userId],
+        "SELECT * FROM `branch_users` INNER JOIN `users` ON `users`.`id`  = `branch_users`.`users_id` INNER JOIN `location` ON `branch_users`.`location_id` = `location`.`id`   WHERE `username` = ? AND `password` = ?",
+        [username, password],
         (err, result) => {
           if (err) return reject(err);
           resolve(result);
@@ -38,12 +40,12 @@ const fetchBranchDetails = async (req, res) => {
         return new Promise((resolve, reject) => {
           // Query 1: Get payments grouped by payment method (like Java code)
           db.query(
-            `SELECT 
+            `SELECT
               pm.payment_name,
               SUM(aph.paid_amount) as total_paid
              FROM advance_payment_history aph
              INNER JOIN payment_method pm ON pm.Payment_id = aph.payment_method
-             WHERE aph.date = ? 
+             WHERE aph.date = ?
              AND aph.location_id = ?
              GROUP BY pm.payment_name`,
             [todayDate, branch.location_id],
@@ -72,9 +74,9 @@ const fetchBranchDetails = async (req, res) => {
 
               // Query 2: Get Total Sale from invoice subtotal (like Java code)
               db.query(
-                `SELECT SUM(subtotal) as total_subtotal 
-                 FROM invoice 
-                 WHERE date = ? 
+                `SELECT SUM(subtotal) as total_subtotal
+                 FROM invoice
+                 WHERE date = ?
                  AND invoice_location = ?`,
                 [todayDate, branch.location_id],
                 (err2, invoiceResults) => {
@@ -95,12 +97,12 @@ const fetchBranchDetails = async (req, res) => {
 
                   // Query 3: Get order count and other metrics
                   db.query(
-                    `SELECT 
+                    `SELECT
                       i.*,
                       c.mobile
                      FROM invoice i
                      INNER JOIN customer c ON c.mobile = i.customer_mobile
-                     WHERE c.location_id = ? 
+                     WHERE c.location_id = ?
                      AND i.date = ?`,
                     [branch.location_id, todayDate],
                     (err3, invoiceDetails) => {
