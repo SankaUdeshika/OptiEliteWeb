@@ -47,6 +47,8 @@ const login = (req, res) => {
             return res.send("Invalid");
           }
 
+          console.log("MEka thama DB NAME eka:"+user.db_name);
+
           req.session.user = {
             id: userResults[0].id,
             username: user["user-name"],
@@ -54,11 +56,12 @@ const login = (req, res) => {
             fname: userResults[0].fname,
             lname: userResults[0].lname,
             email: userResults[0].email,
+            password: userResults[0].password,
             location_id: userResults[0].location_id,
             location_name : userResults[0].location_name,
           };
 
-          req.session.username = data.username + "_" + result[0].id;
+          req.session.username = data.username;
           req.session.db_name = result[0].db_name;
 
           const db = getAppDb(result[0].db_name);

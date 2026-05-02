@@ -71,7 +71,7 @@ async function setUserLocation(location_id) {
 // load Index Page Data
 async function loadIndexPage() {
   await fetchBranchStatus();
-  await getUserDetails();
+  // await getUserDetails();
 }
 
 // get UserDetails
@@ -101,18 +101,13 @@ async function fetchBranchStatus() {
       return;
     }
 
-    const response = await result.json();
-    const locations = response.locations;
-    console.log(locations);
+    const { locations } = await result.json();
 
-    if (!locations || locations.length === 0) {
+    if (!locations?.length) {
       console.warn("No branch locations returned.");
       return;
     }
 
-    const container = document.getElementById("render-target");
-
-    // ✅ Fix #3: build HTML string first, set innerHTML once
     const monthNames = [
       "January",
       "February",
@@ -127,96 +122,118 @@ async function fetchBranchStatus() {
       "November",
       "December",
     ];
-    const currentMonthIndex = new Date().getMonth(); // 0-based
-    const currentMonthName = monthNames[currentMonthIndex]; // ✅ Fix #4
+    const currentMonthIndex = new Date().getMonth();
+    const currentMonthName = monthNames[currentMonthIndex];
 
-    // ✅ Fix #6: currency formatter
-    const formatCurrency = (value) =>
-      Number(value).toLocaleString("en-US", {
+    const fmt = (val) =>
+      Number(val).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       });
 
-    let html = "";
+    // Build month dropdown once — reused across all branch cards
+    const monthDropdownItems = monthNames
+      .map(
+        (name, idx) =>
+          `<a href="#" class="dropdown-item ${idx === currentMonthIndex ? "active" : ""}"
+            onclick="ChangeMonthForBranchStatus(${idx + 1})">${name}</a>`,
+      )
+      .join("");
 
-    for (let i = 0; i < locations.length; i++) {
-      const loc = locations[i]; // cleaner reference
+    const html = locations
+      .map(
+        (loc) => `
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-statistic-2 border-0 shadow-sm rounded-lg mb-4">
 
-      html += `
-        <div class="row">
-  <div class="col-12">
-    <div class="card card-statistic-2 border-0 shadow-sm rounded-lg mb-4">
+            <!-- Header -->
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center border-bottom py-3 px-3 px-sm-4">
+              <h4 class="m-0 text-muted mb-2 mb-sm-0" style="font-size:1rem;">
+                <span class="text-primary mr-1"><i class="fas fa-map-marker-alt"></i></span>
+                <span style="color:purple;font-weight:700;">${loc.location_name}</span>
+                <small class="text-dark ml-1">Order Statistics</small>
+              </h4>
+              <div class="dropdown d-inline">
+                <button class="btn btn-outline-primary btn-sm dropdown-toggle font-weight-600"
+                        type="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                  ${currentMonthName}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <div class="dropdown-title">Select Month</div>
+                  ${monthDropdownItems}
+                </div>
+              </div>
+            </div>
 
-      <!-- Card Header -->
-      <div class="card-header d-flex flex-wrap justify-content-between align-items-center border-bottom py-3 px-3 px-sm-4">
-        <h4 class="m-0 text-muted mb-2 mb-sm-0" style="font-size: 1rem;">
-          <span class="text-primary mr-1"><i class="fas fa-map-marker-alt"></i></span>
-          <span style="color: purple; font-weight: 700;">${loc.location_name}</span>
-          <small class="text-dark ml-1">Order Statistics</small>
-        </h4>
+            <!-- Body -->
+            <div class="card-body p-3 p-sm-4">
 
-        <div class="dropdown d-inline">
-          <button class="btn btn-outline-primary btn-sm dropdown-toggle font-weight-600"
-                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            ${currentMonthName}
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <div class="dropdown-title">Select Month</div>
-            ${monthNames
-              .map(
-                (name, idx) => `
-              <a href="#" class="dropdown-item ${idx === currentMonthIndex ? "active" : ""}"
-                 onclick="ChangeMonthForBranchStatus(${idx + 1})">
-                ${name}
-              </a>
-            `,
-              )
-              .join("")}
+              <!-- Estimated Total Sale -->
+              <div class="d-flex align-items-center mb-3">
+                <div class="card-icon shadow-primary bg-primary text-white mr-3 flex-shrink-0"
+                     style="width:46px;height:46px;line-height:46px;font-size:18px;text-align:center;border-radius:8px;">
+                  <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div>
+                  <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
+                  <div class="h4 font-weight-bold mb-0 text-dark" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
+                    ${fmt(loc.TotalSale)}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stats row -->
+              <div class="d-flex flex-wrap border-top mt-3 pt-3">
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center mb-2">
+                  <div class="font-weight-bold text-dark h5 mb-1">${loc.order_count}</div>
+                  <div class="text-muted small">Orders</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-success h5 mb-1">${fmt(loc.cashCollection)}</div>
+                  <div class="text-muted small">Cash</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-primary h5 mb-1">${fmt(loc.cardCollection)}</div>
+                  <div class="text-muted small">Card</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-info h5 mb-1">${fmt(loc.onlinePaymentCollection)}</div>
+                  <div class="text-muted small">Online</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-warning h5 mb-1">${fmt(loc.totalSellingCollection)}</div>
+                  <div class="text-muted small">Total Collected</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-danger h5 mb-1">${fmt(loc.total_expenses)}</div>
+                  <div class="text-muted small">Expenses</div>
+                </div>
+
+                <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2">
+                  <div class="font-weight-bold text-secondary h5 mb-1">${fmt(loc.BankDeposit)}</div>
+                  <div class="text-muted small">Bank Deposit</div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+    `,
+      )
+      .join("");
 
-      <!-- Card Body -->
-      <div class="card-body p-3 p-sm-4">
-
-        <!-- Top row: icon + estimated total -->
-        <div class="d-flex align-items-center mb-3 mb-md-0">
-          <div class="card-icon shadow-primary bg-primary text-white mr-3 flex-shrink-0"
-               style="width:46px;height:46px;line-height:46px;font-size:18px;text-align:center;border-radius:8px;">
-            <i class="fas fa-shopping-bag"></i>
-          </div>
-          <div class="card-wrap">
-            <div class="text-muted small font-weight-bold text-uppercase mb-1">Estimated Total Sale</div>
-            <div class="h4 font-weight-bold mb-0 text-dark" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
-              ${formatCurrency(loc.TotalSale)}
-            </div>
-          </div>
-        </div>
-
-        <!-- Stats row: Orders + Cash Collected -->
-        <div class="d-flex flex-wrap border-top mt-3 pt-3">
-          <div class="col-6 col-sm-auto px-2 px-sm-3 text-center mb-2 mb-sm-0">
-            <div class="font-weight-bold text-dark h5 mb-1">${loc.order_count}</div>
-            <div class="text-muted small">Orders</div>
-          </div>
-          <div class="col-6 col-sm-auto px-2 px-sm-3 text-center border-left mb-2 mb-sm-0">
-            <div class="font-weight-bold text-success h5 mb-1" style="font-size:clamp(0.9rem,2vw,1.15rem);">
-              ${formatCurrency(loc.total_cash_collected)}
-            </div>
-            <div class="text-muted small">Cash Collected</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-      `;
-    }
-
-    container.innerHTML = html; // ✅ Fix #3: single DOM write
+    document.getElementById("render-target").innerHTML = html;
   } catch (err) {
-    // ✅ Fix #5: catch network or parse errors
     console.error("Error fetching branch status:", err);
   }
 }
@@ -998,11 +1015,11 @@ async function loadAllCustomers() {
       customerTable.row.add([
         customer.name,
         customer.gender,
-        customer.location_name,
+        // customer.location_name,
         customer.mobile,
         customer.birthday,
-        customer.nic,
-        customer.email,
+        // customer.nic,
+        // customer.email,
         `<button class="bg-success text-white">
             <i class="bi bi-eye"></i>
          </button>`,

@@ -1,170 +1,142 @@
 const getAppDb = require("../db/appDb");
 
 const fetchBranchDetails = async (req, res) => {
-  const db = getAppDb(req.session.user.db_name);
-
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const todayDate = `${year}-${month}-${day}`;
-
-  if (!req.session.username) {
-    return res.send("no");
+  // Guard before touching session.user to avoid crash if not logged in
+  if (!req.session?.username) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const username = req.session.username;
-  const dbName = req.session.user.db_name;
-  const password = req.session.user.password;
-  const userIdParts = username.split("_");
-  const userId = userIdParts[userIdParts.length - 1];
+  const db = getAppDb(req.session.user.db_name);
+  const pdb = db.promise();
+
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const todayDate = `${now.getFullYear()}-${month}-${String(now.getDate()).padStart(2, "0")}`;
+
+  const {
+    username,
+    user: { password },
+  } = req.session;
 
   try {
-    const branchResults = await new Promise((resolve, reject) => {
-      db.query(
-        "SELECT * FROM `branch_users` INNER JOIN `users` ON `users`.`id`  = `branch_users`.`users_id` INNER JOIN `location` ON `branch_users`.`location_id` = `location`.`id`   WHERE `username` = ? AND `password` = ?",
-        [username, password],
-        (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        },
-      );
-    });
+    // ── 1. Find all branches this user manages ───────────────────────────
+    const [branchResults] = await pdb.query(
+      `SELECT bu.location_id,
+              l.location_name,
+              l.branch_name
+       FROM   branch_users bu
+       JOIN   users    u ON u.id          = bu.users_id
+       JOIN   location l ON l.id          = bu.location_id
+       WHERE  u.username = ? AND u.password = ?`,
+      [username, password],
+    );
 
     if (branchResults.length === 0) {
-      return res.json("No Result");
+      return res.status(404).json({ error: "No matching branch found" });
     }
 
     const location_details = await Promise.all(
-      branchResults.map((branch) => {
-        return new Promise((resolve, reject) => {
-          // Query 1: Get payments grouped by payment method (like Java code)
-          db.query(
-            `SELECT
-              pm.payment_name,
-              SUM(aph.paid_amount) as total_paid
-             FROM advance_payment_history aph
-             INNER JOIN payment_method pm ON pm.Payment_id = aph.payment_method
-             WHERE aph.date = ?
-             AND aph.location_id = ?
-             GROUP BY pm.payment_name`,
-            [todayDate, branch.location_id],
-            (err1, paymentResults) => {
-              if (err1) return reject(err1);
+      branchResults.map(async (branch) => {
+        const locId = branch.location_id;
 
-              let cashCollection = 0;
-              let cardCollection = 0;
-              let onlinePaymentCollection = 0;
-              let totalSellingCollection = 0;
+        // ── 2. Payment collections from advance_payment_history ──────────────
+        const [paymentRows] = await pdb.query(
+          `SELECT pm.payment_name,
+                  SUM(aph.paid_amount) AS total_paid
+           FROM   advance_payment_history aph
+           JOIN   payment_method pm ON pm.Payment_id = aph.payment_method
+           WHERE  aph.date = ? AND aph.location_id = ?
+           GROUP  BY pm.payment_name`,
+          [todayDate, locId],
+        );
 
-              // Process payment collections by method
-              for (let payment of paymentResults) {
-                const amount = parseFloat(payment.total_paid) || 0;
+        let cashCollection = 0;
+        let cardCollection = 0;
+        let onlinePaymentCollection = 0;
+        let totalSellingCollection = 0;
 
-                if (payment.payment_name === "Cash") {
-                  cashCollection = amount;
-                } else if (payment.payment_name === "Card") {
-                  cardCollection = amount;
-                } else if (payment.payment_name === "Online Bank Transfer") {
-                  onlinePaymentCollection = amount;
-                }
+        for (const row of paymentRows) {
+          const amount = parseFloat(row.total_paid) || 0;
+          if (row.payment_name === "Cash") cashCollection = amount;
+          else if (row.payment_name === "Card") cardCollection = amount;
+          else if (row.payment_name === "Online Bank Transfer")
+            onlinePaymentCollection = amount;
+          totalSellingCollection += amount;
+        }
 
-                totalSellingCollection += amount;
-              }
+        // ── 3. Total sale — subtotal is VARCHAR so CAST to DECIMAL ──────────
 
-              // Query 2: Get Total Sale from invoice subtotal (like Java code)
-              db.query(
-                `SELECT SUM(subtotal) as total_subtotal
-                 FROM invoice
-                 WHERE date = ?
-                 AND invoice_location = ?`,
-                [todayDate, branch.location_id],
-                (err2, invoiceResults) => {
-                  if (err2) return reject(err2);
+        const [invoiceSumRows] = await pdb.query(
+          `SELECT SUM(CAST(subtotal AS DECIMAL(10,2))) AS total_subtotal
+           FROM   invoice
+           WHERE  date = ? AND invoice_location = ?`,
+          [todayDate, locId],
+        );
 
-                  let TotalSale = 0;
-                  if (
-                    invoiceResults.length > 0 &&
-                    invoiceResults[0].total_subtotal
-                  ) {
-                    TotalSale = parseFloat(invoiceResults[0].total_subtotal);
-                  }
+        const TotalSale = parseFloat(invoiceSumRows[0]?.total_subtotal) || 0;
 
-                  // You need to get total_expenses from somewhere (like reportmap in Java)
-                  // For now, I'll assume you have a way to get this
-                  const total_expenses = 0; // TODO: Fetch from your expenses table
-                  const BankDeposit = cashCollection - total_expenses;
+        // ── 4. Expenses from report_item → daily_report (your schema has no
+        //       standalone expenses table; report_item.amount holds cash-out) ──
 
-                  // Query 3: Get order count and other metrics
-                  db.query(
-                    `SELECT
-                      i.*,
-                      c.mobile
-                     FROM invoice i
-                     INNER JOIN customer c ON c.mobile = i.customer_mobile
-                     WHERE c.location_id = ?
-                     AND i.date = ?`,
-                    [branch.location_id, todayDate],
-                    (err3, invoiceDetails) => {
-                      if (err3) return reject(err3);
+        const [expenseRows] = await pdb.query(
+          `SELECT COALESCE(SUM(ri.amount), 0) AS total_expenses
+           FROM   report_item  ri
+           JOIN   daily_report dr ON dr.report_id = ri.daily_report_report_id
+           WHERE  dr.date = ? AND dr.location_id  = ?`,
+          [todayDate, locId],
+        );
 
-                      let branch_OrderCount = invoiceDetails.length;
-                      let total_advance_payments = 0;
-                      let actual_total_profit = 0;
+        const total_expenses = parseFloat(expenseRows[0]?.total_expenses) || 0;
+        const BankDeposit = cashCollection - total_expenses;
 
-                      for (let invoice of invoiceDetails) {
-                        const statusId = String(invoice.payment_status_id);
+        // ── 5. Invoice details for order count / advance payments / profit ───
+        const [invoiceDetails] = await pdb.query(
+          `SELECT i.advance_payment,
+                  i.total_price,
+                  i.payment_status_id
+           FROM   invoice  i
+           JOIN   customer c ON c.mobile = i.customer_mobile
+           WHERE  c.location_id = ? AND i.date = ?`,
+          [locId, todayDate],
+        );
 
-                        if (statusId === "1") {
-                          total_advance_payments +=
-                            parseFloat(invoice.advance_payment) || 0;
-                        }
+        let total_advance_payments = 0;
+        let actual_total_profit = 0;
 
-                        if (statusId === "2") {
-                          actual_total_profit +=
-                            parseFloat(invoice.total_price) || 0;
-                        }
-                      }
+        for (const inv of invoiceDetails) {
+          const sid = String(inv.payment_status_id);
+          if (sid === "1")
+            total_advance_payments += parseFloat(inv.advance_payment) || 0;
+          else if (sid === "2")
+            actual_total_profit += parseFloat(inv.total_price) || 0;
+        }
 
-                      resolve({
-                        location_id: branch.location_id,
-                        location_name: branch.location_name,
-                        branch_name: branch.branch_name,
-                        today: todayDate,
-                        this_month: month,
-
-                        // Payment collections by method (matches Java output)
-                        cashCollection: cashCollection,
-                        cardCollection: cardCollection,
-                        onlinePaymentCollection: onlinePaymentCollection,
-                        totalSellingCollection: totalSellingCollection,
-                        BankDeposit: BankDeposit,
-                        TotalSale: TotalSale,
-
-                        // Additional metrics
-                        order_count: branch_OrderCount,
-                        total_advance_payments: total_advance_payments,
-                        actual_total_profit: actual_total_profit,
-                        total_cash_collected:
-                          cashCollection +
-                          cardCollection +
-                          onlinePaymentCollection,
-                      });
-                    },
-                  );
-                },
-              );
-            },
-          );
-        });
+        return {
+          location_id: locId,
+          location_name: branch.location_name,
+          branch_name: branch.branch_name,
+          today: todayDate,
+          this_month: month,
+          cashCollection,
+          cardCollection,
+          onlinePaymentCollection,
+          totalSellingCollection,
+          total_expenses,
+          BankDeposit,
+          TotalSale,
+          order_count: invoiceDetails.length,
+          total_advance_payments,
+          actual_total_profit,
+        };
       }),
     );
 
-    db.end();
     res.json({ locations: location_details });
   } catch (err) {
     console.error("Server error:", err);
     res.status(500).json({ error: "Server error" });
+  } finally {
+    await pdb.end();
   }
 };
 
