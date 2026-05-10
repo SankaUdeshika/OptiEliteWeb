@@ -1,12 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta
-      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
       name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <title>Welcome to OptiElite</title>
+    <title>OptiElite Dashboard | Light Theme</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
 
     <!-- General CSS Files -->
     <link
@@ -34,1644 +42,1012 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/custom.css" />
     <link rel="stylesheet" href="assets/css/components.css" />
-
-    <!-- Responsive Overrides -->
     <style>
-      /* ========================================
-         RESPONSIVE OVERRIDES — Desktop / Tablet / Mobile
-         ======================================== */
-
-      /* --- Date picker row --- */
-      .glassEffectt {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        padding: 12px 16px;
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
-      /* --- Stat card button area --- */
-      .card-statistic-2 .card-body .btn {
-        white-space: normal;
-        word-break: break-word;
+      :root {
+        --sidebar-w: 260px;
+        --topbar-h: 62px;
+        /* Light theme variables */
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --surface2: #f8f9fc;
+        --border: rgba(0, 0, 0, 0.08);
+        --accent: #2c7da0;
+        --accent2: #2a9d8f;
+        --accent3: #e76f51;
+        --accent4: #e63946;
+        --text: #1e293b;
+        --text2: #475569;
+        --text3: #94a3b8;
+        --card-radius: 20px;
+        --sidebar-bg: #ffffff;
+        --topbar-bg: #ffffffdd;
+        --shadow-sm:
+          0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.05);
+        --hover-bg: #f1f5f9;
       }
 
-      /* ---- TABLET  (≤ 991px) ---- */
-      @media (max-width: 991.98px) {
-
-        /* Sidebar collapses — give main content full width */
-        .main-content {
-          padding: 15px !important;
-        }
-
-        /* Date-picker block: full width on tablet */
-        .col-lg-4.offset-lg-8 {
-          max-width: 100%;
-          width: 100%;
-          margin-left: 0 !important;
-          margin-right: 0 !important;
-        }
-
-        /* Stat card: comfortable sizing */
-        .card-statistic-2 {
-          margin-bottom: 20px;
-        }
-
-        /* Navbar search bar width */
-        .search-element input.form-control {
-          width: 180px !important;
-        }
+      html,
+      body {
+        height: 100%;
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
       }
 
-      /* ---- MOBILE  (≤ 767px) ---- */
-      @media (max-width: 767.98px) {
+      /* ── OVERLAY ── */
+      #overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        z-index: 200;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #overlay.active {
+        display: block;
+      }
 
-        /* Navbar — tighten spacing */
-        .main-navbar .navbar-nav.mr-3 {
-          margin-right: 6px !important;
+      /* ── SIDEBAR ── */
+      #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-w);
+        height: 100%;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border);
+        z-index: 300;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        box-shadow: var(--shadow-md);
+      }
+      #sidebar.open {
+        transform: translateX(0);
+      }
+
+      @media (min-width: 992px) {
+        #sidebar {
+          transform: translateX(0);
+          box-shadow: none;
+          border-right: 1px solid var(--border);
         }
-
-        .main-navbar .nav-link-lg {
-          padding: 0 8px !important;
-        }
-
-        /* Hide "Hi, admin" text on very small screens, keep avatar */
-        .nav-link-user .d-lg-inline-block {
+        #overlay {
           display: none !important;
         }
+      }
 
-        /* Main content area */
-        .main-content {
-          padding: 10px !important;
-          margin-left: 0 !important; /* sidebar hidden on mobile */
-        }
+      .sidebar-logo {
+        padding: 22px 24px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .sidebar-logo-icon {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 8px rgba(44, 125, 160, 0.2);
+      }
+      .sidebar-logo-text {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
 
-        /* Section padding */
-        .section {
-          padding: 10px 0 !important;
-        }
+      .sidebar-section-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 20px 24px 8px;
+      }
 
-        /* Date picker: stack label + input vertically, full width */
-        .glassEffectt {
-          width: 100% !important;
-          max-width: 100% !important;
-          margin-left: 0 !important;
-          padding: 10px 12px;
-        }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 24px;
+        color: var(--text2);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 0;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(44, 125, 160, 0.1);
+        user-select: none;
+        position: relative;
+      }
+      .nav-item:active {
+        background: var(--hover-bg);
+      }
+      .nav-item.active,
+      .nav-item:hover {
+        color: var(--accent);
+        background: var(--hover-bg);
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 3px;
+        background: var(--accent);
+        border-radius: 0 4px 4px 0;
+      }
+      .nav-item .nav-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        background: var(--surface2);
+        color: var(--text2);
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .nav-item.active .nav-icon,
+      .nav-item:hover .nav-icon {
+        background: rgba(44, 125, 160, 0.12);
+        color: var(--accent);
+      }
+      .nav-item .nav-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 600;
+        background: var(--accent4);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 30px;
+      }
 
-        .glassEffectt .col-12 {
-          padding-left: 8px;
-          padding-right: 8px;
-        }
+      .sidebar-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 10px 20px;
+      }
 
-        #startDate {
-          font-size: 14px;
-        }
+      .sidebar-bottom {
+        margin-top: auto;
+        padding: 16px 20px;
+        border-top: 1px solid var(--border);
+      }
+      .sidebar-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: var(--surface2);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.2s;
+      }
+      .sidebar-user:active {
+        background: var(--hover-bg);
+      }
+      .sidebar-user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #fff;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .sidebar-user-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .sidebar-user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .sidebar-user-role {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .sidebar-user-more {
+        color: var(--text3);
+        font-size: 13px;
+      }
 
-        /* Register Customer card: full width, centred */
-        .card-statistic-2 {
-          margin-bottom: 16px;
-        }
-
-        .card-statistic-2 .card-wrap .card-header h4 {
-          font-size: 15px;
-        }
-
-        .card-statistic-2 .card-body .btn span {
-          font-size: 16px !important;
-        }
-
-        /* Card icon sizing */
-        .card-icon {
-          width: 50px !important;
-          height: 50px !important;
-          line-height: 50px !important;
-          font-size: 20px !important;
-        }
-
-        /* Footer: stack left/right, centre both */
-        .main-footer {
-          flex-direction: column !important;
-          text-align: center !important;
-          padding: 12px 16px !important;
-          gap: 6px;
-        }
-
-        .footer-left,
-        .footer-right {
-          width: 100%;
-          text-align: center;
-        }
-
-        /* Dropdown lists: constrain width on small screens */
-        .dropdown-list {
-          width: 280px !important;
-          max-width: calc(100vw - 20px) !important;
-        }
-
-        .dropdown-menu-right {
-          right: 0 !important;
-          left: auto !important;
+      /* ── TOPBAR (light) ── */
+      #topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--topbar-h);
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 12px;
+      }
+      @media (min-width: 992px) {
+        #topbar {
+          left: var(--sidebar-w);
         }
       }
 
-      /* ---- EXTRA SMALL  (≤ 480px) ---- */
-      @media (max-width: 480px) {
+      #menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 15px;
+        flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+      }
+      #menu-toggle:active {
+        background: var(--hover-bg);
+        color: var(--text);
+      }
 
-        /* Shrink brand name */
-        .sidebar-brand a {
-          font-size: 16px;
-        }
-
-        /* Register button text */
-        .card-statistic-2 .card-body .btn {
-          padding: 10px 8px;
-        }
-
-        .card-statistic-2 .card-body .btn span {
-          font-size: 14px !important;
-        }
-
-        /* Date label */
-        .glassEffectt label {
-          font-size: 13px;
-        }
-
-        /* Dropdown notifications/messages */
-        .dropdown-list {
-          width: 260px !important;
-        }
-
-        .dropdown-item-desc p {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 160px;
+      @media (min-width: 992px) {
+        #menu-toggle {
+          display: none;
         }
       }
 
-      /* ---- Utility: ensure row children never overflow ---- */
-      .row {
-        margin-left: 0;
-        margin-right: 0;
+      .topbar-title {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        flex: 1;
       }
 
-      /* Prevent horizontal scroll on the full page */
-      body {
-        overflow-x: hidden;
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .topbar-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        position: relative;
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+      }
+      .topbar-btn:active {
+        background: var(--hover-bg);
+        color: var(--accent);
+      }
+      .topbar-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent4);
+        border: 2px solid white;
+      }
+      .topbar-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
       }
 
-      #app,
-      .main-wrapper {
-        overflow-x: hidden;
+      /* ── MAIN ── */
+      #main {
+        padding-top: var(--topbar-h);
+        min-height: 100vh;
+        transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @media (min-width: 992px) {
+        #main {
+          margin-left: var(--sidebar-w);
+        }
+      }
+
+      .page-content {
+        padding: 28px 24px;
+        max-width: 1280px;
+      }
+
+      .page-header {
+        margin-bottom: 28px;
+        animation: fadeUp 0.4s ease both;
+      }
+      .page-header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+      .page-header p {
+        font-size: 14px;
+        color: var(--text2);
+        margin-top: 6px;
+      }
+
+      .date-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+        animation: fadeUp 0.4s 0.05s ease both;
+      }
+      .date-bar label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+      .date-input {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: "DM Sans", sans-serif;
+        padding: 10px 15px;
+        outline: none;
+        cursor: pointer;
+        -webkit-appearance: none;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+      }
+      .date-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+      }
+
+      /* stat cards light */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 18px;
+        margin-bottom: 32px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--card-radius);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        animation: fadeUp 0.4s ease both;
+        transition: all 0.25s ease;
+        box-shadow: var(--shadow-sm);
+      }
+      .stat-card:active {
+        transform: scale(0.98);
+      }
+      .stat-card:hover {
+        border-color: rgba(44, 125, 160, 0.3);
+        box-shadow: var(--shadow-md);
+      }
+      .stat-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .stat-icon.blue {
+        background: #eef2ff;
+        color: var(--accent);
+      }
+      .stat-icon.green {
+        background: #e6f7f4;
+        color: var(--accent2);
+      }
+      .stat-icon.orange {
+        background: #fff0e8;
+        color: var(--accent3);
+      }
+      .stat-icon.red {
+        background: #ffe8ea;
+        color: var(--accent4);
+      }
+      .stat-trend {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 40px;
+      }
+      .stat-trend.up {
+        background: #e6f7f4;
+        color: var(--accent2);
+      }
+      .stat-trend.down {
+        background: #ffe8ea;
+        color: var(--accent4);
+      }
+      .stat-value {
+        font-family: "Syne", sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--text2);
+        font-weight: 500;
+      }
+
+      /* action cards light */
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 18px;
+        margin-bottom: 32px;
+      }
+      .action-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--card-radius);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        animation: fadeUp 0.4s ease both;
+        -webkit-tap-highlight-color: transparent;
+        box-shadow: var(--shadow-sm);
+      }
+      .action-card:active {
+        transform: scale(0.97);
+        background: var(--surface2);
+      }
+      .action-card:hover {
+        border-color: rgba(44, 125, 160, 0.4);
+        box-shadow: var(--shadow-md);
+      }
+      .action-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .action-icon.blue {
+        background: #eef2ff;
+        color: var(--accent);
+      }
+      .action-icon.green {
+        background: #e6f7f4;
+        color: var(--accent2);
+      }
+      .action-icon.orange {
+        background: #fff0e8;
+        color: var(--accent3);
+      }
+      .action-info {
+        flex: 1;
+      }
+      .action-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .action-desc {
+        font-size: 12px;
+        color: var(--text2);
+      }
+      .action-arrow {
+        color: var(--text3);
+        font-size: 14px;
+        transition: transform 0.2s;
+      }
+      .action-card:hover .action-arrow {
+        transform: translateX(4px);
+        color: var(--accent);
+      }
+
+      /* table section light */
+      .section-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--card-radius);
+        overflow: hidden;
+        animation: fadeUp 0.4s 0.42s ease both;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-sm);
+      }
+      .section-card-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.5);
+      }
+      .section-card-header h3 {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .view-all {
+        font-size: 12px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        -webkit-tap-highlight-color: transparent;
+        transition: opacity 0.2s;
+      }
+      .view-all:active {
+        opacity: 0.7;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      thead th {
+        padding: 14px 24px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text3);
+        background: #fafcff;
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-top: 1px solid var(--border);
+        transition: background 0.15s;
+      }
+      tbody tr:active {
+        background: var(--hover-bg);
+      }
+      tbody td {
+        padding: 14px 24px;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+      tbody td:first-child {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 40px;
+      }
+      .badge-paid {
+        background: #e6f7f4;
+        color: var(--accent2);
+      }
+      .badge-unpaid {
+        background: #fff0e8;
+        color: var(--accent3);
+      }
+      .badge-pending {
+        background: #ffe8ea;
+        color: var(--accent4);
+      }
+      .page-footer {
+        padding: 20px 24px;
+        font-size: 12px;
+        color: var(--text3);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: var(--surface);
+        margin-top: 12px;
+      }
+      .page-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (max-width: 600px) {
+        .page-content {
+          padding: 20px 16px;
+        }
+        .stat-value {
+          font-size: 24px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .actions-grid {
+          grid-template-columns: 1fr;
+        }
+        thead th,
+        tbody td {
+          padding: 12px 16px;
+        }
       }
     </style>
-
-    <!-- Start GA -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "UA-94034622-3");
-    </script>
-
-    <!-- <script>
-      function fetchUsers() {
-        fetch("/api/users")
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            const ul = document.getElementById("userList");
-            ul.innerHTML = "";
-            data.forEach((user) => {
-              const li = document.createElement("li");
-              li.textContent = `${user.id}: ${user.name}`; // customize this
-              ul.appendChild(li);
-            });
-          })
-          .catch((err) => console.error("Error fetching users:", err));
-      } -->
-    </script>
-
-    <!-- /END GA -->
   </head>
+  <body onload="loadIndexPage()">
+    <div id="overlay"></div>
 
-  <body onload="loadIndexPage();">
-    <div id="app">
-      <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
-        <nav class="navbar navbar-expand-lg main-navbar">
-          <form class="form-inline mr-auto">
-            <ul class="navbar-nav mr-3">
-              <li>
-                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"
-                  ><i class="fas fa-bars"></i
-                ></a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  data-toggle="search"
-                  class="nav-link nav-link-lg d-sm-none"
-                  ><i class="fas fa-search"></i
-                ></a>
-              </li>
-            </ul>
-            <div class="search-element">
-              <input
-                class="form-control"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-                data-width="250"
-              />
-              <button class="btn" type="submit">
-                <i class="fas fa-search"></i>
-              </button>
-              <div class="search-backdrop"></div>
-              <div class="search-result">
-                <div class="search-header">Histories</div>
-                <div class="search-item">
-                  <a href="#" onclick="fetchUsers();"
-                    >How to hack NASA using CSS</a
-                  >
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-item">
-                  <a href="#">Kodinger.com</a>
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-item">
-                  <a href="/">#OptiElite</a>
-                  <a href="#" class="search-close"
-                    ><i class="fas fa-times"></i
-                  ></a>
-                </div>
-                <div class="search-header">Result</div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-3-50.png"
-                      alt="product"
-                    />
-                    oPhone S9 Limited Edition
-                  </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-2-50.png"
-                      alt="product"
-                    />
-                    Drone X2 New Gen-7
-                  </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <img
-                      class="mr-3 rounded"
-                      width="30"
-                      src="assets/img/products/product-1-50.png"
-                      alt="product"
-                    />
-                    Headphone Blitz
-                  </a>
-                </div>
-                <div class="search-header">Projects</div>
-                <div class="search-item">
-                  <a href="#">
-                    <div class="search-icon bg-danger text-white mr-3">
-                      <i class="fas fa-code"></i>
-                    </div>
-                    OptiElite Admin Template
-                  </a>
-                </div>
-                <div class="search-item">
-                  <a href="#">
-                    <div class="search-icon bg-primary text-white mr-3">
-                      <i class="fas fa-laptop"></i>
-                    </div>
-                    Create a new Homepage Design
-                  </a>
-                </div>
-              </div>
-            </div>
-          </form>
-          <ul class="navbar-nav navbar-right">
-            <li class="dropdown dropdown-list-toggle">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link nav-link-lg message-toggle beep"
-                ><i class="far fa-envelope"></i
-              ></a>
-              <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                <div class="dropdown-header">
-                  Messages
-                  <div class="float-right">
-                    <a href="#">Mark All As Read</a>
-                  </div>
-                </div>
-                <div class="dropdown-list-content dropdown-list-message">
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-1.png"
-                        class="rounded-circle"
-                      />
-                      <div class="is-online"></div>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Kusnaedi</b>
-                      <p>Hello, Bro!</p>
-                      <div class="time">10 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-2.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Dedik Sugiharto</b>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit
-                      </p>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-3.png"
-                        class="rounded-circle"
-                      />
-                      <div class="is-online"></div>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Agung Ardiansyah</b>
-                      <p>
-                        Sunt in culpa qui officia deserunt mollit anim id est
-                        laborum.
-                      </p>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-4.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Ardian Rahardiansyah</b>
-                      <p>
-                        Duis aute irure dolor in reprehenderit in voluptate
-                        velit ess
-                      </p>
-                      <div class="time">16 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-avatar">
-                      <img
-                        alt="image"
-                        src="assets/img/avatar/avatar-5.png"
-                        class="rounded-circle"
-                      />
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Alfa Zulkarnain</b>
-                      <p>
-                        Exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo
-                      </p>
-                      <div class="time">Yesterday</div>
-                    </div>
-                  </a>
-                </div>
-                <div class="dropdown-footer text-center">
-                  <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="dropdown dropdown-list-toggle">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link notification-toggle nav-link-lg beep"
-                ><i class="far fa-bell"></i
-              ></a>
-              <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                <div class="dropdown-header">
-                  Notifications
-                  <div class="float-right">
-                    <a href="#">Mark All As Read</a>
-                  </div>
-                </div>
-                <div class="dropdown-list-content dropdown-list-icons">
-                  <a href="#" class="dropdown-item dropdown-item-unread">
-                    <div class="dropdown-item-icon bg-primary text-white">
-                      <i class="fas fa-code"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Template update is available now!
-                      <div class="time text-primary">2 Min Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-info text-white">
-                      <i class="far fa-user"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                      <div class="time">10 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-success text-white">
-                      <i class="fas fa-check"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to
-                      <b>Done</b>
-                      <div class="time">12 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-danger text-white">
-                      <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Low disk space. Let's clean it!
-                      <div class="time">17 Hours Ago</div>
-                    </div>
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <div class="dropdown-item-icon bg-info text-white">
-                      <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="dropdown-item-desc">
-                      Welcome to OptiElite template!
-                      <div class="time">Yesterday</div>
-                    </div>
-                  </a>
-                </div>
-                <div class="dropdown-footer text-center">
-                  <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="dropdown">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link dropdown-toggle nav-link-lg nav-link-user"
-              >
-                <img
-                  alt="image"
-                  src="assets/img/avatar/avatar-1.png"
-                  class="rounded-circle mr-1"
-                />
-                <div class="d-sm-none d-lg-inline-block">
-                  Hi, admin
-                </div></a
-              >
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Logged in 5 min ago</div>
-                <a href="features-profile.html" class="dropdown-item has-icon">
-                  <i class="far fa-user"></i> Profile
-                </a>
-                <a
-                  href="features-activities.html"
-                  class="dropdown-item has-icon"
-                >
-                  <i class="fas fa-bolt"></i> Activities
-                </a>
-                <a href="features-settings.html" class="dropdown-item has-icon">
-                  <i class="fas fa-cog"></i> Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item has-icon text-danger">
-                  <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-              </div>
-            </li>
-          </ul>
-        </nav>
-        <div class="main-sidebar sidebar-style-2">
-          <aside id="sidebar-wrapper">
-            <div class="sidebar-brand">
-              <a href="/">OptiElites</a>
-            </div>
-            <div class="sidebar-brand sidebar-brand-sm">
-              <a href="index.html">St</a>
-            </div>
-            <ul class="sidebar-menu">
-              <li class="menu-header">Dashboard</li>
-              <li class="dropdown active">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-fire"></i><span>Dashboard</span></a
-                >
-                <ul class="dropdown-menu">
-                  <!-- <li>
-                    <a class="nav-link" href="index-0.html"
-                      >General Dashboard</a
-                    >
-                  </li> -->
-                  <li class="active">
-                    <a class="nav-link" href="/"
-                      >Admin Dashboard</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-header">Actions</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"
-                  ><i class="fas fa-columns"></i> <span>Invoice / Bills</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" onclick="GoAddBillPage();"
-                      >Add Invoice</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" onclick="GoBillManagement();"
-                      >Invoice Management</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <!-- <li>
-                <a class="nav-link" href="blank.html"
-                  ><i class="far fa-square"></i> <span>Blank Page</span></a
-                >
-              </li> -->
-              <!-- <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-th"></i> <span>Bootstrap</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="bootstrap-alert.html">Alert</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-badge.html">Badge</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-breadcrumb.html"
-                      >Breadcrumb</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-buttons.html"
-                      >Buttons</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-card.html">Card</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-carousel.html"
-                      >Carousel</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-collapse.html"
-                      >Collapse</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-dropdown.html"
-                      >Dropdown</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-form.html">Form</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-list-group.html"
-                      >List Group</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-media-object.html"
-                      >Media Object</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-modal.html">Modal</a>
-                  </li>
-                  <li><a class="nav-link" href="bootstrap-nav.html">Nav</a></li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-navbar.html">Navbar</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-pagination.html"
-                      >Pagination</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-popover.html"
-                      >Popover</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-progress.html"
-                      >Progress</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-table.html">Table</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-tooltip.html"
-                      >Tooltip</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-typography.html"
-                      >Typography</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
-              <li class="menu-header">OptiElite</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-th-large"></i> <span>Stock</span></a
-                >
-                <ul class="dropdown-menu">
-                  <div class="col-12 text-center">
-                    <small class="text-danger">Comming soon</small>
-                  </div>
-                  <!-- <li>
-                    <a class="nav-link beep beep-sidebar" href="components-article.html"
-                      >Stock Managemnet </a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar "
-                      href="components-avatar.html"
-                      >Lens Management </a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link  "
-                      href="components-avatar.html"
-                      >Products List</a
-                    >
-                  </li> -->
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="far fa-file-alt"></i> <span>Customer</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="/customerRegister"
-                      >Register & Management</a
-                    >
-                  </li>
-                  <!-- <li>
-                    <a class="nav-link" href="forms-editor.html">Editor</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="forms-validation.html"
-                      >Validation</a
-                    >
-                  </li> -->
-                </ul>
-              </li>
-
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="far fa-file-alt"></i> <span>Prescriptions</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="/add_prescription"
-                      >Add Prescriptions</a
-                    >
-                  </li>
-                  <!-- <li>
-                    <a class="nav-link" href="forms-editor.html">Editor</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="forms-validation.html"
-                      >Validation</a
-                    >
-                  </li> -->
-                </ul>
-              </li>
-
-              <!-- <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-map-marker-alt"></i>
-                  <span>Google Maps</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="gmaps-advanced-route.html">Advanced Route</a>
-                  </li>
-                  <li>
-                    <a href="gmaps-draggable-marker.html">Draggable Marker</a>
-                  </li>
-                  <li><a href="gmaps-geocoding.html">Geocoding</a></li>
-                  <li><a href="gmaps-geolocation.html">Geolocation</a></li>
-                  <li><a href="gmaps-marker.html">Marker</a></li>
-                  <li>
-                    <a href="gmaps-multiple-marker.html">Multiple Marker</a>
-                  </li>
-                  <li><a href="gmaps-route.html">Route</a></li>
-                  <li><a href="gmaps-simple.html">Simple</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-plug"></i> <span>Modules</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="modules-calendar.html"
-                      >Calendar</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-chartjs.html">ChartJS</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-datatables.html"
-                      >DataTables</a
-                    >
-                  </li>
-                  <li><a class="nav-link" href="modules-flag.html">Flag</a></li>
-                  <li>
-                    <a class="nav-link" href="modules-font-awesome.html"
-                      >Font Awesome</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-ion-icons.html"
-                      >Ion Icons</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-owl-carousel.html"
-                      >Owl Carousel</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-sparkline.html"
-                      >Sparkline</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-sweet-alert.html"
-                      >Sweet Alert</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-toastr.html">Toastr</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-vector-map.html"
-                      >Vector Map</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-weather-icon.html"
-                      >Weather Icon</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
-              <!-- <li class="menu-header">Pages</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="far fa-user"></i> <span>Auth</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="auth-forgot-password.html">Forgot Password</a>
-                  </li>
-                  <li><a href="auth-login.html">Login</a></li>
-                  <li><a href="auth-register.html">Register</a></li>
-                  <li><a href="auth-reset-password.html">Reset Password</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-exclamation"></i> <span>Errors</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="errors-503.html">503</a></li>
-                  <li><a class="nav-link" href="errors-403.html">403</a></li>
-                  <li><a class="nav-link" href="errors-404.html">404</a></li>
-                  <li><a class="nav-link" href="errors-500.html">500</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-bicycle"></i> <span>Features</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="features-activities.html"
-                      >Activities</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-post-create.html"
-                      >Post Create</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-posts.html">Posts</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-profile.html">Profile</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-settings.html"
-                      >Settings</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-setting-detail.html"
-                      >Setting Detail</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-tickets.html">Tickets</a>
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-ellipsis-h"></i> <span>Utilities</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li><a href="utilities-contact.html">Contact</a></li>
-                  <li>
-                    <a class="nav-link" href="utilities-invoice.html"
-                      >Invoice</a
-                    >
-                  </li>
-                  <li><a href="utilities-subscribe.html">Subscribe</a></li>
-                </ul>
-              </li>
-              <li> 
-                <a class="nav-link" href="credits.html"
-                  ><i class="fas fa-pencil-ruler"></i> <span>Credits</span></a
-                >
-              </li> -->
-            </ul>
-
-            <!-- <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-              <a
-                href="https://getOptiElite.com/docs"
-                class="btn btn-primary btn-lg btn-block btn-icon-split"
-              >
-                <i class="fas fa-rocket"></i> Documentation
-              </a>
-            </div> -->
-          </aside>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content"  >
-          <section class="section" >
-
-           <div class="col-12">
-            <div class="row">
-              <div class="col-lg-4 col-md-6 col-12 offset-lg-8 offset-md-6 offset-0 glassEffectt mb-2">
-                <div class="col-12">
-                  <label for="startDate" class="text-white">Select Date:</label>
-                </div>
-                 <div class="col-12">
-                  <input type="date" class="form-control" id="startDate" onchange="ChangeMonthForBranchStatus();" />
-                 </div>
-              </div>
-            </div>
-           </div>
-
-            <div id="render-target">
-              
-            </div>
-
-
-            <div class="col-12">
-              <div class="row d-flex justify-content-center">
-                <div class="col-lg-4 col-md-6 col-sm-10 col-12">
-                  <div class="card card-statistic-2">
-                    <div class="card-icon shadow-secondary bg-warning">
-                      <i class="fas fa-users"></i>
-                    </div>
-                    <div class="card-wrap">
-                      <div class="card-header">
-                        <h4>Register Customer</h4>
-                      </div>
-                      <div class="card-body">
-                        <a href="/customerRegister" class="btn btn-success btn-block">
-                          <i class="fas fa-user-plus"></i><span style="font-size: 19px;"> Go to Register</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Original Content -->
-            <!-- <div class="row" >
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <div class="card card-statistic-2">
-                  <div class="card-stats">
-                    <div class="card-stats-title">
-                      Order Statistics -
-                      <div class="dropdown d-inline">
-                        <a
-                          class="font-weight-600 dropdown-toggle"
-                          data-toggle="dropdown"
-                          href="#"
-                          id="orders-month"
-                          >August</a
-                        >
-                        <ul class="dropdown-menu dropdown-menu-sm">
-                          <li class="dropdown-title">Select Month</li>
-                          <li><a href="#" class="dropdown-item">January</a></li>
-                          <li>
-                            <a href="#" class="dropdown-item">February</a>
-                          </li>
-                          <li><a href="#" class="dropdown-item">March</a></li>
-                          <li><a href="#" class="dropdown-item">April</a></li>
-                          <li><a href="#" class="dropdown-item">May</a></li>
-                          <li><a href="#" class="dropdown-item">June</a></li>
-                          <li><a href="#" class="dropdown-item">July</a></li>
-                          <li>
-                            <a href="#" class="dropdown-item active">August</a>
-                          </li>
-                          <li>
-                            <a href="#" class="dropdown-item">September</a>
-                          </li>
-                          <li><a href="#" class="dropdown-item">October</a></li>
-                          <li>
-                            <a href="#" class="dropdown-item">November</a>
-                          </li>
-                          <li>
-                            <a href="#" class="dropdown-item">December</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="card-stats-items">
-                      <div class="card-stats-item">
-                        <div class="card-stats-item-count">24</div>
-                        <div class="card-stats-item-label">Pending</div>
-                      </div>
-                      <div class="card-stats-item">
-                        <div class="card-stats-item-count">12</div>
-                        <div class="card-stats-item-label">Shipping</div>
-                      </div>
-                      <div class="card-stats-item">
-                        <div class="card-stats-item-count">23</div>
-                        <div class="card-stats-item-label">Completed</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-icon shadow-primary bg-primary">
-                    <i class="fas fa-archive"></i>
-                  </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Total Orders</h4>
-                    </div>
-                    <div class="card-body">59</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <div class="card card-statistic-2">
-                  <div class="card-chart">
-                    <canvas id="balance-chart"  height="80"></canvas>
-                  </div>
-                  <div class="card-icon shadow-primary bg-primary">
-                    <i class="fas fa-dollar-sign"></i>
-                  </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Balance</h4>
-                    </div>
-                    <div class="card-body">$187,13</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <div class="card card-statistic-2">
-                  <div class="card-chart">
-                    <canvas id="sales-chart" height="80"></canvas>
-                  </div>
-                  <div class="card-icon shadow-primary bg-primary">
-                    <i class="fas fa-shopping-bag"></i>
-                  </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Sales</h4>
-                    </div>
-                    <div class="card-body">4,732</div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-
-            
-
-
-
-            <!-- <div class="row">
-              <div class="col-lg-8">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Budget vs Sales</h4>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="myChart" height="158"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="card gradient-bottom">
-                  <div class="card-header">
-                    <h4>Top 5 Products</h4>
-                    <div class="card-header-action dropdown">
-                      <a
-                        href="#"
-                        data-toggle="dropdown"
-                        class="btn btn-danger dropdown-toggle"
-                        >Month</a
-                      >
-                      <ul
-                        class="dropdown-menu dropdown-menu-sm dropdown-menu-right"
-                      >
-                        <li class="dropdown-title">Select Period</li>
-                        <li><a href="#" class="dropdown-item">Today</a></li>
-                        <li><a href="#" class="dropdown-item">Week</a></li>
-                        <li>
-                          <a href="#" class="dropdown-item active">Month</a>
-                        </li>
-                        <li><a href="#" class="dropdown-item">This Year</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="card-body" id="top-5-scroll">
-                    <ul class="list-unstyled list-unstyled-border">
-                      <li class="media">
-                        <img
-                          class="mr-3 rounded"
-                          width="55"
-                          src="assets/img/products/product-3-50.png"
-                          alt="product"
-                        />
-                        <div class="media-body">
-                          <div class="float-right">
-                            <div class="font-weight-600 text-muted text-small">
-                              86 Sales
-                            </div>
-                          </div>
-                          <div class="media-title">oPhone S9 Limited</div>
-                          <div class="mt-1">
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-primary"
-                                data-width="64%"
-                              ></div>
-                              <div class="budget-price-label">$68,714</div>
-                            </div>
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-danger"
-                                data-width="43%"
-                              ></div>
-                              <div class="budget-price-label">$38,700</div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="media">
-                        <img
-                          class="mr-3 rounded"
-                          width="55"
-                          src="assets/img/products/product-4-50.png"
-                          alt="product"
-                        />
-                        <div class="media-body">
-                          <div class="float-right">
-                            <div class="font-weight-600 text-muted text-small">
-                              67 Sales
-                            </div>
-                          </div>
-                          <div class="media-title">iBook Pro 2018</div>
-                          <div class="mt-1">
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-primary"
-                                data-width="84%"
-                              ></div>
-                              <div class="budget-price-label">$107,133</div>
-                            </div>
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-danger"
-                                data-width="60%"
-                              ></div>
-                              <div class="budget-price-label">$91,455</div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="media">
-                        <img
-                          class="mr-3 rounded"
-                          width="55"
-                          src="assets/img/products/product-1-50.png"
-                          alt="product"
-                        />
-                        <div class="media-body">
-                          <div class="float-right">
-                            <div class="font-weight-600 text-muted text-small">
-                              63 Sales
-                            </div>
-                          </div>
-                          <div class="media-title">Headphone Blitz</div>
-                          <div class="mt-1">
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-primary"
-                                data-width="34%"
-                              ></div>
-                              <div class="budget-price-label">$3,717</div>
-                            </div>
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-danger"
-                                data-width="28%"
-                              ></div>
-                              <div class="budget-price-label">$2,835</div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="media">
-                        <img
-                          class="mr-3 rounded"
-                          width="55"
-                          src="assets/img/products/product-3-50.png"
-                          alt="product"
-                        />
-                        <div class="media-body">
-                          <div class="float-right">
-                            <div class="font-weight-600 text-muted text-small">
-                              28 Sales
-                            </div>
-                          </div>
-                          <div class="media-title">oPhone X Lite</div>
-                          <div class="mt-1">
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-primary"
-                                data-width="45%"
-                              ></div>
-                              <div class="budget-price-label">$13,972</div>
-                            </div>
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-danger"
-                                data-width="30%"
-                              ></div>
-                              <div class="budget-price-label">$9,660</div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="media">
-                        <img
-                          class="mr-3 rounded"
-                          width="55"
-                          src="assets/img/products/product-5-50.png"
-                          alt="product"
-                        />
-                        <div class="media-body">
-                          <div class="float-right">
-                            <div class="font-weight-600 text-muted text-small">
-                              19 Sales
-                            </div>
-                          </div>
-                          <div class="media-title">Old Camera</div>
-                          <div class="mt-1">
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-primary"
-                                data-width="35%"
-                              ></div>
-                              <div class="budget-price-label">$7,391</div>
-                            </div>
-                            <div class="budget-price">
-                              <div
-                                class="budget-price-square bg-danger"
-                                data-width="28%"
-                              ></div>
-                              <div class="budget-price-label">$5,472</div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="card-footer pt-3 d-flex justify-content-center">
-                    <div class="budget-price justify-content-center">
-                      <div
-                        class="budget-price-square bg-primary"
-                        data-width="20"
-                      ></div>
-                      <div class="budget-price-label">Selling Price</div>
-                    </div>
-                    <div class="budget-price justify-content-center">
-                      <div
-                        class="budget-price-square bg-danger"
-                        data-width="20"
-                      ></div>
-                      <div class="budget-price-label">Budget Price</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Best Products</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="owl-carousel owl-theme" id="products-carousel">
-                      <div>
-                        <div class="product-item pb-3">
-                          <div class="product-image">
-                            <img
-                              alt="image"
-                              src="assets/img/products/product-4-50.png"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <div class="product-details">
-                            <div class="product-name">iBook Pro 2018</div>
-                            <div class="product-review">
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                            </div>
-                            <div class="text-muted text-small">67 Sales</div>
-                            <div class="product-cta">
-                              <a href="#" class="btn btn-primary">Detail</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div class="product-item">
-                          <div class="product-image">
-                            <img
-                              alt="image"
-                              src="assets/img/products/product-3-50.png"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <div class="product-details">
-                            <div class="product-name">oPhone S9 Limited</div>
-                            <div class="product-review">
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star-half"></i>
-                            </div>
-                            <div class="text-muted text-small">86 Sales</div>
-                            <div class="product-cta">
-                              <a href="#" class="btn btn-primary">Detail</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div class="product-item">
-                          <div class="product-image">
-                            <img
-                              alt="image"
-                              src="assets/img/products/product-1-50.png"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <div class="product-details">
-                            <div class="product-name">Headphone Blitz</div>
-                            <div class="product-review">
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="fas fa-star"></i>
-                              <i class="far fa-star"></i>
-                            </div>
-                            <div class="text-muted text-small">63 Sales</div>
-                            <div class="product-cta">
-                              <a href="#" class="btn btn-primary">Detail</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Top Countries</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="text-title mb-2">July</div>
-                        <ul
-                          class="list-unstyled list-unstyled-border list-unstyled-noborder mb-0"
-                        >
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/id.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">Indonesia</div>
-                              <div class="text-small text-muted">
-                                3,282
-                                <i class="fas fa-caret-down text-danger"></i>
-                              </div>
-                            </div>
-                          </li>
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/my.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">Malaysia</div>
-                              <div class="text-small text-muted">
-                                2,976
-                                <i class="fas fa-caret-down text-danger"></i>
-                              </div>
-                            </div>
-                          </li>
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/us.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">United States</div>
-                              <div class="text-small text-muted">
-                                1,576
-                                <i class="fas fa-caret-up text-success"></i>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="col-sm-6 mt-sm-0 mt-4">
-                        <div class="text-title mb-2">August</div>
-                        <ul
-                          class="list-unstyled list-unstyled-border list-unstyled-noborder mb-0"
-                        >
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/id.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">Indonesia</div>
-                              <div class="text-small text-muted">
-                                3,486
-                                <i class="fas fa-caret-up text-success"></i>
-                              </div>
-                            </div>
-                          </li>
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/ps.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">Palestine</div>
-                              <div class="text-small text-muted">
-                                3,182
-                                <i class="fas fa-caret-up text-success"></i>
-                              </div>
-                            </div>
-                          </li>
-                          <li class="media">
-                            <img
-                              class="img-fluid mt-1 img-shadow"
-                              src="assets/modules/flag-icon-css/flags/4x3/de.svg"
-                              alt="image"
-                              width="40"
-                            />
-                            <div class="media-body ml-3">
-                              <div class="media-title">Germany</div>
-                              <div class="text-small text-muted">
-                                2,317
-                                <i class="fas fa-caret-down text-danger"></i>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Invoices</h4>
-                    <div class="card-header-action">
-                      <a href="#" class="btn btn-danger"
-                        >View More <i class="fas fa-chevron-right"></i
-                      ></a>
-                    </div>
-                  </div>
-                  <div class="card-body p-0">
-                    <div class="table-responsive table-invoice">
-                      <table class="table table-striped">
-                        <tr>
-                          <th>Invoice ID</th>
-                          <th>Customer</th>
-                          <th>Status</th>
-                          <th>Due Date</th>
-                          <th>Action</th>
-                        </tr>
-                        <tr>
-                          <td><a href="#">INV-87239</a></td>
-                          <td class="font-weight-600">Kusnadi</td>
-                          <td><div class="badge badge-warning">Unpaid</div></td>
-                          <td>July 19, 2018</td>
-                          <td>
-                            <a href="#" class="btn btn-primary">Detail</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="#">INV-48574</a></td>
-                          <td class="font-weight-600">Hasan Basri</td>
-                          <td><div class="badge badge-success">Paid</div></td>
-                          <td>July 21, 2018</td>
-                          <td>
-                            <a href="#" class="btn btn-primary">Detail</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="#">INV-76824</a></td>
-                          <td class="font-weight-600">Muhamad Nuruzzaki</td>
-                          <td><div class="badge badge-warning">Unpaid</div></td>
-                          <td>July 22, 2018</td>
-                          <td>
-                            <a href="#" class="btn btn-primary">Detail</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="#">INV-84990</a></td>
-                          <td class="font-weight-600">Agung Ardiansyah</td>
-                          <td><div class="badge badge-warning">Unpaid</div></td>
-                          <td>July 22, 2018</td>
-                          <td>
-                            <a href="#" class="btn btn-primary">Detail</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a href="#">INV-87320</a></td>
-                          <td class="font-weight-600">Ardian Rahardiansyah</td>
-                          <td><div class="badge badge-success">Paid</div></td>
-                          <td>July 28, 2018</td>
-                          <td>
-                            <a href="#" class="btn btn-primary">Detail</a>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card card-hero">
-                  <div class="card-header">
-                    <div class="card-icon">
-                      <i class="far fa-question-circle"></i>
-                    </div>
-                    <h4>14</h4>
-                    <div class="card-description">Customers need help</div>
-                  </div>
-                  <div class="card-body p-0">
-                    <div class="tickets-list">
-                      <a href="#" class="ticket-item">
-                        <div class="ticket-title">
-                          <h4>My order hasn't arrived yet</h4>
-                        </div>
-                        <div class="ticket-info">
-                          <div>Laila Tazkiah</div>
-                          <div class="bullet"></div>
-                          <div class="text-primary">1 min ago</div>
-                        </div>
-                      </a>
-                      <a href="#" class="ticket-item">
-                        <div class="ticket-title">
-                          <h4>Please cancel my order</h4>
-                        </div>
-                        <div class="ticket-info">
-                          <div>Rizal Fakhri</div>
-                          <div class="bullet"></div>
-                          <div>2 hours ago</div>
-                        </div>
-                      </a>
-                      <a href="#" class="ticket-item">
-                        <div class="ticket-title">
-                          <h4>Do you see my mother?</h4>
-                        </div>
-                        <div class="ticket-info">
-                          <div>Syahdan Ubaidillah</div>
-                          <div class="bullet"></div>
-                          <div>6 hours ago</div>
-                        </div>
-                      </a>
-                      <a
-                        href="features-tickets.html"
-                        class="ticket-item ticket-more"
-                      >
-                        View All <i class="fas fa-chevron-right"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-          </section>
-        </div>
-        <footer class="main-footer">
-          <div class="footer-left">
-            Copyright &copy; 2026
-            <div class="bullet"></div>
-            Design By <a href="https://vayonova.com">Vayonova</a>
+    <nav id="sidebar">
+      <a class="sidebar-logo" href="#">
+        <div class="sidebar-logo-icon"><i class="fas fa-chart-line"></i></div>
+        <span class="sidebar-logo-text">OptiElite</span>
+      </a>
+      <div class="sidebar-section-label">Dashboard</div>
+      <a class="nav-item active" href="#">
+        <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+        Admin Dashboard
+      </a>
+      <div class="sidebar-section-label">Actions</div>
+      <a
+        class="nav-item"
+        onclick="
+          GoAddBillPage();
+          closeSidebar();
+        "
+      >
+        <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
+        Add Invoice
+      </a>
+      <a
+        class="nav-item"
+        href="#"
+        onclick="
+          GoBillManagement();
+          closeSidebar();
+          return false;
+        "
+      >
+        <span class="nav-icon"><i class="fas fa-list-ul"></i></span>
+        Invoice Management
+      </a>
+      <div class="sidebar-section-label">OptiElite</div>
+      <a class="nav-item" href="/customerRegister" onclick="closeSidebar()">
+        <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
+        Register & Management
+      </a>
+      <a class="nav-item" href="/add_prescription" onclick="closeSidebar()">
+        <span class="nav-icon"><i class="fas fa-prescription"></i></span>
+        Add Prescription
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+        Stock
+        <span class="nav-badge">Soon</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
           </div>
-          <div class="footer-right"></div>
-        </footer>
+          <i class="fas fa-ellipsis-h sidebar-user-more"></i>
+        </div>
       </div>
-    </div>
+    </nav>
 
-    <!-- General JS Scripts -->
+    <header id="topbar">
+      <button id="menu-toggle" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="topbar-btn">
+          <i class="far fa-envelope"></i><span class="dot"></span>
+        </div>
+        <div class="topbar-btn">
+          <i class="far fa-bell"></i><span class="dot"></span>
+        </div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="page-content">
+        <div class="page-header">
+          <h1>Good Day,  👋</h1>
+          <p>Welcome to The OptiElites</p>
+        </div>
+
+        <div class="date-bar">
+          <label for="startDate"
+            ><i
+              class="far fa-calendar-alt"
+              style="margin-right: 6px; color: var(--accent)"
+            ></i
+            >Select Date:</label
+          >
+          <input
+            type="date"
+            id="startDate"
+            class="date-input"
+            onchange="ChangeMonthForBranchStatus()"
+          />
+        </div>
+
+        <div id="render-target"></div>
+
+        <div class="actions-grid">
+          <a class="action-card" href="/customerRegister"
+            ><div class="action-icon blue">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="action-info">
+              <div class="action-title">Register Customer</div>
+              <div class="action-desc">Add a new customer to the system</div>
+            </div>
+            <i class="fas fa-chevron-right action-arrow"></i
+          ></a>
+          <a
+            class="action-card"
+            href="#"
+            onclick="
+              GoBillManagement();
+              return false;
+            "
+            ><div class="action-icon green">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="action-info">
+              <div class="action-title">Invoice Management</div>
+              <div class="action-desc">Check and manage invoices</div>
+            </div>
+            <i class="fas fa-chevron-right action-arrow"></i
+          ></a>
+          <a class="action-card" href="/add_prescription"
+            ><div class="action-icon orange">
+              <i class="fas fa-prescription"></i>
+            </div>
+            <div class="action-info">
+              <div class="action-title">Add Prescription</div>
+              <div class="action-desc">Record a new prescription</div>
+            </div>
+            <i class="fas fa-chevron-right action-arrow"></i
+          ></a>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3>Recent Invoices</h3>
+            <a
+              href="#"
+              class="view-all"
+              onclick="
+                GoBillManagement();
+                return false;
+              "
+              >View All →</a
+            >
+          </div>
+          <!-- <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice ID</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-87239</td>
+                  <td>Kusnaedi</td>
+                  <td>May 01, 2026</td>
+                  <td>LKR 4,500</td>
+                  <td><span class="badge badge-unpaid">Unpaid</span></td>
+                </tr>
+                <tr>
+                  <td>INV-48574</td>
+                  <td>Hasan Basri</td>
+                  <td>May 02, 2026</td>
+                  <td>LKR 8,200</td>
+                  <td><span class="badge badge-paid">Paid</span></td>
+                </tr>
+                <tr>
+                  <td>INV-76824</td>
+                  <td>M. Nuruzzaki</td>
+                  <td>May 03, 2026</td>
+                  <td>LKR 3,800</td>
+                  <td><span class="badge badge-pending">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>INV-84990</td>
+                  <td>Agung A.</td>
+                  <td>May 04, 2026</td>
+                  <td>LKR 12,000</td>
+                  <td><span class="badge badge-unpaid">Unpaid</span></td>
+                </tr>
+                <tr>
+                  <td>INV-87320</td>
+                  <td>Ardian R.</td>
+                  <td>May 05, 2026</td>
+                  <td>LKR 6,750</td>
+                  <td><span class="badge badge-paid">Paid</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+        </div>
+        <div id="render-target"></div>
+      </div>
+      <footer class="page-footer">
+        <span
+          >Copyright &copy; 2026 — Design By
+          <a href="https://vayonova.com">Vayonova</a></span
+        ><span>OptiElite v2.0 · Light Edition</span>
+      </footer>
+    </main>
+
+    <script>
+      var sidebar = document.getElementById("sidebar");
+      var overlay = document.getElementById("overlay");
+      var menuBtn = document.getElementById("menu-toggle");
+
+      function openSidebar() {
+        sidebar.classList.add("open");
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+      function closeSidebar() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+      if (menuBtn) {
+        menuBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+        });
+      }
+      overlay.addEventListener("click", closeSidebar);
+      overlay.addEventListener(
+        "touchend",
+        function (e) {
+          e.preventDefault();
+          closeSidebar();
+        },
+        { passive: false },
+      );
+      sidebar.querySelectorAll(".nav-item").forEach(function (item) {
+        item.addEventListener("click", function () {
+          if (window.innerWidth < 992) closeSidebar();
+        });
+      });
+
+      (function () {
+        var d = new Date();
+        var pad = function (n) {
+          return n < 10 ? "0" + n : n;
+        };
+        var dateInput = document.getElementById("startDate");
+        if (dateInput)
+          dateInput.value =
+            d.getFullYear() +
+            "-" +
+            pad(d.getMonth() + 1) +
+            "-" +
+            pad(d.getDate());
+      })();
+
+      function loadIndexPage() {
+        console.log("loadIndexPage ready");
+      }
+      function ChangeMonthForBranchStatus() {
+        console.log(
+          "date changed",
+          document.getElementById("startDate")?.value,
+        );
+      }
+      function GoAddBillPage() {
+        alert("⚡ Add Invoice flow — integrate your billing logic");
+      }
+      function GoBillManagement() {
+        alert("📄 Invoice Management — connect to your management panel");
+      }
+    </script>
     <script src="assets/modules/jquery.min.js"></script>
     <script src="assets/modules/popper.js"></script>
     <script src="assets/modules/tooltip.js"></script>
@@ -1679,20 +1055,13 @@
     <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
     <script src="assets/modules/moment.min.js"></script>
     <script src="assets/js/OptiElite.js"></script>
-
-    <!-- JS Libraies -->
     <script src="assets/modules/jquery.sparkline.min.js"></script>
     <script src="assets/modules/chart.min.js"></script>
     <script src="assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
     <script src="assets/modules/summernote/summernote-bs4.js"></script>
     <script src="assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
-
-    <!-- Page Specific JS File -->
     <script src="assets/js/page/index.js"></script>
     <script src="assets/js/mainscript.js"></script>
-
-
-    <!-- Template JS File -->
     <script src="assets/js/scripts.js"></script>
     <script src="assets/js/custom.js"></script>
   </body>
