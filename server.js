@@ -23,7 +23,7 @@ app.use(
     cookie: { maxAge: 3600000 }, // 1 hour
     resave: false,
     saveUninitialized: false,
-  })
+  }),
 );
 
 /**
@@ -38,26 +38,9 @@ app.use("/branch", branchRoutes);
 app.use("/api/bill", billRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/stock", stockRoutes);
-app.use("/api/prescription",prescriptionRoutes);
+app.use("/api/prescription", prescriptionRoutes);
 
-// Debug middleware (optional - uncomment to see session info)
-// app.use((req, res, next) => {
-//   console.log(`${req.method} ${req.url}`, req.session);
-//   next();
-// });
 
-// --- ADD THIS: Login endpoint ---
-// app.post("/user/login", (req, res) => {
-  // const { username, password } = req.body;
-
-  // This is a simple example - replace with your actual database validation
-  // if (username === "sankaudeshika" && password === "12345678") {
-  //   req.session.username = username;
-  //   res.send("success");
-  // } else {
-  //   res.status(401).send("Invalid");
-  // }
-// });
 
 // --- Page Routes ---
 app.get("/", (req, res) => {
@@ -96,7 +79,9 @@ app.get("/add_bill", (req, res) => {
 
 app.get("/customerRegister", (req, res) => {
   if (req.session && req.session.username) {
-    res.sendFile(path.join(__dirname, "public", "customer", "customerRegister.html"));
+    res.sendFile(
+      path.join(__dirname, "public", "customer", "customerRegister.html"),
+    );
   } else {
     res.redirect("/login");
   }
@@ -104,15 +89,19 @@ app.get("/customerRegister", (req, res) => {
 
 app.get("/add_prescription", (req, res) => {
   if (req.session && req.session.username) {
-    res.sendFile(path.join(__dirname, "public", "prescription", "add-prescription.html"));
+    res.sendFile(
+      path.join(__dirname, "public", "prescription", "add-prescription.html"),
+    );
   } else {
     res.redirect("/login");
   }
 });
 
-app.get("/view_prescriptions",(req,res)=>{
+app.get("/view_prescriptions", (req, res) => {
   if (req.session && req.session.username) {
-    res.sendFile(path.join(__dirname, "public", "prescription", "prescription.html"));
+    res.sendFile(
+      path.join(__dirname, "public", "prescription", "prescription.html"),
+    );
   } else {
     res.redirect("/login");
   }
