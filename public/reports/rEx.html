@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>LensMate | Monthly Financial Reports</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #f0f2f8;
+        font-family: "Inter", sans-serif;
+        padding: 32px 24px;
+        color: #1e293b;
+      }
+
+      .report-container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* header & filters */
+      .report-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        gap: 20px;
+      }
+
+      .title-section h1 {
+        font-size: 26px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: -0.3px;
+      }
+
+      .title-section p {
+        font-size: 14px;
+        color: #5b6e8c;
+        margin-top: 6px;
+      }
+
+      .filter-card {
+        background: white;
+        border-radius: 28px;
+        padding: 8px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 18px;
+        box-shadow:
+          0 4px 12px rgba(0, 0, 0, 0.03),
+          0 1px 2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e9eef3;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .filter-group label {
+        font-weight: 500;
+        font-size: 13px;
+        color: #4a5b7a;
+      }
+
+      .month-picker {
+        border: 1px solid #cfdfed;
+        border-radius: 40px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        background: white;
+        font-family: "Inter", monospace;
+        cursor: pointer;
+        transition: all 0.2s;
+        outline: none;
+      }
+
+      .month-picker:focus {
+        border-color: #2c7da0;
+        box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.2);
+      }
+
+      .btn-generate {
+        background: #2c7da0;
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 8px 24px;
+        border-radius: 40px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 6px rgba(44, 125, 160, 0.2);
+      }
+
+      .btn-generate:hover {
+        background: #1f5e7c;
+        transform: scale(0.98);
+      }
+
+      /* KPI cards */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 22px;
+        margin-bottom: 40px;
+      }
+
+      .kpi-card {
+        background: white;
+        border-radius: 28px;
+        padding: 22px 24px;
+        border: 1px solid #eef2f9;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s;
+      }
+
+      .kpi-title {
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c7e9e;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .kpi-number {
+        font-size: 38px;
+        font-weight: 800;
+        color: #0f2b3d;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+      }
+
+      .kpi-sub {
+        font-size: 13px;
+        color: #5e6f8d;
+        border-top: 1px solid #eef2f8;
+        padding-top: 12px;
+        margin-top: 6px;
+      }
+
+      .diff-badge {
+        font-size: 12px;
+        font-weight: 600;
+        background: #e9f4f8;
+        border-radius: 40px;
+        padding: 4px 10px;
+        display: inline-block;
+      }
+
+      /* tables + report sections */
+      .report-card {
+        background: white;
+        border-radius: 28px;
+        border: 1px solid #eef2f9;
+        margin-bottom: 32px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      }
+
+      .card-header {
+        padding: 18px 28px;
+        background: #fefefe;
+        border-bottom: 1px solid #ecf3fa;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .card-header h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f3b4c;
+      }
+
+      .card-header i {
+        color: #2c7da0;
+        margin-right: 8px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        padding: 0 4px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .data-table th {
+        text-align: left;
+        padding: 16px 20px;
+        background: #fafcff;
+        font-weight: 600;
+        color: #40587c;
+        border-bottom: 1px solid #e9eff5;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+
+      .data-table td {
+        padding: 14px 20px;
+        border-bottom: 1px solid #f0f4fa;
+        color: #2f405c;
+        font-weight: 500;
+      }
+
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .data-table tr:hover td {
+        background-color: #f8fafd;
+      }
+
+      .amount-positive {
+        font-weight: 700;
+        color: #1e7e34;
+      }
+
+      .amount-negative {
+        color: #b91c1c;
+        font-weight: 600;
+      }
+
+      .footer-note {
+        padding: 16px 28px;
+        background: #fafdff;
+        border-top: 1px solid #ecf3fa;
+        font-size: 12px;
+        color: #6c7e9e;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .insight-box {
+        background: #f8fafd;
+        border-radius: 20px;
+        padding: 16px 24px;
+        margin-top: 20px;
+        border-left: 4px solid #2c7da0;
+        font-size: 13px;
+      }
+
+      @media (max-width: 680px) {
+        body {
+          padding: 20px 16px;
+        }
+        .kpi-number {
+          font-size: 28px;
+        }
+        .card-header {
+          padding: 14px 20px;
+        }
+        .data-table th,
+        .data-table td {
+          padding: 12px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-container">
+      <div class="report-header">
+        <div class="title-section">
+          <h1>
+            <i
+              class="fas fa-chart-line"
+              style="color: #2c7da0; margin-right: 8px"
+            ></i>
+            Monthly Financial Report
+          </h1>
+          <p>
+            Total Sales · Orders Count · Cash Collection & Variance Analysis
+          </p>
+        </div>
+        <div class="filter-card">
+          <div class="filter-group">
+            <label><i class="far fa-calendar-alt"></i> Report Month</label>
+            <input
+              type="month"
+              id="reportMonth"
+              class="month-picker"
+              value="2026-05"
+            />
+          </div>
+          <button id="generateBtn" class="btn-generate">
+            <i class="fas fa-sync-alt"></i> Generate Report
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI summary loaded dynamically -->
+      <div id="kpiContainer" class="kpi-grid"></div>
+
+      <!-- Monthly detailed breakdown: By payment method, etc -->
+      <div id="reportDetails"></div>
+    </div>
+
+    <script>
+      // ---------- HELPER: format LKR ----------
+      function formatMoney(amount) {
+        if (amount === undefined || amount === null) amount = 0;
+        return new Intl.NumberFormat("en-LK", {
+          style: "currency",
+          currency: "LKR",
+          minimumFractionDigits: 0,
+        }).format(amount);
+      }
+
+      function formatNumber(num) {
+        return num?.toLocaleString() || "0";
+      }
+
+      // ---------- Fetch data from backend (Express routes) ----------
+      // Expected endpoints (to be implemented in your Express server):
+      // GET /api/monthly-report/summary?yearMonth=2026-05
+      // GET /api/monthly-report/payment-breakdown?yearMonth=2026-05
+      // GET /api/monthly-report/daily-trend?yearMonth=2026-05   (optional but useful)
+
+      async function fetchMonthlySummary(yearMonth) {
+        const response = await fetch(
+          `/api/monthly-report/summary?yearMonth=${yearMonth}`,
+        );
+        if (!response.ok) throw new Error("Failed to fetch summary");
+        return await response.json();
+      }
+
+      async function fetchPaymentBreakdown(yearMonth) {
+        const response = await fetch(
+          `/api/monthly-report/payment-breakdown?yearMonth=${yearMonth}`,
+        );
+        if (!response.ok) throw new Error("Failed to fetch payment breakdown");
+        return await response.json();
+      }
+
+      async function fetchDailyCollection(yearMonth) {
+        const response = await fetch(
+          `/api/monthly-report/daily-trend?yearMonth=${yearMonth}`,
+        );
+        if (!response.ok) throw new Error("Failed to fetch daily trend");
+        return await response.json();
+      }
+
+      // Render KPI + main report
+      // Replace the loadMonthlyReport function in your HTML with this updated version
+
+      async function loadMonthlyReport(yearMonth) {
+        const kpiContainer = document.getElementById("kpiContainer");
+        const reportDetailsDiv = document.getElementById("reportDetails");
+
+        // Show loading state
+        kpiContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px;"><i class="fas fa-spinner fa-pulse"></i> Loading report for ${yearMonth}...</div>`;
+        reportDetailsDiv.innerHTML = "";
+
+        try {
+          // 1) Summary data
+          const summaryResponse = await fetch(
+            `/api/monthly-report/summary?yearMonth=${yearMonth}`,
+          );
+          const summaryResult = await summaryResponse.json();
+
+          if (!summaryResult.success) {
+            throw new Error(summaryResult.error || "Failed to fetch summary");
+          }
+
+          const totalSales = summaryResult.totalSales || 0;
+          const ordersCount = summaryResult.totalOrdersCount || 0;
+          const cashCollected = summaryResult.totalCashCollected || 0;
+          const variance = cashCollected - totalSales;
+          const variancePercent =
+            totalSales !== 0
+              ? ((variance / totalSales) * 100).toFixed(2)
+              : "0.00";
+
+          // Render KPI cards
+          kpiContainer.innerHTML = `
+            <div class="kpi-card">
+                <div class="kpi-title"><i class="fas fa-chart-simple" style="color:#2c7da0;"></i> Total Sales (NET)</div>
+                <div class="kpi-number">${formatMoney(totalSales)}</div>
+                <div class="kpi-sub">Invoice subtotal after discounts</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title"><i class="fas fa-receipt"></i> Total Orders</div>
+                <div class="kpi-number">${formatNumber(ordersCount)}</div>
+                <div class="kpi-sub">Unique invoices (shop orders)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title"><i class="fas fa-hand-holding-usd"></i> Total Cash Collection</div>
+                <div class="kpi-number">${formatMoney(cashCollected)}</div>
+                <div class="kpi-sub">Payments received (Cash + Cards + Bank etc)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title"><i class="fas fa-balance-scale"></i> Collection vs Sales</div>
+                <div class="kpi-number ${variance >= 0 ? "amount-positive" : "amount-negative"}">${formatMoney(variance)}</div>
+                <div class="kpi-sub">${variance >= 0 ? "Over collection" : "Pending / Under collection"} (${variancePercent}% of sales)</div>
+            </div>
+        `;
+
+          // 2) Payment method breakdown
+          const breakdownResponse = await fetch(
+            `/api/monthly-report/payment-breakdown?yearMonth=${yearMonth}`,
+          );
+          const breakdownResult = await breakdownResponse.json();
+
+          let breakdownHtml = `
+            <div class="report-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-credit-card"></i> Collection by Payment Method</h2>
+                    <span class="diff-badge">${yearMonth}</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Payment Method</th><th>Total Collected (LKR)</th><th>Transactions Count</th><th>% of Total</th></tr>
+                        </thead>
+                        <tbody>
+        `;
+
+          let grandTotalCollected = 0;
+          let breakdownData = [];
+
+          // Handle both response structures: with or without wrapper
+          if (breakdownResult.success && breakdownResult.data) {
+            breakdownData = breakdownResult.data;
+          } else if (Array.isArray(breakdownResult)) {
+            breakdownData = breakdownResult;
+          } else if (
+            breakdownResult.data &&
+            Array.isArray(breakdownResult.data)
+          ) {
+            breakdownData = breakdownResult.data;
+          } else {
+            breakdownData = [];
+          }
+
+          breakdownData.forEach((method) => {
+            grandTotalCollected += method.total_amount;
+          });
+
+          if (breakdownData.length === 0) {
+            breakdownHtml += `<tr><td colspan="4" style="text-align:center;">No payment data found for this month</td></tr>`;
+          } else {
+            for (let m of breakdownData) {
+              const percent =
+                grandTotalCollected > 0
+                  ? ((m.total_amount / grandTotalCollected) * 100).toFixed(1)
+                  : "0";
+              breakdownHtml += `<tr>
+                    <td><i class="fas fa-circle" style="font-size: 8px; color:#2a9d8f; margin-right: 8px;"></i>${escapeHtml(m.payment_method_name)}</td>
+                    <td class="amount-positive">${formatMoney(m.total_amount)}</td>
+                    <td>${formatNumber(m.transaction_count || m.invoice_count || 0)}</td>
+                    <td>${percent}%</td>
+                </tr>`;
+            }
+          }
+
+          breakdownHtml += `</tbody>
+                    </table>
+                </div>
+                <div class="footer-note"><strong>Total Collected across methods:</strong> ${formatMoney(grandTotalCollected)}</div>
+            </div>`;
+
+          // 3) Daily trend
+          let dailyHtml = "";
+          try {
+            const dailyResponse = await fetch(
+              `/api/monthly-report/daily-trend?yearMonth=${yearMonth}`,
+            );
+            const dailyResult = await dailyResponse.json();
+
+            let dailyData = [];
+            if (dailyResult.success && dailyResult.data) {
+              dailyData = dailyResult.data;
+            } else if (Array.isArray(dailyResult)) {
+              dailyData = dailyResult;
+            } else if (dailyResult.data && Array.isArray(dailyResult.data)) {
+              dailyData = dailyResult.data;
+            }
+
+            if (dailyData && dailyData.length) {
+              dailyHtml = `
+                <div class="report-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-calendar-day"></i> Daily Cash Collection & Sales Trend</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Date</th><th>Total Invoice Sales</th><th>Cash/Collected Amount</th><th>Difference (Pending)</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+              for (let day of dailyData) {
+                const diffDay =
+                  (day.collected_amount || 0) - (day.sales_amount || 0);
+                dailyHtml += `<tr>
+                        <td>${day.transaction_date}</td>
+                        <td>${formatMoney(day.sales_amount || 0)}</td>
+                        <td class="amount-positive">${formatMoney(day.collected_amount || 0)}</td>
+                        <td class="${diffDay >= 0 ? "amount-positive" : "amount-negative"}">${formatMoney(diffDay)}</td>
+                    </tr>`;
+              }
+              dailyHtml += `</tbody>
+                        </table>
+                    </div>
+                    <div class="footer-note">Daily variance helps track collection efficiency</div>
+                </div>`;
+            }
+          } catch (e) {
+            console.warn("Daily trend not available", e);
+          }
+
+          // 4) Branch breakdown (optional)
+          let branchHtml = "";
+          try {
+            const branchResponse = await fetch(
+              `/api/monthly-report/branch-breakdown?yearMonth=${yearMonth}`,
+            );
+            const branchResult = await branchResponse.json();
+
+            let branchData = [];
+            if (branchResult.success && branchResult.data) {
+              branchData = branchResult.data;
+            } else if (Array.isArray(branchResult)) {
+              branchData = branchResult;
+            } else if (branchResult.data && Array.isArray(branchResult.data)) {
+              branchData = branchResult.data;
+            }
+
+            if (branchData && branchData.length) {
+              branchHtml = `
+                <div class="report-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-store"></i> Branch Performance</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Branch</th><th>Total Orders</th><th>Total Sales</th><th>Total Collection</th><th>Collection Rate</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+              for (let branch of branchData) {
+                const collectionRate =
+                  branch.total_sales > 0
+                    ? (
+                        (branch.total_collection / branch.total_sales) *
+                        100
+                      ).toFixed(1)
+                    : 0;
+                branchHtml += `<tr>
+                        <td>${escapeHtml(branch.branch_name || branch.location_name)}</td>
+                        <td>${formatNumber(branch.total_orders)}</td>
+                        <td>${formatMoney(branch.total_sales)}</td>
+                        <td>${formatMoney(branch.total_collection)}</td>
+                        <td>${collectionRate}%</td>
+                    </tr>`;
+              }
+              branchHtml += `</tbody>
+                        </table>
+                    </div>
+                </div>`;
+            }
+          } catch (e) {
+            console.warn("Branch breakdown not available", e);
+          }
+
+          // Insights
+          const insightHtml = `
+            <div class="insight-box">
+                <i class="fas fa-lightbulb" style="margin-right: 12px; color:#e9a23b;"></i> 
+                <strong>Insights:</strong> Total orders count <strong>${formatNumber(ordersCount)}</strong> · 
+                Average ticket size: <strong>${formatMoney(totalSales / (ordersCount || 1))}</strong> · 
+                Collection ratio: <strong>${totalSales === 0 ? "0" : ((cashCollected / totalSales) * 100).toFixed(1)}%</strong> of sales realised as cash/card.
+                ${
+                  variance < 0
+                    ? `<span style="color:#b91c1c;">⚠️ Pending collection of ${formatMoney(Math.abs(variance))} from invoices.</span>`
+                    : `<span style="color:#1e7e34;">✓ Fully covered plus advance/overpayments.</span>`
+                }
+            </div>
+        `;
+
+          reportDetailsDiv.innerHTML =
+            breakdownHtml + dailyHtml + branchHtml + insightHtml;
+        } catch (error) {
+          console.error(error);
+          kpiContainer.innerHTML = `<div style="grid-column:1/-1; background:#fff0f0; padding:24px; border-radius:28px; text-align:center; color:#b91c1c;">
+            <i class="fas fa-exclamation-triangle"></i> Failed to load report: ${error.message}<br>
+            <small>Make sure backend API endpoints are implemented and running.</small>
+        </div>`;
+          reportDetailsDiv.innerHTML = "";
+        }
+      }
+
+      // simple XSS protection
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function (m) {
+          if (m === "&") return "&amp;";
+          if (m === "<") return "&lt;";
+          if (m === ">") return "&gt;";
+          return m;
+        });
+      }
+
+      // event listener
+      document.getElementById("generateBtn").addEventListener("click", () => {
+        const monthPicker = document.getElementById("reportMonth");
+        let selected = monthPicker.value;
+        if (!selected) selected = "2026-05";
+        loadMonthlyReport(selected);
+      });
+
+      // initial load
+      const initialMonth =
+        document.getElementById("reportMonth").value || "2026-05";
+      loadMonthlyReport(initialMonth);
+    </script>
+
+    <!-- Backend implementation notes (Express.js) - complete code below -->
+    <!-- 
+    ===================  BACKEND (Express.js)  ===================
+    Add these routes to your server.js / routes files.
+    They will query your MySQL database according to the given schema.
+-->
+  </body>
+</html>
+
+<!-- 
+    ========================  EXPRESS.JS BACKEND ROUTES  ========================
+    Place the following code in your Express server (e.g., in routes/reports.js or server.js)
+    Ensure you have MySQL connection pool configured (db connection).
+    
+    These endpoints match the frontend fetch calls.
+-->
+
+<!-- BACKEND CODE (Node.js + Express + MySQL)  
+================================================ -->
+<script style="display: none" type="text/javascript">
+  /* ==== ADD THIS TO YOUR EXPRESS APP ==== */
+
+  /*
+//   -------- 1. Import and setup (example) --------
+const express = require('express');
+const router = express.Router();
+const mysql = require('mysql2/promise');  // or your db util
+
+// Assume pool is created:
+// const pool = mysql.createPool({ host, user, password, database, ... });
+
+// =============== 2. MONTHLY REPORT SUMMARY ===============
+// GET /api/monthly-report/summary?yearMonth=2026-05
+router.get('/summary', async (req, res) => {
+    try {
+        const { yearMonth } = req.query;
+        if (!yearMonth) return res.status(400).json({ error: 'yearMonth required (YYYY-MM)' });
+        
+        const [year, month] = yearMonth.split('-');
+        const startDate = `${year}-${month}-01`;
+        const endDate = `${year}-${month}-31`;
+        
+        // 1) Total Sales: sum of (total_price - discount) from invoice table where payment_status_id = 2 (complete) or all? 
+        // Usually "total sales" = subtotal after discount. In invoice table total_price is final price after discount (check schema: total_price column).
+        // And we also have advance_payment, but total_price is final amount.
+        const [salesResult] = await pool.query(`
+            SELECT COALESCE(SUM(total_price), 0) as totalSales 
+            FROM invoice 
+            WHERE DATE(date) BETWEEN ? AND ? 
+              AND JobType_job_id = 1   -- shop orders (assuming 1 = shop orders, from jobtype table)
+        `, [startDate, endDate]);
+        
+        const totalSales = parseFloat(salesResult[0].totalSales) || 0;
+        
+        // 2) Total Orders count: number of invoices in that month (shop orders)
+        const [ordersResult] = await pool.query(`
+            SELECT COUNT(*) as orderCount 
+            FROM invoice 
+            WHERE DATE(date) BETWEEN ? AND ? 
+              AND JobType_job_id = 1
+        `, [startDate, endDate]);
+        const totalOrdersCount = ordersResult[0].orderCount || 0;
+        
+        // 3) Total Cash Collection: sum of payments from advance_payment_history + also direct payment_amount from invoice?
+        // According to schema: invoice.payment_amount stores partial payment? but advance_payment_history holds each payment entry.
+        // For total collection we sum all paid_amount in advance_payment_history within month (date between start/end)
+        // and also if any invoice has payment_amount column that represents instant payment? But consistent: all payments stored in advance_payment_history.
+        const [collectionResult] = await pool.query(`
+            SELECT COALESCE(SUM(paid_amount), 0) as totalCollected
+            FROM advance_payment_history
+            WHERE DATE(date) BETWEEN ? AND ?
+        `, [startDate, endDate]);
+        
+        const totalCashCollected = parseFloat(collectionResult[0].totalCollected) || 0;
+        
+        res.json({
+            totalSales,
+            totalOrdersCount,
+            totalCashCollected,
+            differenceVsSales: totalCashCollected - totalSales
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// =============== 3. PAYMENT BREAKDOWN BY METHOD ===============
+// GET /api/monthly-report/payment-breakdown?yearMonth=2026-05
+router.get('/payment-breakdown', async (req, res) => {
+    try {
+        const { yearMonth } = req.query;
+        if (!yearMonth) return res.status(400).json({ error: 'yearMonth missing' });
+        const [year, month] = yearMonth.split('-');
+        const startDate = `${year}-${month}-01`;
+        const endDate = `${year}-${month}-31`;
+        
+        // Join advance_payment_history with payment_method to get method name
+        const [rows] = await pool.query(`
+            SELECT 
+                pm.payment_name AS payment_method_name,
+                COALESCE(SUM(aph.paid_amount), 0) AS total_amount,
+                COUNT(DISTINCT aph.idadvance_payment_history) AS invoice_count
+            FROM advance_payment_history aph
+            JOIN payment_method pm ON aph.payment_method = pm.Payment_id
+            WHERE DATE(aph.date) BETWEEN ? AND ?
+            GROUP BY pm.Payment_id, pm.payment_name
+            ORDER BY total_amount DESC
+        `, [startDate, endDate]);
+        
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// =============== 4. DAILY TREND (Sales vs Collection) ===============
+// GET /api/monthly-report/daily-trend?yearMonth=2026-05
+router.get('/daily-trend', async (req, res) => {
+    try {
+        const { yearMonth } = req.query;
+        if (!yearMonth) return res.status(400).json({ error: 'yearMonth missing' });
+        const [year, month] = yearMonth.split('-');
+        const startDate = `${year}-${month}-01`;
+        const endDate = `${year}-${month}-31`;
+        
+        // Daily sales aggregated from invoice table (total_price)
+        const [dailySales] = await pool.query(`
+            SELECT 
+                DATE(date) as transaction_date,
+                COALESCE(SUM(total_price), 0) as sales_amount
+            FROM invoice
+            WHERE DATE(date) BETWEEN ? AND ? AND JobType_job_id = 1
+            GROUP BY DATE(date)
+        `, [startDate, endDate]);
+        
+        // Daily collection from advance_payment_history
+        const [dailyCollection] = await pool.query(`
+            SELECT 
+                DATE(date) as transaction_date,
+                COALESCE(SUM(paid_amount), 0) as collected_amount
+            FROM advance_payment_history
+            WHERE DATE(date) BETWEEN ? AND ?
+            GROUP BY DATE(date)
+        `, [startDate, endDate]);
+        
+        // Merge both arrays by date
+        const map = new Map();
+        dailySales.forEach(s => { map.set(s.transaction_date, { sales_amount: s.sales_amount, collected_amount: 0 }); });
+        dailyCollection.forEach(c => {
+            const existing = map.get(c.transaction_date) || { sales_amount: 0, collected_amount: 0 };
+            existing.collected_amount = c.collected_amount;
+            map.set(c.transaction_date, existing);
+        });
+        
+        const result = Array.from(map.entries()).map(([date, vals]) => ({
+            transaction_date: date,
+            sales_amount: vals.sales_amount,
+            collected_amount: vals.collected_amount
+        })).sort((a,b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+        
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Export router (if using separate file)
+// module.exports = router;
+*/
+</script>

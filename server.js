@@ -13,6 +13,7 @@ const billRoutes = require("./routes/billRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const stockRoutes = require("./routes/stockRoutes");
 const prescriptionRoutes = require("./routes/prescriptionRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 
 // --- Middleware ---
 app.use(cors());
@@ -39,8 +40,7 @@ app.use("/api/bill", billRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/prescription", prescriptionRoutes);
-
-
+app.use("/api", reportRoutes);
 
 // --- Page Routes ---
 app.get("/", (req, res) => {
@@ -101,6 +101,16 @@ app.get("/view_prescriptions", (req, res) => {
   if (req.session && req.session.username) {
     res.sendFile(
       path.join(__dirname, "public", "prescription", "prescription.html"),
+    );
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/goReports", (req, res) => {
+  if (req.session && req.session.username) {
+    res.sendFile(
+      path.join(__dirname, "public", "reports", "rEx.html"),
     );
   } else {
     res.redirect("/login");
