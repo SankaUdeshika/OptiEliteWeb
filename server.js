@@ -110,7 +110,7 @@ app.get("/view_prescriptions", (req, res) => {
 app.get("/goReports", (req, res) => {
   if (req.session && req.session.username) {
     res.sendFile(
-      path.join(__dirname, "public", "reports", "rEx.html"),
+      path.join(__dirname, "public", "reports", "reports.html"),
     );
   } else {
     res.redirect("/login");

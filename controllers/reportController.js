@@ -70,7 +70,7 @@ exports.getMonthlySummary = async (req, res) => {
         // 1) Total Sales
         const salesResult = await new Promise((resolve, reject) => {
             db.query(
-                `SELECT COALESCE(SUM(total_price), 0) as totalSales 
+                `SELECT COALESCE(SUM(subtotal), 0) as totalSales 
                 FROM invoice 
                 WHERE DATE(date) BETWEEN ? AND ? 
                 AND JobType_job_id = 1`,
@@ -235,7 +235,7 @@ exports.getDailyTrend = async (req, res) => {
             db.query(
                 `SELECT 
                     DATE(date) as transaction_date,
-                    COALESCE(SUM(total_price), 0) as sales_amount,
+                    COALESCE(SUM(subtotal), 0) as sales_amount,
                     COUNT(*) as invoice_count
                 FROM invoice
                 WHERE DATE(date) BETWEEN ? AND ? 
@@ -362,7 +362,7 @@ exports.getBranchBreakdown = async (req, res) => {
                     l.location_name,
                     l.branch_name,
                     COUNT(DISTINCT i.invoice_id) as total_orders,
-                    COALESCE(SUM(i.total_price), 0) as total_sales,
+                    COALESCE(SUM(i.subtotal), 0) as total_sales,
                     COALESCE(SUM(aph.paid_amount), 0) as total_collection,
                     COUNT(DISTINCT c.mobile) as unique_customers
                 FROM location l
@@ -440,7 +440,7 @@ exports.getCompleteMonthlyReport = async (req, res) => {
             // Total Sales
             new Promise((resolve, reject) => {
                 db.query(
-                    `SELECT COALESCE(SUM(total_price), 0) as totalSales 
+                    `SELECT COALESCE(SUM(subtotal), 0) as totalSales 
                     FROM invoice 
                     WHERE DATE(date) BETWEEN ? AND ? 
                     AND JobType_job_id = 1`,
@@ -508,7 +508,7 @@ exports.getCompleteMonthlyReport = async (req, res) => {
                         l.location_name,
                         l.branch_name,
                         COUNT(DISTINCT i.invoice_id) as total_orders,
-                        COALESCE(SUM(i.total_price), 0) as total_sales,
+                        COALESCE(SUM(i.subtotal), 0) as total_sales,
                         COALESCE(SUM(aph.paid_amount), 0) as total_collection
                     FROM location l
                     LEFT JOIN invoice i ON i.invoice_location = l.id 
@@ -531,7 +531,7 @@ exports.getCompleteMonthlyReport = async (req, res) => {
                 db.query(
                     `SELECT 
                         DATE(i.date) as transaction_date,
-                        COALESCE(SUM(i.total_price), 0) as sales_amount,
+                        COALESCE(SUM(i.subtotal), 0) as sales_amount,
                         COUNT(DISTINCT i.invoice_id) as invoice_count,
                         (
                             SELECT COALESCE(SUM(paid_amount), 0)
@@ -556,9 +556,9 @@ exports.getCompleteMonthlyReport = async (req, res) => {
                 db.query(
                     `SELECT 
                         i.invoice_id,
-                        i.total_price,
+                        i.subtotal as total_price,
                         COALESCE(SUM(aph.paid_amount), 0) as paid_amount,
-                        (i.total_price - COALESCE(SUM(aph.paid_amount), 0)) as pending_amount,
+                        (i.subtotal - COALESCE(SUM(aph.paid_amount), 0)) as pending_amount,
                         c.name as customer_name,
                         c.mobile
                     FROM invoice i
@@ -567,7 +567,7 @@ exports.getCompleteMonthlyReport = async (req, res) => {
                     WHERE DATE(i.date) BETWEEN ? AND ?
                     AND i.JobType_job_id = 1
                     AND i.payment_status_id = 1
-                    GROUP BY i.invoice_id, i.total_price, c.name, c.mobile
+                    GROUP BY i.invoice_id, i.subtotal, c.name, c.mobile
                     HAVING pending_amount > 0
                     ORDER BY pending_amount DESC
                     LIMIT 20`,
