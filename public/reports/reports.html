@@ -231,6 +231,7 @@
         border-bottom: 1px solid #e9eff5;
         font-size: 12px;
         letter-spacing: 0.3px;
+        white-space: nowrap;
       }
 
       .data-table td {
@@ -238,6 +239,7 @@
         border-bottom: 1px solid #f0f4fa;
         color: #2f405c;
         font-weight: 500;
+        white-space: nowrap;
       }
 
       .data-table tr:last-child td {
@@ -256,6 +258,10 @@
       .amount-negative {
         color: #b91c1c;
         font-weight: 600;
+      }
+
+      .method-col {
+        color: #40587c;
       }
 
       .footer-note {
@@ -351,7 +357,10 @@
       // Expected endpoints (to be implemented in your Express server):
       // GET /api/monthly-report/summary?yearMonth=2026-05
       // GET /api/monthly-report/payment-breakdown?yearMonth=2026-05
-      // GET /api/monthly-report/daily-trend?yearMonth=2026-05   (optional but useful)
+      // GET /api/monthly-report/daily-trend?yearMonth=2026-05
+      //   -> now also returns `paymentMethods` (array of every payment method
+      //      name) and each row in `data` includes a `payment_breakdown`
+      //      object keyed by payment method name.
 
       async function fetchMonthlySummary(yearMonth) {
         const response = await fetch(
@@ -378,8 +387,6 @@
       }
 
       // Render KPI + main report
-      // Replace the loadMonthlyReport function in your HTML with this updated version
-
       async function loadMonthlyReport(yearMonth) {
         const kpiContainer = document.getElementById("kpiContainer");
         const reportDetailsDiv = document.getElementById("reportDetails");
@@ -496,7 +503,7 @@
                 <div class="footer-note"><strong>Total Collected across methods:</strong> ${formatMoney(grandTotalCollected)}</div>
             </div>`;
 
-          // 3) Daily trend
+          // 3) Daily trend — Total Invoice Sales, one column per payment method, Total Collected, Difference
           let dailyHtml = "";
           try {
             const dailyResponse = await fetch(
@@ -514,6 +521,18 @@
             }
 
             if (dailyData && dailyData.length) {
+              // Full list of payment methods drives the columns — falls back to
+              // whatever keys are present on the first row if the backend
+              // didn't send `paymentMethods` explicitly.
+              const paymentMethodNames =
+                dailyResult.paymentMethods && dailyResult.paymentMethods.length
+                  ? dailyResult.paymentMethods
+                  : Object.keys(dailyData[0].payment_breakdown || {});
+
+              const methodHeaders = paymentMethodNames
+                .map((name) => `<th>${escapeHtml(name)}</th>`)
+                .join("");
+
               dailyHtml = `
                 <div class="report-card">
                     <div class="card-header">
@@ -522,16 +541,30 @@
                     <div class="table-wrapper">
                         <table class="data-table">
                             <thead>
-                                <tr><th>Date</th><th>Total Invoice Sales</th><th>Cash/Collected Amount</th><th>Difference (Pending)</th></tr>
+                                <tr>
+                                  <th>Date</th>
+                                  <th>Total Invoice Sales</th>
+                                  ${methodHeaders}
+                                  <th>Total Collected</th>
+                                  <th>Difference (Pending)</th>
+                                </tr>
                             </thead>
                             <tbody>
                 `;
               for (let day of dailyData) {
                 const diffDay =
                   (day.collected_amount || 0) - (day.sales_amount || 0);
+                const breakdown = day.payment_breakdown || {};
+                const methodCells = paymentMethodNames
+                  .map(
+                    (name) =>
+                      `<td class="method-col">${formatMoney(breakdown[name] || 0)}</td>`,
+                  )
+                  .join("");
                 dailyHtml += `<tr>
                         <td>${day.transaction_date}</td>
                         <td>${formatMoney(day.sales_amount || 0)}</td>
+                        ${methodCells}
                         <td class="amount-positive">${formatMoney(day.collected_amount || 0)}</td>
                         <td class="${diffDay >= 0 ? "amount-positive" : "amount-negative"}">${formatMoney(diffDay)}</td>
                     </tr>`;
@@ -539,7 +572,7 @@
               dailyHtml += `</tbody>
                         </table>
                     </div>
-                    <div class="footer-note">Daily variance helps track collection efficiency</div>
+                    <div class="footer-note">Columns reflect every active payment method · daily variance helps track collection efficiency</div>
                 </div>`;
             }
           } catch (e) {
@@ -648,181 +681,13 @@
       });
 
       // initial load
+      var today_date = new Date();
+      var year = today_date.getFullYear();
+      var month = String(today_date.getMonth() + 1).padStart(2, "0");
+      document.getElementById("reportMonth").value = `${year}-${month}`;
       const initialMonth =
-        document.getElementById("reportMonth").value || "2026-05";
+        document.getElementById("reportMonth").value;
       loadMonthlyReport(initialMonth);
     </script>
-
-    <!-- Backend implementation notes (Express.js) - complete code below -->
-    <!-- 
-    ===================  BACKEND (Express.js)  ===================
-    Add these routes to your server.js / routes files.
-    They will query your MySQL database according to the given schema.
--->
   </body>
 </html>
-
-<!-- 
-    ========================  EXPRESS.JS BACKEND ROUTES  ========================
-    Place the following code in your Express server (e.g., in routes/reports.js or server.js)
-    Ensure you have MySQL connection pool configured (db connection).
-    
-    These endpoints match the frontend fetch calls.
--->
-
-<!-- BACKEND CODE (Node.js + Express + MySQL)  
-================================================ -->
-<script style="display: none" type="text/javascript">
-  /* ==== ADD THIS TO YOUR EXPRESS APP ==== */
-
-  /*
-//   -------- 1. Import and setup (example) --------
-const express = require('express');
-const router = express.Router();
-const mysql = require('mysql2/promise');  // or your db util
-
-// Assume pool is created:
-// const pool = mysql.createPool({ host, user, password, database, ... });
-
-// =============== 2. MONTHLY REPORT SUMMARY ===============
-// GET /api/monthly-report/summary?yearMonth=2026-05
-router.get('/summary', async (req, res) => {
-    try {
-        const { yearMonth } = req.query;
-        if (!yearMonth) return res.status(400).json({ error: 'yearMonth required (YYYY-MM)' });
-        
-        const [year, month] = yearMonth.split('-');
-        const startDate = `${year}-${month}-01`;
-        const endDate = `${year}-${month}-31`;
-        
-        // 1) Total Sales: sum of (total_price - discount) from invoice table where payment_status_id = 2 (complete) or all? 
-        // Usually "total sales" = subtotal after discount. In invoice table total_price is final price after discount (check schema: total_price column).
-        // And we also have advance_payment, but total_price is final amount.
-        const [salesResult] = await pool.query(`
-            SELECT COALESCE(SUM(total_price), 0) as totalSales 
-            FROM invoice 
-            WHERE DATE(date) BETWEEN ? AND ? 
-              AND JobType_job_id = 1   -- shop orders (assuming 1 = shop orders, from jobtype table)
-        `, [startDate, endDate]);
-        
-        const totalSales = parseFloat(salesResult[0].totalSales) || 0;
-        
-        // 2) Total Orders count: number of invoices in that month (shop orders)
-        const [ordersResult] = await pool.query(`
-            SELECT COUNT(*) as orderCount 
-            FROM invoice 
-            WHERE DATE(date) BETWEEN ? AND ? 
-              AND JobType_job_id = 1
-        `, [startDate, endDate]);
-        const totalOrdersCount = ordersResult[0].orderCount || 0;
-        
-        // 3) Total Cash Collection: sum of payments from advance_payment_history + also direct payment_amount from invoice?
-        // According to schema: invoice.payment_amount stores partial payment? but advance_payment_history holds each payment entry.
-        // For total collection we sum all paid_amount in advance_payment_history within month (date between start/end)
-        // and also if any invoice has payment_amount column that represents instant payment? But consistent: all payments stored in advance_payment_history.
-        const [collectionResult] = await pool.query(`
-            SELECT COALESCE(SUM(paid_amount), 0) as totalCollected
-            FROM advance_payment_history
-            WHERE DATE(date) BETWEEN ? AND ?
-        `, [startDate, endDate]);
-        
-        const totalCashCollected = parseFloat(collectionResult[0].totalCollected) || 0;
-        
-        res.json({
-            totalSales,
-            totalOrdersCount,
-            totalCashCollected,
-            differenceVsSales: totalCashCollected - totalSales
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// =============== 3. PAYMENT BREAKDOWN BY METHOD ===============
-// GET /api/monthly-report/payment-breakdown?yearMonth=2026-05
-router.get('/payment-breakdown', async (req, res) => {
-    try {
-        const { yearMonth } = req.query;
-        if (!yearMonth) return res.status(400).json({ error: 'yearMonth missing' });
-        const [year, month] = yearMonth.split('-');
-        const startDate = `${year}-${month}-01`;
-        const endDate = `${year}-${month}-31`;
-        
-        // Join advance_payment_history with payment_method to get method name
-        const [rows] = await pool.query(`
-            SELECT 
-                pm.payment_name AS payment_method_name,
-                COALESCE(SUM(aph.paid_amount), 0) AS total_amount,
-                COUNT(DISTINCT aph.idadvance_payment_history) AS invoice_count
-            FROM advance_payment_history aph
-            JOIN payment_method pm ON aph.payment_method = pm.Payment_id
-            WHERE DATE(aph.date) BETWEEN ? AND ?
-            GROUP BY pm.Payment_id, pm.payment_name
-            ORDER BY total_amount DESC
-        `, [startDate, endDate]);
-        
-        res.json(rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// =============== 4. DAILY TREND (Sales vs Collection) ===============
-// GET /api/monthly-report/daily-trend?yearMonth=2026-05
-router.get('/daily-trend', async (req, res) => {
-    try {
-        const { yearMonth } = req.query;
-        if (!yearMonth) return res.status(400).json({ error: 'yearMonth missing' });
-        const [year, month] = yearMonth.split('-');
-        const startDate = `${year}-${month}-01`;
-        const endDate = `${year}-${month}-31`;
-        
-        // Daily sales aggregated from invoice table (total_price)
-        const [dailySales] = await pool.query(`
-            SELECT 
-                DATE(date) as transaction_date,
-                COALESCE(SUM(total_price), 0) as sales_amount
-            FROM invoice
-            WHERE DATE(date) BETWEEN ? AND ? AND JobType_job_id = 1
-            GROUP BY DATE(date)
-        `, [startDate, endDate]);
-        
-        // Daily collection from advance_payment_history
-        const [dailyCollection] = await pool.query(`
-            SELECT 
-                DATE(date) as transaction_date,
-                COALESCE(SUM(paid_amount), 0) as collected_amount
-            FROM advance_payment_history
-            WHERE DATE(date) BETWEEN ? AND ?
-            GROUP BY DATE(date)
-        `, [startDate, endDate]);
-        
-        // Merge both arrays by date
-        const map = new Map();
-        dailySales.forEach(s => { map.set(s.transaction_date, { sales_amount: s.sales_amount, collected_amount: 0 }); });
-        dailyCollection.forEach(c => {
-            const existing = map.get(c.transaction_date) || { sales_amount: 0, collected_amount: 0 };
-            existing.collected_amount = c.collected_amount;
-            map.set(c.transaction_date, existing);
-        });
-        
-        const result = Array.from(map.entries()).map(([date, vals]) => ({
-            transaction_date: date,
-            sales_amount: vals.sales_amount,
-            collected_amount: vals.collected_amount
-        })).sort((a,b) => new Date(a.transaction_date) - new Date(b.transaction_date));
-        
-        res.json(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Export router (if using separate file)
-// module.exports = router;
-*/
-</script>
