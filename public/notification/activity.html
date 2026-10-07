@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <title>OptiElite Dashboard | Light Theme</title>
+    <title>Activities | OptiElite</title>
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap"
       rel="stylesheet"
@@ -17,44 +17,18 @@
     />
 
     <!-- General CSS Files -->
-    <link
-      rel="stylesheet"
-      href="assets/modules/bootstrap/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css" />
-
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="assets/modules/jqvmap/dist/jqvmap.min.css" />
-    <link
-      rel="stylesheet"
-      href="assets/modules/summernote/summernote-bs4.css"
-    />
-    <link
-      rel="stylesheet"
-      href="assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css"
-    />
+    <link rel="stylesheet" href="/assets/modules/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css" />
 
     <!-- Template CSS -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/custom.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/custom.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
 
+    <style>
       :root {
         --sidebar-w: 260px;
         --topbar-h: 62px;
-        /* Light theme variables */
         --bg: #f5f7fb;
         --surface: #ffffff;
         --surface2: #f8f9fc;
@@ -68,7 +42,6 @@
         --text3: #94a3b8;
         --card-radius: 20px;
         --sidebar-bg: #ffffff;
-        --topbar-bg: #ffffffdd;
         --shadow-sm:
           0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
         --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.05);
@@ -194,6 +167,7 @@
       .nav-item:hover {
         color: var(--accent);
         background: var(--hover-bg);
+        text-decoration: none;
       }
       .nav-item.active::before {
         content: "";
@@ -289,7 +263,7 @@
         font-size: 13px;
       }
 
-      /* ── TOPBAR (light) ── */
+      /* ── TOPBAR ── */
       #topbar {
         position: fixed;
         top: 0;
@@ -333,7 +307,6 @@
         background: var(--hover-bg);
         color: var(--text);
       }
-
       @media (min-width: 992px) {
         #menu-toggle {
           display: none;
@@ -427,294 +400,14 @@
         font-weight: 800;
         color: var(--text);
         letter-spacing: -0.3px;
+        margin: 0;
       }
       .page-header p {
         font-size: 14px;
         color: var(--text2);
-        margin-top: 6px;
+        margin: 6px 0 0;
       }
 
-      .date-bar {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 28px;
-        animation: fadeUp 0.4s 0.05s ease both;
-      }
-      .date-bar label {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text2);
-        white-space: nowrap;
-      }
-      .date-input {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        color: var(--text);
-        font-size: 13px;
-        font-family: "DM Sans", sans-serif;
-        padding: 10px 15px;
-        outline: none;
-        cursor: pointer;
-        -webkit-appearance: none;
-        transition: all 0.2s;
-        box-shadow: var(--shadow-sm);
-      }
-      .date-input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
-      }
-
-      /* stat cards light */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-        gap: 18px;
-        margin-bottom: 32px;
-      }
-      .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--card-radius);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        animation: fadeUp 0.4s ease both;
-        transition: all 0.25s ease;
-        box-shadow: var(--shadow-sm);
-      }
-      .stat-card:active {
-        transform: scale(0.98);
-      }
-      .stat-card:hover {
-        border-color: rgba(44, 125, 160, 0.3);
-        box-shadow: var(--shadow-md);
-      }
-      .stat-card-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .stat-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-      .stat-icon.blue {
-        background: #eef2ff;
-        color: var(--accent);
-      }
-      .stat-icon.green {
-        background: #e6f7f4;
-        color: var(--accent2);
-      }
-      .stat-icon.orange {
-        background: #fff0e8;
-        color: var(--accent3);
-      }
-      .stat-icon.red {
-        background: #ffe8ea;
-        color: var(--accent4);
-      }
-      .stat-trend {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 40px;
-      }
-      .stat-trend.up {
-        background: #e6f7f4;
-        color: var(--accent2);
-      }
-      .stat-trend.down {
-        background: #ffe8ea;
-        color: var(--accent4);
-      }
-      .stat-value {
-        font-family: "Syne", sans-serif;
-        font-size: 30px;
-        font-weight: 800;
-        color: var(--text);
-        letter-spacing: -1px;
-        line-height: 1;
-      }
-      .stat-label {
-        font-size: 12px;
-        color: var(--text2);
-        font-weight: 500;
-      }
-
-      /* action cards light */
-      .actions-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-        gap: 18px;
-        margin-bottom: 32px;
-      }
-      .action-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--card-radius);
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        animation: fadeUp 0.4s ease both;
-        -webkit-tap-highlight-color: transparent;
-        box-shadow: var(--shadow-sm);
-      }
-      .action-card:active {
-        transform: scale(0.97);
-        background: var(--surface2);
-      }
-      .action-card:hover {
-        border-color: rgba(44, 125, 160, 0.4);
-        box-shadow: var(--shadow-md);
-      }
-      .action-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        flex-shrink: 0;
-      }
-      .action-icon.blue {
-        background: #eef2ff;
-        color: var(--accent);
-      }
-      .action-icon.green {
-        background: #e6f7f4;
-        color: var(--accent2);
-      }
-      .action-icon.orange {
-        background: #fff0e8;
-        color: var(--accent3);
-      }
-      .action-info {
-        flex: 1;
-      }
-      .action-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-      .action-desc {
-        font-size: 12px;
-        color: var(--text2);
-      }
-      .action-arrow {
-        color: var(--text3);
-        font-size: 14px;
-        transition: transform 0.2s;
-      }
-      .action-card:hover .action-arrow {
-        transform: translateX(4px);
-        color: var(--accent);
-      }
-
-      /* table section light */
-      .section-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--card-radius);
-        overflow: hidden;
-        animation: fadeUp 0.4s 0.42s ease both;
-        margin-bottom: 24px;
-        box-shadow: var(--shadow-sm);
-      }
-      .section-card-header {
-        padding: 18px 24px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: rgba(255, 255, 255, 0.5);
-      }
-      .section-card-header h3 {
-        font-family: "Syne", sans-serif;
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--text);
-      }
-      .view-all {
-        font-size: 12px;
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
-        -webkit-tap-highlight-color: transparent;
-        transition: opacity 0.2s;
-      }
-      .view-all:active {
-        opacity: 0.7;
-      }
-      .table-wrap {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-      }
-      thead th {
-        padding: 14px 24px;
-        text-align: left;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: var(--text3);
-        background: #fafcff;
-        white-space: nowrap;
-      }
-      tbody tr {
-        border-top: 1px solid var(--border);
-        transition: background 0.15s;
-      }
-      tbody tr:active {
-        background: var(--hover-bg);
-      }
-      tbody td {
-        padding: 14px 24px;
-        color: var(--text2);
-        white-space: nowrap;
-      }
-      tbody td:first-child {
-        color: var(--text);
-        font-weight: 600;
-      }
-      .badge {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 40px;
-      }
-      .badge-paid {
-        background: #e6f7f4;
-        color: var(--accent2);
-      }
-      .badge-unpaid {
-        background: #fff0e8;
-        color: var(--accent3);
-      }
-      .badge-pending {
-        background: #ffe8ea;
-        color: var(--accent4);
-      }
       .page-footer {
         padding: 20px 24px;
         font-size: 12px;
@@ -733,6 +426,7 @@
         text-decoration: none;
         font-weight: 500;
       }
+
       @keyframes fadeUp {
         from {
           opacity: 0;
@@ -743,37 +437,73 @@
           transform: translateY(0);
         }
       }
+
+      /* ── Cards / table: match the light theme (scoped to #main) ── */
+      #main .card {
+        border: 1px solid var(--border);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        animation: fadeUp 0.4s ease both;
+      }
+      #main .card-header h4 {
+        font-family: "Syne", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      #main .card-footer {
+        background: var(--surface);
+      }
+      #main .table thead th {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text3);
+        background: #fafcff;
+        white-space: nowrap;
+      }
+
+      /* ── Activity specific ── */
+      .act-avatar {
+        width: 38px;
+        height: 38px;
+        line-height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        text-align: center;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .act-text {
+        max-width: 420px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
       @media (max-width: 600px) {
         .page-content {
           padding: 20px 16px;
         }
-        .stat-value {
-          font-size: 24px;
-        }
-        .stats-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .actions-grid {
-          grid-template-columns: 1fr;
-        }
-        thead th,
-        tbody td {
-          padding: 12px 16px;
-        }
       }
     </style>
   </head>
-  <body onload="loadIndexPage()">
+
+  <body onload="loadActivities(1);">
     <div id="overlay"></div>
 
+    <!-- ── Sidebar ── -->
     <nav id="sidebar">
-      <a class="sidebar-logo" href="#">
+      <a class="sidebar-logo" href="/">
         <div class="sidebar-logo-icon"><i class="fas fa-chart-line"></i></div>
         <span class="sidebar-logo-text">OptiElite</span>
       </a>
       <div class="sidebar-section-label">Dashboard</div>
-      <a class="nav-item active" href="#">
+      <a class="nav-item" href="/">
         <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
         Admin Dashboard
       </a>
@@ -818,8 +548,8 @@
         <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
         Reports
       </a>
-      <a class="nav-item" href="/activities" onclick="closeSidebar()">
-        <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+      <a class="nav-item active" href="/activities" onclick="closeSidebar()">
+        <span class="nav-icon"><i class="fas fa-bolt"></i></span>
         Activities
       </a>
       <div class="sidebar-divider"></div>
@@ -835,11 +565,12 @@
       </div>
     </nav>
 
+    <!-- ── Topbar ── -->
     <header id="topbar">
       <button id="menu-toggle" aria-label="Toggle sidebar">
         <i class="fas fa-bars"></i>
       </button>
-      <div class="topbar-title">Dashboard</div>
+      <div class="topbar-title">Activities</div>
       <div class="topbar-actions">
         <div class="topbar-btn">
           <i class="far fa-envelope"></i><span class="dot"></span>
@@ -851,136 +582,128 @@
       </div>
     </header>
 
+    <!-- ── Main ── -->
     <main id="main">
       <div class="page-content">
         <div class="page-header">
-          <h1>Good Day, 👋</h1>
-          <p>Welcome to The OptiElites</p>
+          <h1>Activities</h1>
+          <p>Recent activity across all users and branches</p>
         </div>
 
-        <div class="date-bar">
-          <label for="startDate"
-            ><i
-              class="far fa-calendar-alt"
-              style="margin-right: 6px; color: var(--accent)"
-            ></i
-            >Select Date:</label
-          >
-          <input
-            type="date"
-            id="startDate"
-            class="date-input"
-            onchange="ChangeMonthForBranchStatus()"
-          />
-        </div>
-
-        <div id="render-target"></div>
-
-        <div class="actions-grid">
-          <a class="action-card" href="/customerRegister"
-            ><div class="action-icon blue">
-              <i class="fas fa-user-plus"></i>
+        <!-- Filter card -->
+        <div class="card">
+          <div class="card-header"><h4>Filter Activities</h4></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="a-search">Search (user or text)</label>
+                <input
+                  type="text"
+                  id="a-search"
+                  class="form-control"
+                  placeholder="User name or activity text"
+                />
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="a-priority">Priority</label>
+                <select id="a-priority" class="form-control">
+                  <option value="">All</option>
+                  <option value="1">High</option>
+                  <option value="2">Mid</option>
+                  <option value="3">Low</option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="a-date-from">Date From</label>
+                <input type="date" id="a-date-from" class="form-control" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="a-date-to">Date To</label>
+                <input type="date" id="a-date-to" class="form-control" />
+              </div>
             </div>
-            <div class="action-info">
-              <div class="action-title">Register Customer</div>
-              <div class="action-desc">Add a new customer to the system</div>
+            <div class="row">
+              <div class="col-12">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  style="margin-right: 8px"
+                  onclick="applyActivityFilters()"
+                >
+                  <i class="fas fa-search"></i> Search
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="resetActivityFilters()"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
-            <i class="fas fa-chevron-right action-arrow"></i
-          ></a>
-          <a
-            class="action-card"
-            href="#"
-            onclick="
-              GoBillManagement();
-              return false;
-            "
-            ><div class="action-icon green">
-              <i class="fas fa-file-invoice"></i>
-            </div>
-            <div class="action-info">
-              <div class="action-title">Invoice Management</div>
-              <div class="action-desc">Check and manage invoices</div>
-            </div>
-            <i class="fas fa-chevron-right action-arrow"></i
-          ></a>
-          <a class="action-card" href="/add_prescription"
-            ><div class="action-icon orange">
-              <i class="fas fa-prescription"></i>
-            </div>
-            <div class="action-info">
-              <div class="action-title">Add Prescription</div>
-              <div class="action-desc">Record a new prescription</div>
-            </div>
-            <i class="fas fa-chevron-right action-arrow"></i
-          ></a>
-        </div>
-
-        <div class="section-card">
-          <div class="section-card-header">
-            <h3>Recent Invoices</h3>
-            <a
-              href="#"
-              class="view-all"
-              onclick="
-                GoBillManagement();
-                return false;
-              "
-              >View All →</a
-            >
           </div>
-          <!-- <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Invoice ID</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>INV-87239</td>
-                  <td>Kusnaedi</td>
-                  <td>May 01, 2026</td>
-                  <td>LKR 4,500</td>
-                  <td><span class="badge badge-unpaid">Unpaid</span></td>
-                </tr>
-                <tr>
-                  <td>INV-48574</td>
-                  <td>Hasan Basri</td>
-                  <td>May 02, 2026</td>
-                  <td>LKR 8,200</td>
-                  <td><span class="badge badge-paid">Paid</span></td>
-                </tr>
-                <tr>
-                  <td>INV-76824</td>
-                  <td>M. Nuruzzaki</td>
-                  <td>May 03, 2026</td>
-                  <td>LKR 3,800</td>
-                  <td><span class="badge badge-pending">Pending</span></td>
-                </tr>
-                <tr>
-                  <td>INV-84990</td>
-                  <td>Agung A.</td>
-                  <td>May 04, 2026</td>
-                  <td>LKR 12,000</td>
-                  <td><span class="badge badge-unpaid">Unpaid</span></td>
-                </tr>
-                <tr>
-                  <td>INV-87320</td>
-                  <td>Ardian R.</td>
-                  <td>May 05, 2026</td>
-                  <td>LKR 6,750</td>
-                  <td><span class="badge badge-paid">Paid</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div> -->
         </div>
-        <div id="render-target"></div>
+
+        <!-- Activity table card -->
+        <div class="card">
+          <div class="card-header">
+            <h4>Activity Log</h4>
+            <div class="card-header-action">
+              <span class="badge badge-light" id="a-total">0 activities</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Branch</th>
+                    <th>Priority</th>
+                    <th>Date</th>
+                    <th>Activity</th>
+                  </tr>
+                </thead>
+                <tbody id="activity-table-body">
+                  <tr>
+                    <td colspan="7" class="text-center">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="card-footer d-flex justify-content-between align-items-center"
+          >
+            <small class="text-muted" id="a-page-info"></small>
+            <div>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                id="a-prev"
+                onclick="changeActivityPage(-1)"
+              >
+                <i class="fas fa-chevron-left"></i> Prev
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                id="a-next"
+                onclick="changeActivityPage(1)"
+              >
+                Next <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
       <footer class="page-footer">
         <span
           >Copyright &copy; 2026 — Design By
@@ -989,6 +712,7 @@
       </footer>
     </main>
 
+    <!-- Sidebar toggle -->
     <script>
       var sidebar = document.getElementById("sidebar");
       var overlay = document.getElementById("overlay");
@@ -1024,53 +748,23 @@
           if (window.innerWidth < 992) closeSidebar();
         });
       });
-
-      (function () {
-        var d = new Date();
-        var pad = function (n) {
-          return n < 10 ? "0" + n : n;
-        };
-        var dateInput = document.getElementById("startDate");
-        if (dateInput)
-          dateInput.value =
-            d.getFullYear() +
-            "-" +
-            pad(d.getMonth() + 1) +
-            "-" +
-            pad(d.getDate());
-      })();
-
-      function loadIndexPage() {
-        console.log("loadIndexPage ready");
-      }
-      function ChangeMonthForBranchStatus() {
-        console.log(
-          "date changed",
-          document.getElementById("startDate")?.value,
-        );
-      }
-      function GoAddBillPage() {
-        alert("⚡ Add Invoice flow — integrate your billing logic");
-      }
-      function GoBillManagement() {
-        alert("📄 Invoice Management — connect to your management panel");
-      }
     </script>
-    <script src="assets/modules/jquery.min.js"></script>
-    <script src="assets/modules/popper.js"></script>
-    <script src="assets/modules/tooltip.js"></script>
-    <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
-    <script src="assets/modules/moment.min.js"></script>
-    <script src="assets/js/OptiElite.js"></script>
-    <script src="assets/modules/jquery.sparkline.min.js"></script>
-    <script src="assets/modules/chart.min.js"></script>
-    <script src="assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
-    <script src="assets/modules/summernote/summernote-bs4.js"></script>
-    <script src="assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
-    <script src="assets/js/page/index.js"></script>
-    <script src="assets/js/mainscript.js"></script>
-    <script src="assets/js/scripts.js"></script>
-    <script src="assets/js/custom.js"></script>
+
+    <!-- General JS Scripts -->
+    <script src="/assets/modules/jquery.min.js"></script>
+    <script src="/assets/modules/popper.js"></script>
+    <script src="/assets/modules/tooltip.js"></script>
+    <script src="/assets/modules/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="/assets/modules/moment.min.js"></script>
+    <script src="/assets/js/OptiElite.js"></script>
+
+    <!-- Page scripts (mainscript.js provides GoAddBillPage / GoBillManagement) -->
+    <script src="/assets/js/mainscript.js"></script>
+    <script src="/assets/js/activity.js"></script>
+
+    <!-- Template JS File -->
+    <script src="/assets/js/scripts.js"></script>
+    <script src="/assets/js/custom.js"></script>
   </body>
 </html>

@@ -2,24 +2,65 @@ const getAppDb = require("../db/appDb");
 const path = require("path");
 
 const fetchAllBills = async (req, res) => {
-  const db = getAppDb(req.session.user.db_name); // ✅ moved inside
-  console.log("Fetch All Bills");
+  const db = getAppDb(req.session.user.db_name);
+  console.log("Fetch All Bills", req.query);
+
+  const { invoiceId, customerName, mobile, dateFrom, dateTo, status } = req.query;
+
+  const where = [];
+  const params = [];
+
+  if (invoiceId && invoiceId.trim()) {
+    where.push("`invoice`.`invoice_id` LIKE ?");
+    params.push(`%${invoiceId.trim()}%`);
+  }
+
+  if (customerName && customerName.trim()) {
+    where.push("`customer`.`name` LIKE ?");
+    params.push(`%${customerName.trim()}%`);
+  }
+
+  if (mobile && mobile.trim()) {
+    where.push("`customer`.`mobile` LIKE ?");
+    params.push(`%${mobile.trim()}%`);
+  }
+
+  // invoice.date is VARCHAR, so convert it before comparing
+  if (dateFrom) {
+    where.push("STR_TO_DATE(`invoice`.`date`, '%Y-%m-%d') >= ?");
+    params.push(dateFrom);
+  }
+  if (dateTo) {
+    where.push("STR_TO_DATE(`invoice`.`date`, '%Y-%m-%d') <= ?");
+    params.push(dateTo);
+  }
+
+  // status: "pending" -> 1, "complete" -> 2, anything else -> all
+  if (status === "pending") {
+    where.push("`invoice`.`payment_status_id` = ?");
+    params.push(1);
+  } else if (status === "complete") {
+    where.push("`invoice`.`payment_status_id` = ?");
+    params.push(2);
+  }
+
+  const sql =
+    "SELECT * FROM `invoice` " +
+    "INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` " +
+    (where.length ? "WHERE " + where.join(" AND ") + " " : "") +
+    "ORDER BY `invoice`.`date` DESC, `invoice`.`order_time` DESC";
 
   try {
     const results = await new Promise((resolve, reject) => {
-      db.query(
-        "SELECT * FROM `invoice` INNER JOIN `customer` ON `customer`.`mobile` = `invoice`.`customer_mobile` ORDER BY `invoice`.`date` DESC",
-        (err, result) => {
-          db.end();
-          if (err) return reject(err);
-          resolve(result);
-        }
-      );
+      db.query(sql, params, (err, result) => {
+        db.end();
+        if (err) return reject(err);
+        resolve(result);
+      });
     });
 
     if (results.length === 0) return res.json("No Result");
     res.json(results);
-
   } catch (err) {
     console.error("Error fetching bills:", err);
     res.status(500).json({ error: "Server error" });

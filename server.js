@@ -14,6 +14,8 @@ const customerRoutes = require("./routes/customerRoutes");
 const stockRoutes = require("./routes/stockRoutes");
 const prescriptionRoutes = require("./routes/prescriptionRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const activityRoutes = require("./routes/activityRoutes");
+const { ActivityPage } = require("./controllers/activityController");
 
 // --- Middleware ---
 app.use(cors());
@@ -41,6 +43,8 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/prescription", prescriptionRoutes);
 app.use("/api", reportRoutes);
+app.use("/api/activity", activityRoutes); //API
+app.get("/activities", ActivityPage);     // page
 
 // --- Page Routes ---
 app.get("/", (req, res) => {

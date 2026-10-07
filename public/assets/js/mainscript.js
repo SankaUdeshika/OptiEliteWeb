@@ -380,87 +380,184 @@ async function ChangeMonthForBranchStatus() {
   }
 }
 
-async function loadBills() {
-  const result = await fetch("api/bill/bills", {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-  });
+// ----------------------------------------------------------------------------------
+// Bills: helpers, load (with filters), filter actions
+// ----------------------------------------------------------------------------------
 
-  if (result.ok) {
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function billsMessageRow(html) {
+  return `<tr><td colspan="7" class="text-center">${html}</td></tr>`;
+}
+
+async function loadBills(filters = {}) {
+  const tableBody = document.getElementById("sortable-table-body");
+
+  // show spinner (also clears old rows)
+  tableBody.innerHTML = billsMessageRow(
+    `<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>`,
+  );
+
+  // drop empty filters so the URL stays clean
+  const clean = Object.fromEntries(
+    Object.entries(filters).filter(([, v]) => v !== "" && v != null),
+  );
+  const qs = new URLSearchParams(clean).toString();
+
+  try {
+    const result = await fetch("api/bill/bills" + (qs ? "?" + qs : ""), {
+      method: "GET",
+      headers: { "Content-type": "application/json" },
+    });
+
+    if (!result.ok) throw new Error("HTTP " + result.status);
+
     const response = await result.json();
 
-    const tableBody = document.getElementById("sortable-table-body");
+    // backend sends the string "No Result" when nothing matches
+    if (!Array.isArray(response) || response.length === 0) {
+      tableBody.innerHTML = billsMessageRow(
+        `<span class="text-muted">No invoices found</span>`,
+      );
+      return;
+    }
 
-    response.forEach((bill) => {
-      const {
-        invoice_id: invoiceId,
-        name: customerName,
-        total_price: totalAmount,
-        subtotal: subTotal,
-        payment_amount: payAmount,
-        date,
-        payment_status_id: status,
-        invoice_location: billLocation,
-      } = bill;
+    const rows = response
+      .map((bill) => {
+        const {
+          invoice_id: invoiceId,
+          name: customerName,
+          subtotal: subTotal,
+          payment_amount: payAmount,
+          date,
+          payment_status_id: status,
+        } = bill;
 
-      const payingPercentage = (payAmount / subTotal) * 100;
-      var Percentage = Math.round(payingPercentage * 100) / 100;
+        const sub = parseFloat(subTotal);
+        const paid = parseFloat(payAmount);
+        const percentage =
+          sub > 0 && isFinite(paid)
+            ? Math.round((paid / sub) * 100 * 100) / 100
+            : NaN;
 
-      let bgColor, color, avatar;
+        let bgColor, color, avatar;
 
-      // Define thresholds and related properties
-      if (Percentage <= 100 && Percentage >= 75) {
-        bgColor = "bg-success";
-        color = "success";
-        avatar = "assets/img/avatar/avatar-2.png";
-      } else if (Percentage < 75 && Percentage >= 35) {
-        bgColor = "bg-warning";
-        color = "warning";
-        avatar = "assets/img/avatar/avatar-4.png";
-      } else if (Percentage < 35) {
-        bgColor = "bg-danger";
-        color = "danger";
-        avatar = "assets/img/avatar/avatar-5.png";
-      } else {
-        bgColor = "bg-secondary";
-        color = "secondary";
-        avatar = "assets/img/avatar/avatar-1.png";
-      }
+        if (percentage <= 100 && percentage >= 75) {
+          bgColor = "bg-success";
+          color = "success";
+          avatar = "assets/img/avatar/avatar-2.png";
+        } else if (percentage < 75 && percentage >= 35) {
+          bgColor = "bg-warning";
+          color = "warning";
+          avatar = "assets/img/avatar/avatar-4.png";
+        } else if (percentage < 35) {
+          bgColor = "bg-danger";
+          color = "danger";
+          avatar = "assets/img/avatar/avatar-5.png";
+        } else {
+          // NaN or more than 100%
+          bgColor = "bg-secondary";
+          color = "secondary";
+          avatar = "assets/img/avatar/avatar-1.png";
+        }
 
-      const rowHtml = `
-              <tr>
-                <td>
-                  <div class="sort-handler">
-                    <i class="fas fa-th"></i>
-                  </div>
-                </td>
-                <td>${invoiceId}</td>
-                <td class="align-middle">
-                  <div class="progress" data-height="4" data-toggle="tooltip" title="${payingPercentage}%">
-                    <div class="progress-bar  ${bgColor}" role="progressbar" style="width: ${payingPercentage}%" aria-valuenow="${payingPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </td>
-                <td>
-                  <img alt="image" src="${avatar}"
-                    class="rounded-circle" width="35"
-                    data-toggle="tooltip" title="${customerName}" />
-                    <span>${customerName}</span>
-                </td>
-                <td>${date}</td>
-                <td><div class="badge badge-${color}">${
-                  status == 1 ? "Pending" : "Complete"
-                }</div></td>
-                <td><a href="#" class="btn btn-secondary" onclick="ViewBill(${invoiceId})" >Detail</a></td>
-              </tr>
-              `;
+        const barWidth = isNaN(percentage)
+          ? 0
+          : Math.min(Math.max(percentage, 0), 100);
+        const label = isNaN(percentage) ? "N/A" : percentage + "%";
 
-      tableBody.insertAdjacentHTML("beforeend", rowHtml);
-    });
-    document.getElementById("loading-row").remove();
-  } else {
-    console.log("Error fetching bills");
+        const safeId = escapeHtml(invoiceId);
+        const safeName = escapeHtml(customerName);
+
+        return `
+          <tr>
+            <td>
+              <div class="sort-handler"><i class="fas fa-th"></i></div>
+            </td>
+            <td>${safeId}</td>
+            <td class="align-middle">
+              <div class="progress" data-height="4" data-toggle="tooltip" title="${label}">
+                <div class="progress-bar ${bgColor}" role="progressbar"
+                  style="width: ${barWidth}%"
+                  aria-valuenow="${barWidth}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </td>
+            <td>
+              <img alt="image" src="${avatar}" class="rounded-circle" width="35"
+                data-toggle="tooltip" title="${safeName}" />
+              <span>${safeName}</span>
+            </td>
+            <td>${escapeHtml(date)}</td>
+            <td><div class="badge badge-${color}">${status == 1 ? "Pending" : "Complete"}</div></td>
+            <td><a href="#" class="btn btn-secondary" onclick="ViewBill('${safeId}'); return false;">Detail</a></td>
+          </tr>`;
+      })
+      .join("");
+
+    tableBody.innerHTML = rows;
+
+    // re-init tooltips for the new rows (if the tooltip plugin is loaded)
+    if (window.jQuery && jQuery.fn.tooltip) {
+      jQuery('[data-toggle="tooltip"]').tooltip();
+    }
+  } catch (err) {
+    console.error("Error fetching bills:", err);
+    tableBody.innerHTML = billsMessageRow(
+      `<span class="text-danger">Failed to load invoices</span>`,
+    );
   }
 }
+
+function getBillFilters() {
+  return {
+    invoiceId: document.getElementById("f-invoice-id").value.trim(),
+    customerName: document.getElementById("f-customer-name").value.trim(),
+    mobile: document.getElementById("f-mobile").value.trim(),
+    status: document.getElementById("f-status").value,
+    dateFrom: document.getElementById("f-date-from").value,
+    dateTo: document.getElementById("f-date-to").value,
+  };
+}
+
+function applyBillFilters() {
+  const f = getBillFilters();
+  if (f.dateFrom && f.dateTo && f.dateFrom > f.dateTo) {
+    alert("'Date From' cannot be after 'Date To'");
+    return;
+  }
+  loadBills(f);
+}
+
+function resetBillFilters() {
+  [
+    "f-invoice-id",
+    "f-customer-name",
+    "f-mobile",
+    "f-status",
+    "f-date-from",
+    "f-date-to",
+  ].forEach((id) => (document.getElementById(id).value = ""));
+  loadBills();
+}
+
+// press Enter in any text box to search
+document.addEventListener("DOMContentLoaded", () => {
+  ["f-invoice-id", "f-customer-name", "f-mobile"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") applyBillFilters();
+      });
+    }
+  });
+});
 
 // Page Redirects
 async function Openinvoice() {
