@@ -5,7 +5,8 @@ const fetchAllBills = async (req, res) => {
   const db = getAppDb(req.session.user.db_name);
   console.log("Fetch All Bills", req.query);
 
-  const { invoiceId, customerName, mobile, dateFrom, dateTo, status } = req.query;
+  const { invoiceId, customerName, mobile, dateFrom, dateTo, status } =
+    req.query;
 
   const where = [];
   const params = [];
@@ -100,13 +101,12 @@ const LoadBill = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading bill:", err);
     res.status(500).json({ error: "Server error" });
@@ -140,13 +140,12 @@ const loadStockItems = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading bill items:", err);
     res.status(500).json({ error: "Server error" });
@@ -167,13 +166,12 @@ const loadLensStock = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading lens stock:", err);
     res.status(500).json({ error: "Server error" });
@@ -193,13 +191,12 @@ const loadPaymentHistory = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading payment history:", err);
     res.status(500).json({ error: "Server error" });
@@ -220,13 +217,12 @@ const fetchBillActions = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error fetching bill actions:", err);
     res.status(500).json({ error: "Server error" });
@@ -263,13 +259,12 @@ const loadCompanyHeaderData = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading company header data:", err);
     res.status(500).json({ error: "Server error" });
@@ -295,16 +290,215 @@ const loadCompanystocks = async (req, res) => {
           db.end();
           if (err) return reject(err);
           resolve(result);
-        }
+        },
       );
     });
 
     if (result.length === 0) return res.json("No Result");
     res.json(result);
-
   } catch (err) {
     console.error("Error loading company stocks:", err);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+const _round2 = (v) => Math.round((Number(v) || 0) * 100) / 100;
+const _fmtDate = (d) => {
+  if (!(d instanceof Date)) return d ? String(d) : "";
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+// GET /api/bill/bills/details/:id
+// One call = invoice + customer + prescription + items + lens + payment terms
+const getBillDetails = async (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Not logged in" });
+  }
+  const db = getAppDb(req.session.user.db_name);
+  const invoiceId = req.params.id;
+  const q = (sql, params = []) =>
+    new Promise((resolve, reject) =>
+      db.query(sql, params, (err, result) =>
+        err ? reject(err) : resolve(result),
+      ),
+    );
+
+  try {
+    // 1. invoice + customer + status + location
+    const inv = await q(
+      "SELECT i.*, c.name AS customer_name, c.email AS customer_email, " +
+        "c.address_line1, c.address_line2, c.mobile2, c.telephone_land, c.nic, " +
+        "ps.status_name, l.location_name " +
+        "FROM invoice i " +
+        "INNER JOIN customer c ON c.mobile = i.customer_mobile " +
+        "LEFT JOIN payment_status ps ON ps.id = i.payment_status_id " +
+        "LEFT JOIN location l ON l.id = i.invoice_location " +
+        "WHERE i.invoice_id = ?",
+      [invoiceId],
+    );
+    if (!inv.length)
+      return res.status(404).json({ error: "Invoice not found" });
+    const i = inv[0];
+
+    // 2. prescription (only when the invoice has one)
+    let prescription = null;
+    const jobNo = i.prescription_details_job_no;
+    if (jobNo !== null && jobNo !== undefined && String(jobNo).trim() !== "") {
+      const pr = await q(
+        "SELECT * FROM prescription_details WHERE job_no = ?",
+        [jobNo],
+      );
+      if (pr.length) {
+        const p = pr[0];
+        prescription = {
+          jobNo: p.job_no,
+          date: _fmtDate(p.prescripiton_date),
+          right: {
+            sph: p.R_SPH,
+            cyl: p.R_CYL,
+            axis: p.R_Axis,
+            add: p.R_Addition,
+            dva: p.R_DVA,
+            nva: p.R_NVA,
+            pd: p.R_M_PD,
+            height: p.R_HEIGHT,
+          },
+          left: {
+            sph: p.L_SPH,
+            cyl: p.L_CYL,
+            axis: p.L_Axis,
+            add: p.L_Addition,
+            dva: p.L_DVA,
+            nva: p.L_NVA,
+            pd: p.L_M_PD,
+            height: p.L_HEIGHT,
+          },
+        };
+      }
+    }
+
+    // 3. frame / product items
+    const itemRows = await q(
+      "SELECT `invoice_item`.`stock_id`, `invoice_item`.`qty`, `stock`.`saling_price`, " +
+        "`product_id`, `product_name`, `sub_category`, `brand_name` " +
+        "FROM `invoice_item` " +
+        "INNER JOIN `stock` ON `stock`.`id` = `invoice_item`.`stock_id` " +
+        "INNER JOIN `product` ON `product`.`intid` = `stock`.`product_intid` " +
+        "INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id` " +
+        "INNER JOIN `brand` ON `brand`.`id` = `product`.`brand_id` " +
+        "WHERE `invoice_item`.`invoice_id` = ?",
+      [invoiceId],
+    );
+    const single = itemRows.length === 1;
+    const items = itemRows.map((r) => {
+      const qty = Number(r.qty) || 1;
+      // the invoice keeps its own saved frame price (stock price may have changed later)
+      const unit =
+        single && Number(i.frame_total) > 0
+          ? Number(i.frame_total) / qty
+          : Number(r.saling_price) || 0;
+      return {
+        stockId: r.stock_id,
+        name: `${r.product_name || ""}`.trim(),
+        productCode: r.product_id,
+        brand: r.brand_name,
+        category: r.sub_category,
+        qty,
+        unitPrice: _round2(unit),
+        lineTotal: _round2(unit * qty),
+      };
+    });
+
+    // 4. lens
+    let lens = null;
+    if (i.lens_stock_lens_id) {
+      const l = await q(
+        "SELECT ls.lens_code, ls.lens_price, s.Supplier_Name " +
+          "FROM lens_stock ls LEFT JOIN supplier s ON s.supplier_id = ls.supplier_id " +
+          "WHERE ls.lens_id = ?",
+        [i.lens_stock_lens_id],
+      );
+      const qty = Number(i.lens_Qty) || 0;
+      const unit = l.length ? Number(l[0].lens_price) || 0 : 0;
+      lens = {
+        lensId: i.lens_stock_lens_id,
+        code: l.length ? l[0].lens_code : "",
+        supplier: l.length ? l[0].Supplier_Name : "",
+        qty,
+        unitPrice: unit,
+        lineTotal:
+          Number(i.lenstotal) > 0 ? _round2(i.lenstotal) : _round2(unit * qty),
+      };
+    }
+
+    // 5. payment terms (advance_payment_history)
+    const payRows = await q(
+      "SELECT a.idadvance_payment_history AS id, a.date, a.time, a.paid_amount, " +
+        "COALESCE(pm.payment_name, a.payment_method) AS method " +
+        "FROM advance_payment_history a " +
+        "LEFT JOIN payment_method pm ON pm.Payment_id = a.payment_method " +
+        "WHERE a.invoice_invoice_id = ? ORDER BY a.date, a.time",
+      [invoiceId],
+    );
+    const payments = payRows.map((r) => ({
+      id: r.id,
+      date: _fmtDate(r.date),
+      time: r.time ? String(r.time).slice(0, 5) : "",
+      amount: Number(r.paid_amount) || 0,
+      method:
+        r.method === null || r.method === undefined ? "" : String(r.method),
+    }));
+    const paidHistory = _round2(payments.reduce((s, p) => s + p.amount, 0));
+
+    // 6. totals (invoice.subtotal is the net amount after discount)
+    const net = _round2(i.subtotal);
+    const discount = _round2(i.discount);
+    const due = _round2(i.total_price);
+
+    res.json({
+      invoice: {
+        id: i.invoice_id,
+        date: _fmtDate(i.date),
+        status: i.status_name || "",
+        statusId: i.payment_status_id,
+        location: i.location_name || "",
+        deliveryDate: _fmtDate(i.delivery_date),
+        deliveryTime: i.delivery_time
+          ? String(i.delivery_time).slice(0, 5)
+          : "",
+      },
+      customer: {
+        name: i.customer_name,
+        mobile: i.customer_mobile,
+        mobile2: i.mobile2,
+        landline: i.telephone_land,
+        email: i.customer_email,
+        nic: i.nic,
+        address: [i.address_line1, i.address_line2].filter(Boolean).join(", "),
+      },
+      prescription,
+      items,
+      lens,
+      payments,
+      totals: {
+        gross: _round2(net + discount),
+        discount,
+        discountPercentage: i.discount_percentage
+          ? String(i.discount_percentage).trim()
+          : "",
+        net,
+        paid: paidHistory,
+        due,
+        // true when the saved due amount does not match net - payment history
+        dueMismatch: Math.abs(_round2(net - paidHistory) - due) > 0.01,
+      },
+    });
+  } catch (err) {
+    console.error("getBillDetails:", err);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    db.end();
   }
 };
 
@@ -319,4 +513,5 @@ module.exports = {
   fetchInvoiceDetails,
   loadCompanyHeaderData,
   loadCompanystocks,
+  getBillDetails,
 };

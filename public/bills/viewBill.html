@@ -1,826 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
-      name="viewport"
-    />
-    <title>Manage Bills &mdash; OptiElite</title>
-
-    <!-- General CSS Files -->
-    <link
-      rel="stylesheet"
-      href="/assets/modules/bootstrap/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css" />
-
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="/assets/modules/jqvmap/dist/jqvmap.min.css" />
-    <link
-      rel="stylesheet"
-      href="/assets/modules/summernote/summernote-bs4.css"
-    />
-    <link
-      rel="stylesheet"
-      href="/assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="/assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css"
-    />
-
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="stylesheet" href="/assets/css/custom.css" />
-    <link rel="stylesheet" href="/assets/css/components.css" />
-
-    <!-- Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "UA-94034622-3");
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Invoice Details | OptiElite</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/optielite-layout.css" />
   </head>
+  <body>
+    <div id="overlay"></div>
 
-  <body onload="fetchInvoiceDetails()">
-    <div id="app">
-      <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
+    <!-- ═════════ SIDEBAR ═════════ -->
+    <nav id="sidebar">
+      <a class="sidebar-logo" href="/">
+        <div class="sidebar-logo-icon"><i class="fas fa-chart-line"></i></div>
+        <span class="sidebar-logo-text">OptiElite</span>
+      </a>
 
-        <!-- NAVBAR -->
-        <nav class="navbar navbar-expand-lg main-navbar">
-          <!-- Search Bar -->
-          <form class="form-inline mr-auto">
-            <ul class="navbar-nav mr-3">
-              <li>
-                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg">
-                  <i class="fas fa-bars"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  data-toggle="search"
-                  class="nav-link nav-link-lg d-sm-none"
-                >
-                  <i class="fas fa-search"></i>
-                </a>
-              </li>
-            </ul>
-            <div class="search-element">
-              <input
-                class="form-control"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-                data-width="250"
-              />
-              <button class="btn" type="submit">
-                <i class="fas fa-search"></i>
-              </button>
-              <div class="search-backdrop"></div>
-              <div class="search-result">
-                <div class="search-header">Histories</div>
-                <div class="search-item">
-                  <a href="#" onclick="fetchUsers();">
-                    How to hack NASA using CSS
-                  </a>
-                  <a href="#" class="search-close">
-                    <i class="fas fa-times"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </form>
+      <div class="sidebar-section-label">Dashboard</div>
+      <a class="nav-item" href="/">
+        <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+        Admin Dashboard
+      </a>
 
-          <!-- Right Nav -->
-          <ul class="navbar-nav navbar-right">
-            <li class="dropdown">
-              <a
-                href="#"
-                data-toggle="dropdown"
-                class="nav-link dropdown-toggle nav-link-lg nav-link-user"
-              >
-                <img
-                  alt="image"
-                  src="assets/img/avatar/avatar-1.png"
-                  class="rounded-circle mr-1"
-                />
-                <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Logged in 5 min ago</div>
-                <a href="features-profile.html" class="dropdown-item has-icon">
-                  <i class="far fa-user"></i> Profile
-                </a>
-                <a
-                  href="features-activities.html"
-                  class="dropdown-item has-icon"
-                >
-                  <i class="fas fa-bolt"></i> Activities
-                </a>
-                <a href="features-settings.html" class="dropdown-item has-icon">
-                  <i class="fas fa-cog"></i> Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item has-icon text-danger">
-                  <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-              </div>
-            </li>
-          </ul>
-        </nav>
+      <div class="sidebar-section-label">Actions</div>
+      <a class="nav-item" href="/add_bill">
+        <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
+        Add Invoice
+      </a>
+      <a class="nav-item active" href="/manage_bills">
+        <span class="nav-icon"><i class="fas fa-list-ul"></i></span>
+        Invoice Management
+      </a>
 
-        <!-- SIDEBAR -->
-        <div class="main-sidebar sidebar-style-2">
-          <aside id="sidebar-wrapper">
-            <div class="sidebar-brand">
-                 <a href="/">OptiElites</a>
-            </div>
-            <ul class="sidebar-menu">
-              <li class="menu-header">Dashboard</li>
-              <li class="dropdown active">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-fire"></i><span>Dashboard</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="index-0.html"
-                      >General Dashboard</a
-                    >
-                  </li>
-                  <li class="active">
-                     <a class="nav-link" href="/"
-                      >Admin Dashboard</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-header">Actions</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"
-                  ><i class="fas fa-columns"></i>
-                  <span>Invoice / Bills</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" onclick="UpdateBills();"
-                      >Update Bills</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="layout-transparent.html"
-                      >Add Bills</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" onclick="GoBillManagement();"
-                      >Bill Management</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a class="nav-link" href="blank.html"
-                  ><i class="far fa-square"></i> <span>Blank Page</span></a
-                >
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-th"></i> <span>Bootstrap</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="bootstrap-alert.html">Alert</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-badge.html">Badge</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-breadcrumb.html"
-                      >Breadcrumb</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-buttons.html"
-                      >Buttons</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-card.html">Card</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-carousel.html"
-                      >Carousel</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-collapse.html"
-                      >Collapse</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-dropdown.html"
-                      >Dropdown</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-form.html">Form</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-list-group.html"
-                      >List Group</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-media-object.html"
-                      >Media Object</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-modal.html">Modal</a>
-                  </li>
-                  <li><a class="nav-link" href="bootstrap-nav.html">Nav</a></li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-navbar.html">Navbar</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-pagination.html"
-                      >Pagination</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-popover.html"
-                      >Popover</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-progress.html"
-                      >Progress</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-table.html">Table</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-tooltip.html"
-                      >Tooltip</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="bootstrap-typography.html"
-                      >Typography</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-header">OptiElite</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-th-large"></i> <span>Customer</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="components-article.html"
-                      >Article</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar"
-                      href="components-avatar.html"
-                      >Avatar</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-chat-box.html"
-                      >Chat Box</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar"
-                      href="components-empty-state.html"
-                      >Empty State</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-gallery.html"
-                      >Gallery</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar"
-                      href="components-hero.html"
-                      >Hero</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-multiple-upload.html"
-                      >Multiple Upload</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar"
-                      href="components-pricing.html"
-                      >Pricing</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-statistic.html"
-                      >Statistic</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-tab.html">Tab</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-table.html">Table</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="components-user.html">User</a>
-                  </li>
-                  <li>
-                    <a
-                      class="nav-link beep beep-sidebar"
-                      href="components-wizard.html"
-                      >Wizard</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="far fa-file-alt"></i> <span>Forms</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="forms-advanced-form.html"
-                      >Advanced Form</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="forms-editor.html">Editor</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="forms-validation.html"
-                      >Validation</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-map-marker-alt"></i>
-                  <span>Google Maps</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="gmaps-advanced-route.html">Advanced Route</a>
-                  </li>
-                  <li>
-                    <a href="gmaps-draggable-marker.html">Draggable Marker</a>
-                  </li>
-                  <li><a href="gmaps-geocoding.html">Geocoding</a></li>
-                  <li><a href="gmaps-geolocation.html">Geolocation</a></li>
-                  <li><a href="gmaps-marker.html">Marker</a></li>
-                  <li>
-                    <a href="gmaps-multiple-marker.html">Multiple Marker</a>
-                  </li>
-                  <li><a href="gmaps-route.html">Route</a></li>
-                  <li><a href="gmaps-simple.html">Simple</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-plug"></i> <span>Modules</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="modules-calendar.html"
-                      >Calendar</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-chartjs.html">ChartJS</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-datatables.html"
-                      >DataTables</a
-                    >
-                  </li>
-                  <li><a class="nav-link" href="modules-flag.html">Flag</a></li>
-                  <li>
-                    <a class="nav-link" href="modules-font-awesome.html"
-                      >Font Awesome</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-ion-icons.html"
-                      >Ion Icons</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-owl-carousel.html"
-                      >Owl Carousel</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-sparkline.html"
-                      >Sparkline</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-sweet-alert.html"
-                      >Sweet Alert</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-toastr.html">Toastr</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-vector-map.html"
-                      >Vector Map</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="modules-weather-icon.html"
-                      >Weather Icon</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-header">Pages</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="far fa-user"></i> <span>Auth</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="auth-forgot-password.html">Forgot Password</a>
-                  </li>
-                  <li><a href="auth-login.html">Login</a></li>
-                  <li><a href="auth-register.html">Register</a></li>
-                  <li><a href="auth-reset-password.html">Reset Password</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-exclamation"></i> <span>Errors</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="errors-503.html">503</a></li>
-                  <li><a class="nav-link" href="errors-403.html">403</a></li>
-                  <li><a class="nav-link" href="errors-404.html">404</a></li>
-                  <li><a class="nav-link" href="errors-500.html">500</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-bicycle"></i> <span>Features</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="nav-link" href="features-activities.html"
-                      >Activities</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-post-create.html"
-                      >Post Create</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-posts.html">Posts</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-profile.html">Profile</a>
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-settings.html"
-                      >Settings</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-setting-detail.html"
-                      >Setting Detail</a
-                    >
-                  </li>
-                  <li>
-                    <a class="nav-link" href="features-tickets.html">Tickets</a>
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown"
-                  ><i class="fas fa-ellipsis-h"></i> <span>Utilities</span></a
-                >
-                <ul class="dropdown-menu">
-                  <li><a href="utilities-contact.html">Contact</a></li>
-                  <li>
-                    <a class="nav-link" href="utilities-invoice.html"
-                      >Invoice</a
-                    >
-                  </li>
-                  <li><a href="utilities-subscribe.html">Subscribe</a></li>
-                </ul>
-              </li>
-              <li>
-                <a class="nav-link" href="credits.html"
-                  ><i class="fas fa-pencil-ruler"></i> <span>Credits</span></a
-                >
-              </li>
-            </ul>
-          </aside>
-        </div>
+      <div class="sidebar-section-label">OptiElite</div>
+      <a class="nav-item" href="/customerRegister">
+        <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
+        Register &amp; Management
+      </a>
+      <a class="nav-item" href="/add_prescription">
+        <span class="nav-icon"><i class="fas fa-prescription"></i></span>
+        Add Prescription
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+        Stock
+        <span class="nav-badge">Soon</span>
+      </a>
+      <a class="nav-item" href="/goReports">
+        <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+        Reports
+      </a>
+      <a class="nav-item" href="/activities">
+        <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+        Activities
+      </a>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-          <section class="section">
-            <div class="col-12 bg-white badge-soft">
-              <div class="row">
-                <div class="container py-5">
-                  <div class="container py-5">
-                    <!-- Header -->
-                    <div class="p-4 border-bottom">
-                      <div
-                        class="d-flex justify-content-between align-items-center flex-wrap gap-3"
-                      >
-                        <div class="d-flex align-items-center gap-3">
-                          <div
-                            class="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle"
-                            style="width: 56px; height: 56px"
-                          >
-                            <span class="fw-bold text-primary">IN</span>
-                          </div>
-                          <div>
-                            <h4 class="mb-0">Your Company (Pvt) Ltd</h4>
-                            <div class="text-muted small">
-                              www.example.com • +94 77 123 4567
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-end">
-                          <span class="badge text-bg-primary">INVOICE</span>
-                          <div
-                            class="small text-muted mt-1"
-                            id="invoiced_number"
-                          >
-                            Issued: -
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Bill To & Meta -->
-                    <div class="p-4">
-                      <div class="row g-4">
-                        <div class="col-md-6">
-                          <h6 class="text-uppercase text-muted mb-2">
-                            Bill To
-                          </h6>
-                          <div class="border rounded-3 p-3">
-                            <div class="fw-semibold" id="customer_Name">
-                              _______________
-                            </div>
-                            <div id="customer_address">__________</div>
-                            <div class="text-muted">
-                              <span id="customer_email"
-                                >accounts@eaglevision.lk</span
-                              >
-                              •
-                              <span id="customer-mobile">_______________</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="row g-3">
-                            <div class="col-sm-6">
-                              <div class="text-muted small">Invoice #</div>
-                              <div class="fw-semibold" id="invoice_id">
-                                _______________
-                              </div>
-                            </div>
-                            <div class="col-sm-6">
-                              <div class="text-muted small">Prescription</div>
-                              <div
-                                class="fw-semibold"
-                                id="prescription_details"
-                              >
-                                ___________________
-                              </div>
-                            </div>
-                            <div class="col-sm-6">
-                              <div class="text-muted small">Invoice Status</div>
-                              <div class="fw-semibold" id="invoice_status">
-                                loading
-                              </div>
-                            </div>
-                            <div class="col-sm-6">
-                              <div class="text-muted small">Location</div>
-                              <div class="fw-semibold" id="invoice_location">
-                                2025-10-13
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Items -->
-                    <div class="px-4 pb-2">
-                      <div class="table-responsive">
-                        <table class="table table-bordered align-middle mb-0">
-                          <thead class="table-light">
-                            <tr>
-                              <th class="text-end" style="width: 10%">Stock Id</th>
-                              <th style="width: 50%">Product Details</th>
-                              <th class="text-end" style="width: 10%">Qty</th>
-                              <th class="text-end" style="width: 20%">
-                                Unit Price
-                              </th>
-                              <!-- <th class="text-end" style="width: 20%">
-                                Line Total
-                              </th> -->
-                            </tr>
-                          </thead>
-                          <tbody id="product-table-body">
-                            <!-- <tr>
-                              <td>Comprehensive Eye Exam</td>
-                              <td class="text-end">1</td>
-                              <td class="text-end">LKR 3,500.00</td>
-                              <td class="text-end">LKR 3,500.00</td>
-                            </tr>
-                            <tr>
-                              <td>Prescription Lenses (pair)</td>
-                              <td class="text-end">1</td>
-                              <td class="text-end">LKR 12,500.00</td>
-                              <td class="text-end">LKR 12,500.00</td>
-                            </tr>
-                            <tr>
-                              <td>Frame — Classic Black</td>
-                              <td class="text-end">1</td>
-                              <td class="text-end">LKR 9,800.00</td>
-                              <td class="text-end">LKR 9,800.00</td>
-                            </tr> -->
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <div class="px-4 pb-4">
-                      <div class="row g-4 justify-content-end">
-                        <div class="col-md-6 col-lg-5">
-                          <div class="border rounded-3 p-3">
-                            <div class="d-flex justify-content-between py-1">
-                              <span class="fw-semibold" >Total</span>
-                              <span id="total">__________</span>
-                            </div>
-                            <div class="d-flex justify-content-between py-1">
-                              <span class="fw-semibold">Discount</span>
-                              <span id="discount">__________</span>
-                            </div>
-                            <div class="d-flex justify-content-between py-1">
-                              <span class="fw-semibold">Sub Total</span>
-                              <span id="subtotoal">__________</span>
-                            </div>
-                            <hr class="my-2" />
-
-                            <div class="d-flex justify-content-between py-1">
-                              <span class="fw-semibold">Advance</span>
-                              <span id="advance">__________</span>
-                            </div>
-                            <div
-                              class="d-flex justify-content-between py-1 fs-5"
-                            >
-                              <span class="fw-bold">Pay Amount </span>
-                              <span class="fw-bold" id="payamount">__________</span>
-                            </div>
-                            <!-- <div class="d-flex justify-content-between py-1">
-                              <span class="fw-semibold">Amount Paid</span>
-                              <span>LKR 5,000.00</span>
-                            </div> -->
-                            <div class="d-flex justify-content-between py-1">
-                              <span class="fw-bold">Total Due</span>
-                              <span id="due">__________</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Notes & Payment Details -->
-                    <div class="px-4 pb-4">
-                      <div class="row g-4">
-                        <div class="col-md-7">
-                          <h6 class="text-uppercase text-muted mb-2">Payment History</h6>
-                          <div class="border rounded-3 p-3" id="paymentHistory">
-                            <!-- Thank you for your business! Payment is due within 7
-                            days. Late fees may apply. -->
-                          </div>
-                        </div>
-                        <div class="col-md-5">
-                          <h6 class="text-uppercase text-muted mb-2">
-                            Actions
-                          </h6>
-                          <div class="border rounded-3 p-3">
-                            <div class="row g-2 small">
-                              <div class="col-12"  id="actionTab">
-                                <button class="btn btn-success w-100 mb-2" onclick="Openinvoice();">Print Bill</button>
-                              </div>
-                              <!-- <div class="col-7">
-                                <span class="text-muted">Account Name</span
-                                ><br />Your Company (Pvt) Ltd
-                              </div>
-                              <div class="col-5">
-                                <span class="text-muted">Account No.</span
-                                ><br />1234567890
-                              </div>
-                              <div class="col-6">
-                                <span class="text-muted">Branch</span
-                                ><br />Colombo Main
-                              </div>
-                              <div class="col-6">
-                                <span class="text-muted">SWIFT</span
-                                ><br />CCCCLKLX
-                              </div> -->
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="px-4 pb-4 border-top">
-                      <div class="row align-items-center g-3">
-                        <div
-                          class="col-md-8 order-2 order-md-1 small text-muted"
-                        >
-                          Address: 120/5, Marine Drive, Colombo 06 • VAT Reg:
-                          123456789-7000<br />
-                          Email: accounts@example.com
-                        </div>
-                        <div class="col-md-4 order-1 order-md-2 text-md-end">
-                          <div
-                            class="d-inline-flex align-items-center gap-2 border rounded-3 p-2"
-                          >
-                            <i class="bi bi-qr-code fs-3"></i>
-                            <div class="small text-muted">Scan to Pay</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="main-footer">
-          <div class="footer-left">
-            Copyright &copy; 2026
-            <div class="bullet"></div>
-            Design By <a href="https://vayonova.com">Vayonova</a>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
           </div>
-          <div class="footer-right"></div>
-        </footer>
+          <i class="fas fa-ellipsis-h sidebar-user-more"></i>
+        </div>
       </div>
-    </div>
+    </nav>
 
-    <!-- General JS Scripts -->
-    <script src="/assets/modules/jquery.min.js"></script>
-    <script src="/assets/modules/popper.js"></script>
-    <script src="/assets/modules/tooltip.js"></script>
-    <script src="/assets/modules/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
-    <script src="/assets/modules/moment.min.js"></script>
-    <script src="/assets/js/OptiElite.js"></script>
+    <!-- ═════════ TOPBAR ═════════ -->
+    <header id="topbar">
+      <button id="menu-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+      <div class="topbar-title">Invoice Details</div>
+      <div class="topbar-actions">
+        <div class="topbar-btn"><i class="far fa-envelope"></i><span class="dot"></span></div>
+        <div class="topbar-btn"><i class="far fa-bell"></i><span class="dot"></span></div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </header>
 
-    <!-- JS Libraries -->
-    <script src="/assets/modules/jquery.sparkline.min.js"></script>
-    <script src="/assets/modules/chart.min.js"></script>
-    <script src="/assets/modules/owlcarousel2/dist/owl.carousel.min.js"></script>
-    <script src="/assets/modules/summernote/summernote-bs4.js"></script>
-    <script src="/assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
+    <!-- ═════════ MAIN ═════════ -->
+    <main id="main">
+      <div class="page-content">
 
-    <!-- Page Specific JS File -->
-    <script src="/assets/js/page/index.js"></script>
-    <script src="/assets/js/mainscript.js"></script>
+        <div class="page-header header-row">
+          <div>
+            <h1>Invoice <span id="hdrInvoice">…</span></h1>
+            <p>Invoice details, prescription and payment terms</p>
+          </div>
+          <div class="header-actions">
+            <a class="oe-btn" href="/manage_bills"><i class="fas fa-arrow-left"></i> Back</a>
+          </div>
+        </div>
 
-    <!-- Template JS File -->
-    <script src="/assets/js/scripts.js"></script>
-    <script src="/assets/js/custom.js"></script>
+        <div id="vbAlert"></div>
+
+        <div class="vb-grid">
+          <!-- LEFT -->
+          <div>
+            <!-- Invoice -->
+            <div class="section-card">
+              <div class="section-card-header"><h3>Invoice</h3><span id="invStatus" class="badge badge-light">loading</span></div>
+              <div class="kv-grid">
+                <div class="kv"><div class="k">Invoice #</div><div class="v" id="invId">—</div></div>
+                <div class="kv"><div class="k">Issued</div><div class="v" id="invDate">—</div></div>
+                <div class="kv"><div class="k">Branch</div><div class="v" id="invLocation">—</div></div>
+                <div class="kv"><div class="k">Delivery</div><div class="v" id="invDelivery">—</div></div>
+              </div>
+            </div>
+
+            <!-- Customer -->
+            <div class="section-card">
+              <div class="section-card-header"><h3>Customer</h3></div>
+              <div class="kv-grid">
+                <div class="kv"><div class="k">Name</div><div class="v" id="cName">—</div></div>
+                <div class="kv"><div class="k">Mobile</div><div class="v" id="cMobile">—</div></div>
+                <div class="kv"><div class="k">Mobile 2</div><div class="v" id="cMobile2">—</div></div>
+                <div class="kv"><div class="k">Landline</div><div class="v" id="cLand">—</div></div>
+                <div class="kv"><div class="k">NIC</div><div class="v" id="cNic">—</div></div>
+                <div class="kv"><div class="k">Email</div><div class="v" id="cEmail">—</div></div>
+                <div class="kv wide"><div class="k">Address</div><div class="v" id="cAddress">—</div></div>
+              </div>
+            </div>
+
+            <!-- Items -->
+            <div class="section-card">
+              <div class="section-card-header"><h3>Items</h3></div>
+              <div class="table-wrap">
+                <table class="wrap">
+                  <thead>
+                    <tr>
+                      <th>Type</th><th>ID</th><th>Details</th>
+                      <th class="center">Qty</th><th class="num">Unit price</th><th class="num">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="itemsBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Prescription -->
+            <div class="section-card">
+              <div class="section-card-header"><h3>Prescription</h3></div>
+              <div class="card-pad" id="rxBody"><div class="empty"><span class="spinner"></span></div></div>
+            </div>
+
+            <!-- Payment terms -->
+            <div class="section-card">
+              <div class="section-card-header"><h3>Payment terms</h3><span class="header-note">Total paid: <b id="payTotal">LKR 0.00</b></span></div>
+              <div class="card-pad" style="padding-bottom: 8px">
+                <div class="oe-progress"><span id="payBar" style="width: 0%"></span></div>
+                <div class="progress-meta"><span id="payPct">0% paid</span></div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>#</th><th>Date</th><th>Method</th><th class="num">Amount</th></tr>
+                  </thead>
+                  <tbody id="payBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="vb-side">
+            <div class="section-card">
+              <div class="section-card-header"><h3>Summary</h3></div>
+              <div class="card-pad">
+                <div class="sum-row"><span>Total</span><span id="tGross">—</span></div>
+                <div class="sum-row"><span>Discount</span><span id="tDiscount">—</span></div>
+                <div class="sum-row strong"><span>Net amount</span><span id="tNet">—</span></div>
+                <div class="sum-sep"></div>
+                <div class="sum-row"><span>Paid</span><span id="tPaid">—</span></div>
+                <div class="sum-row due"><span>Total due</span><span class="amt" id="tDue">—</span></div>
+                <div id="tWarn" class="alert alert-warning" style="display: none; margin: 14px 0 0">
+                  The saved due amount does not match the payment history. Open <b>Edit Order</b> to correct it.
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-card-header"><h3>Actions</h3></div>
+              <div class="card-pad btn-stack">
+                <a id="btnPrint" class="oe-btn success block" href="#"><i class="fas fa-print"></i> Print Bill</a>
+                <a id="btnEditOrder" class="oe-btn primary block" href="#"><i class="fas fa-edit"></i> Edit Order</a>
+                <a class="oe-btn block" href="/manage_bills"><i class="fas fa-list-ul"></i> All invoices</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="page-footer">
+        <span>Copyright &copy; 2026 — Design By <a href="https://vayonova.com">Vayonova</a></span>
+        <span>OptiElite v2.0 · Light Edition</span>
+      </footer>
+    </main>
+
+    <script src="/assets/js/layout.js"></script>
+    <script src="/assets/js/viewBill.js"></script>
   </body>
 </html>

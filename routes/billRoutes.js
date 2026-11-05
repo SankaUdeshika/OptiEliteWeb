@@ -11,6 +11,7 @@ const {
   fetchInvoiceDetails,
   loadCompanyHeaderData,
   loadCompanystocks,
+  getBillDetails,
 } = require("../controllers/billController");
 
 router.get("/bills", fetchAllBills);
@@ -23,6 +24,6 @@ router.get("/bills/fetchBillActions", fetchBillActions);
 router.get("/bills/View/print/:id", fetchInvoiceDetails);
 router.get("/bills/loadCompanyHeaderData/:id", loadCompanyHeaderData);
 router.get("/bills/loadCompanystocks/:id", loadCompanystocks);
+router.get("/bills/details/:id", getBillDetails);
 
-;
 module.exports = router;
