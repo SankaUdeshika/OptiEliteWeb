@@ -497,6 +497,7 @@ async function loadBills(filters = {}) {
             <td>${escapeHtml(date)}</td>
             <td><div class="badge badge-${color}">${status == 1 ? "Pending" : "Complete"}</div></td>
             <td><a href="#" class="btn btn-secondary" onclick="ViewBill('${safeId}'); return false;">Detail</a></td>
+                          <a href="#" class="btn btn-primary" onclick="EditOrder('${safeId}'); return false;">Edit</a>
           </tr>`;
       })
       .join("");
@@ -1556,4 +1557,7 @@ async function fetchViewPrescriptionPage() {
     document.getElementById("L_HEIGHT").innerHTML =
       prescriptionObject.prescription.left.height;
   }
+}
+function EditOrder(invoiceId) {
+  window.location = "/edit_order/" + encodeURIComponent(invoiceId);
 }

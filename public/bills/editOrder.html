@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Order &mdash; OptiElite</title>
+  <link rel="stylesheet" href="/assets/modules/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/assets/modules/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <style>
+    body { background: #f4f6f9; }
+    .pick-table { max-height: 240px; overflow: auto; }
+    .pick-table tr { cursor: pointer; }
+    .summary-row { display: flex; justify-content: space-between; padding: 4px 0; }
+    .summary-row.due { font-size: 1.25rem; font-weight: 700; border-top: 1px solid #ddd; margin-top: 6px; padding-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="container-fluid py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Edit Order <span id="invId" class="text-primary"></span></h4>
+    <div>
+      <button class="btn btn-outline-secondary" id="btnRefresh"><i class="fas fa-sync"></i> Refresh</button>
+      <a class="btn btn-secondary" href="/manage_bills"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="row">
+    <div class="col-lg-8">
+
+      <!-- Customer (read only, same as the Java screen: the save does not change it) -->
+      <div class="card">
+        <div class="card-header"><h4>Customer</h4></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4"><b>Name:</b> <span id="cName"></span></div>
+            <div class="col-md-4"><b>Mobile:</b> <span id="cMobile"></span></div>
+            <div class="col-md-2"><b>NIC:</b> <span id="cNic"></span></div>
+            <div class="col-md-2"><b>Date:</b> <span id="invDate"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Frame -->
+      <div class="card">
+        <div class="card-header"><h4>Frame</h4></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Search (brand / product code / SKU)</label>
+              <input type="text" id="frameSearch" class="form-control" placeholder="Type to search frames in stock" />
+            </div>
+            <div class="form-group col-md-6">
+              <label>Selected frame (stock id)</label>
+              <div class="input-group">
+                <input type="text" id="frameSel" class="form-control" readonly />
+                <div class="input-group-append">
+                  <button class="btn btn-outline-danger" id="frameClear" title="Lens-only order">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pick-table">
+            <table class="table table-sm table-hover mb-0">
+              <thead><tr><th>Brand</th><th>Stock ID</th><th>Category</th><th>Price</th><th>Product</th><th>Qty</th></tr></thead>
+              <tbody id="frameBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lens -->
+      <div class="card">
+        <div class="card-header"><h4>Lens</h4></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Search (lens code / id)</label>
+              <input type="text" id="lensSearch" class="form-control" placeholder="Type to search lenses" />
+            </div>
+            <div class="form-group col-md-4">
+              <label>Selected lens (lens id)</label>
+              <div class="input-group">
+                <input type="text" id="lensSel" class="form-control" readonly />
+                <div class="input-group-append">
+                  <button class="btn btn-outline-danger" id="lensClear">Clear</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-3">
+              <label>Lens qty</label>
+              <input type="number" min="1" id="lensQty" class="form-control" value="1" />
+            </div>
+          </div>
+          <div class="pick-table">
+            <table class="table table-sm table-hover mb-0">
+              <thead><tr><th>Lens ID</th><th>Lens Code</th><th>Price</th><th>Supplier</th></tr></thead>
+              <tbody id="lensBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payments -->
+      <div class="card">
+        <div class="card-header"><h4>Payment history</h4></div>
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead><tr><th>#</th><th>Date &amp; time</th><th>Amount</th><th>Method</th><th></th></tr></thead>
+            <tbody id="payBody"></tbody>
+          </table>
+
+          <hr />
+          <h6>Add payment</h6>
+          <div class="form-row">
+            <div class="form-group col-md-3"><label>Amount</label><input type="number" step="0.01" min="0" id="payAmount" class="form-control" /></div>
+            <div class="form-group col-md-3"><label>Date</label><input type="date" id="payDate" class="form-control" /></div>
+            <div class="form-group col-md-2"><label>Time</label><input type="time" id="payTime" class="form-control" /></div>
+            <div class="form-group col-md-2">
+              <label>Method</label>
+              <select id="payMethod" class="form-control">
+                <option value="1">Cash</option><option value="2">Card</option><option value="3">Bank Deposit</option>
+                <option value="4">Online Bank Transfer</option><option value="5">MintPay</option><option value="6">KOKO</option>
+              </select>
+            </div>
+            <div class="form-group col-md-2 d-flex align-items-end">
+              <button class="btn btn-primary btn-block" id="btnAddPay">Add</button>
+            </div>
+          </div>
+          <small class="text-muted">Payments are saved immediately and the invoice paid / due amounts follow them.</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="col-lg-4">
+      <div class="card" style="position: sticky; top: 15px;">
+        <div class="card-header"><h4>Summary</h4></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Discount (amount or %, e.g. 500 or 10%)</label>
+            <input type="text" id="discount" class="form-control" />
+          </div>
+          <div class="summary-row"><span>Frame</span><span id="sFrame">Rs.0.00</span></div>
+          <div class="summary-row"><span>Lens</span><span id="sLens">Rs.0.00</span></div>
+          <div class="summary-row"><b>Sub total</b><b id="sSub">Rs.0.00</b></div>
+          <div class="summary-row"><span>Discount</span><span id="sDisc">Rs.0.00</span></div>
+          <div class="summary-row"><b>Net amount</b><b id="sNet">Rs.0.00</b></div>
+          <div class="summary-row"><span>Paid</span><span id="sPaid">Rs.0.00</span></div>
+          <div class="summary-row due"><span>Due</span><span id="sDue">Rs.0.00</span></div>
+          <button class="btn btn-success btn-lg btn-block mt-3" id="btnSave"><i class="fas fa-save"></i> Update Invoice</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const round2 = (v) => Math.round((Number(v) || 0) * 100) / 100;
+  const money = (v) => "Rs." + Number(v).toFixed(2);
+
+  const invoiceId = decodeURIComponent(location.pathname.split("/").pop());
+  const API = "/api/edit-order";
+
+  let S = null; // data loaded from the server
+  let sel = { frameId: "", framePrice: 0, lensId: "", lensUnit: 0 };
+  let frameRows = [];
+  let lensRows = [];
+  let lastTotals = null;
+
+  async function call(url, opts = {}) {
+    const r = await fetch(url, { headers: { "Content-Type": "application/json" }, ...opts });
+    if (r.status === 401) { location = "/login"; return { ok: false, data: {} }; }
+    const data = await r.json().catch(() => ({}));
+    return { ok: r.ok, status: r.status, data };
+  }
+
+  function flash(text, type = "success") {
+    $("msg").innerHTML = `<div class="alert alert-${type}">${esc(text)}</div>`;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => ($("msg").innerHTML = ""), 6000);
+  }
+
+  /* ───── load (Refresh) ───── */
+  async function loadAll() {
+    const r = await call(`${API}/${encodeURIComponent(invoiceId)}`);
+    if (!r.ok) return flash(r.data.error || "Failed to load the order.", "danger");
+    S = r.data;
+
+    $("invId").textContent = S.invoice.id;
+    $("cName").textContent = S.invoice.customerName || "";
+    $("cMobile").textContent = S.invoice.customerMobile || "";
+    $("cNic").textContent = S.invoice.customerNic || "";
+    $("invDate").textContent = S.invoice.date || "";
+
+    sel = { frameId: S.frame.stockId, framePrice: S.frame.originalPrice, lensId: S.lens.id, lensUnit: S.lens.unitPrice };
+    $("frameSel").value = sel.frameId;
+    $("lensSel").value = sel.lensId;
+    $("lensQty").value = S.lens.id ? S.lens.qty : 1;
+    $("discount").value = S.discountInput;
+    $("frameSearch").value = "";
+    $("lensSearch").value = "";
+
+    frameRows = S.frameOptions;
+    lensRows = S.lens.id ? [{ lens_id: S.lens.id, lens_code: S.lens.code, lens_price: S.lens.unitPrice, Supplier_Name: S.lens.supplier }] : [];
+    renderFrames();
+    renderLenses();
+    renderPayments();
+    recalc();
+  }
+
+  /* ───── tables ───── */
+  function renderFrames() {
+    $("frameBody").innerHTML = frameRows.map((f) => `
+      <tr data-id="${esc(f.stock_id)}" data-price="${esc(f.saling_price)}" class="${String(f.stock_id) === sel.frameId ? "table-primary" : ""}">
+        <td>${esc(f.brand_name)}</td><td>${esc(f.stock_id)}</td><td>${esc(f.sub_category)}</td>
+        <td>${esc(f.saling_price)}</td><td>${esc(f.product_code)}</td><td>${esc(f.qty)}</td>
+      </tr>`).join("") || `<tr><td colspan="6" class="text-center text-muted">No frames</td></tr>`;
+  }
+
+  function renderLenses() {
+    $("lensBody").innerHTML = lensRows.map((l) => `
+      <tr data-id="${esc(l.lens_id)}" data-price="${esc(l.lens_price)}" class="${String(l.lens_id) === sel.lensId ? "table-primary" : ""}">
+        <td>${esc(l.lens_id)}</td><td>${esc(l.lens_code)}</td><td>${esc(l.lens_price)}</td><td>${esc(l.Supplier_Name)}</td>
+      </tr>`).join("") || `<tr><td colspan="4" class="text-center text-muted">No lenses</td></tr>`;
+  }
+
+  function renderPayments() {
+    $("payBody").innerHTML = S.payments.map((p) => `
+      <tr><td>${esc(p.id)}</td><td>${esc(p.dateTime)}</td><td>${money(p.amount)}</td><td>${esc(p.method)}</td>
+      <td class="text-right"><button class="btn btn-sm btn-outline-danger" data-del="${esc(p.id)}"><i class="fas fa-trash"></i></button></td></tr>`
+    ).join("") || `<tr><td colspan="5" class="text-center text-muted">No payments yet</td></tr>`;
+  }
+
+  /* ───── totals (same rules as CalculateLensTotal + ChangeTotal in Java) ───── */
+  function recalc() {
+    if (!S) return;
+    const qty = parseInt($("lensQty").value, 10) || 0;
+
+    let framePrice = 0;
+    if (sel.frameId) framePrice = sel.frameId === S.frame.stockId ? S.frame.originalPrice : sel.framePrice;
+
+    let lensTotal = 0;
+    if (sel.lensId) {
+      lensTotal = sel.lensId === S.lens.id && qty === S.lens.qty ? S.lens.originalTotal : round2(sel.lensUnit * qty);
+    }
+
+    const sub = round2(framePrice + lensTotal);
+    const text = $("discount").value.trim();
+    let disc = 0;
+    if (text.endsWith("%")) {
+      const p = parseFloat(text.replace("%", ""));
+      disc = isNaN(p) ? 0 : round2((sub * p) / 100);
+    } else if (text) {
+      const a = parseFloat(text.replace(/,/g, ""));
+      disc = isNaN(a) ? 0 : round2(a);
+    }
+    disc = Math.max(0, Math.min(disc, sub));
+
+    const net = round2(sub - disc);
+    const due = round2(net - S.paid);
+    lastTotals = { framePrice, lensTotal, sub, disc, net, due };
+
+    $("sFrame").textContent = money(framePrice);
+    $("sLens").textContent = money(lensTotal);
+    $("sSub").textContent = money(sub);
+    $("sDisc").textContent = money(disc);
+    $("sNet").textContent = money(net);
+    $("sPaid").textContent = money(S.paid);
+    $("sDue").textContent = money(due);
+    $("sDue").style.color = due < 0 ? "#dc3545" : "";
+  }
+
+  /* ───── events ───── */
+  $("frameBody").addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-id]");
+    if (!tr) return;
+    sel.frameId = tr.dataset.id;
+    sel.framePrice = Number(tr.dataset.price) || 0;
+    $("frameSel").value = sel.frameId;
+    renderFrames();
+    recalc();
+  });
+
+  $("lensBody").addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-id]");
+    if (!tr) return;
+    sel.lensId = tr.dataset.id;
+    sel.lensUnit = Number(tr.dataset.price) || 0;
+    $("lensSel").value = sel.lensId;
+    renderLenses();
+    recalc();
+  });
+
+  $("frameClear").addEventListener("click", () => { sel.frameId = ""; sel.framePrice = 0; $("frameSel").value = ""; renderFrames(); recalc(); });
+  $("lensClear").addEventListener("click", () => { sel.lensId = ""; sel.lensUnit = 0; $("lensSel").value = ""; renderLenses(); recalc(); });
+  $("lensQty").addEventListener("input", recalc);
+  $("discount").addEventListener("input", recalc);
+  $("btnRefresh").addEventListener("click", loadAll);
+
+  function debounce(fn, ms = 300) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+  $("frameSearch").addEventListener("input", debounce(async () => {
+    const q = $("frameSearch").value.trim();
+    if (!q) { frameRows = S.frameOptions; return renderFrames(); }
+    const r = await call(`${API}/search/frames?q=${encodeURIComponent(q)}`);
+    if (r.ok) { frameRows = r.data; renderFrames(); }
+  }));
+
+  $("lensSearch").addEventListener("input", debounce(async () => {
+    const q = $("lensSearch").value.trim();
+    const r = await call(`${API}/search/lenses?q=${encodeURIComponent(q)}`);
+    if (r.ok) { lensRows = r.data; renderLenses(); }
+  }));
+
+  /* payments */
+  $("btnAddPay").addEventListener("click", async () => {
+    const r = await call(`${API}/${encodeURIComponent(invoiceId)}/payments`, {
+      method: "POST",
+      body: JSON.stringify({
+        amount: $("payAmount").value, date: $("payDate").value,
+        time: $("payTime").value, methodId: $("payMethod").value,
+      }),
+    });
+    if (!r.ok) return flash(r.data.error || "Failed to add payment.", "danger");
+    S.payments = r.data.payments;
+    S.paid = r.data.paid;
+    $("payAmount").value = "";
+    renderPayments();
+    recalc();
+    flash("Payment added successfully!");
+  });
+
+  $("payBody").addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-del]");
+    if (!btn) return;
+    if (!confirm("Are you sure you want to delete this payment detail?")) return;
+    const r = await call(`${API}/${encodeURIComponent(invoiceId)}/payments/${encodeURIComponent(btn.dataset.del)}`, { method: "DELETE" });
+    if (!r.ok) return flash(r.data.error || "Failed to delete payment.", "danger");
+    S.payments = r.data.payments;
+    S.paid = r.data.paid;
+    renderPayments();
+    recalc();
+    flash("Payment deleted.");
+  });
+
+  /* save (Update Invoice) */
+  async function save(confirmOverpay = false) {
+    const r = await call(`${API}/${encodeURIComponent(invoiceId)}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        frameStockId: sel.frameId,
+        lensId: sel.lensId,
+        lensQty: parseInt($("lensQty").value, 10) || 0,
+        discount: $("discount").value,
+        confirmOverpay,
+      }),
+    });
+    if (r.status === 409 && r.data.needsConfirm) {
+      if (confirm(r.data.error)) return save(true);
+      return;
+    }
+    if (!r.ok) return flash(r.data.error || "Something went wrong. Please try again.", "danger");
+    flash("Invoice Updated Successfully");
+    await loadAll();
+  }
+  $("btnSave").addEventListener("click", () => save(false));
+
+  /* start */
+  (function init() {
+    const now = new Date();
+    const p = (n) => String(n).padStart(2, "0");
+    $("payDate").value = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+    $("payTime").value = `${p(now.getHours())}:${p(now.getMinutes())}`;
+    loadAll();
+  })();
+</script>
+</body>
+</html>

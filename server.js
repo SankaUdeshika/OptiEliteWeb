@@ -16,6 +16,7 @@ const prescriptionRoutes = require("./routes/prescriptionRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const { ActivityPage } = require("./controllers/activityController");
+const editOrderRoutes = require("./routes/editOrderRoutes");
 
 // --- Middleware ---
 app.use(cors());
@@ -44,7 +45,8 @@ app.use("/api/stock", stockRoutes);
 app.use("/api/prescription", prescriptionRoutes);
 app.use("/api", reportRoutes);
 app.use("/api/activity", activityRoutes); //API
-app.get("/activities", ActivityPage);     // page
+app.get("/activities", ActivityPage); // page
+app.use("/api/edit-order", editOrderRoutes);
 
 // --- Page Routes ---
 app.get("/", (req, res) => {
@@ -113,9 +115,16 @@ app.get("/view_prescriptions", (req, res) => {
 
 app.get("/goReports", (req, res) => {
   if (req.session && req.session.username) {
-    res.sendFile(
-      path.join(__dirname, "public", "reports", "reports.html"),
-    );
+    res.sendFile(path.join(__dirname, "public", "reports", "reports.html"));
+  } else {
+    res.redirect("/login");
+  }
+});
+
+// Edit Order page (session protected, same pattern as the other pages)
+app.get("/edit_order/:id", (req, res) => {
+  if (req.session && req.session.username) {
+    res.sendFile(path.join(__dirname, "public/bills/editOrder.html"));
   } else {
     res.redirect("/login");
   }
